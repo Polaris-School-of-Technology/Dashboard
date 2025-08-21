@@ -5,6 +5,7 @@ import "./classSessions.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
+// Session interface
 interface Session {
     id: number;
     session_datetime: string;
@@ -17,18 +18,24 @@ interface Session {
     venue?: string;
 }
 
+// Faculty interface
 interface Faculty {
     id: string;
     name: string;
 }
 
+// Section interface
 interface Section {
     id: number;
     course_name: string;
 }
 
+// Allowed session types
+const SESSION_TYPES = ["theory", "practical", "tutorial", "evaluation", "other"];
+
 const ClassSessions: React.FC = () => {
     const navigate = useNavigate();
+
     const [date, setDate] = useState<string>("");
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -50,8 +57,13 @@ const ClassSessions: React.FC = () => {
 
     useEffect(() => {
         // Fetch faculties & sections once
-        axios.get(`${API_BASE_URL}/api/schedule/classSessions/getFaculty`).then(res => setFaculties(res.data));
-        axios.get(`${API_BASE_URL}/api/schedule/classCourses`).then(res => setSections(res.data));
+        axios.get(`${API_BASE_URL}/api/schedule/classSessions/getFaculty`)
+            .then(res => setFaculties(res.data))
+            .catch(err => console.error("Error fetching faculties:", err));
+
+        axios.get(`${API_BASE_URL}/api/schedule/classCourses`)
+            .then(res => setSections(res.data))
+            .catch(err => console.error("Error fetching sections:", err));
     }, []);
 
     const fetchSessions = async () => {
@@ -70,7 +82,6 @@ const ClassSessions: React.FC = () => {
 
     const handleUpdate = async () => {
         if (!editSession) return;
-
         try {
             const istDateTime = `${dateVal}T${timeVal}:00+05:30`;
 
@@ -112,7 +123,8 @@ const ClassSessions: React.FC = () => {
         setDateVal(dt.toISOString().slice(0, 10));
         setTimeVal(dt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }));
         setDurationVal(s.duration);
-        setTypeVal(s.session_type);
+        // Normalize session type to lowercase to match dropdown values
+        setTypeVal(s.session_type.toLowerCase());
         setVenueVal(s.venue || "");
     };
 
@@ -200,11 +212,11 @@ const ClassSessions: React.FC = () => {
 
                         <label>Type</label>
                         <select value={typeVal} onChange={(e) => setTypeVal(e.target.value)}>
-                            <option value="theory">Theory</option>
-                            <option value="practical">Practical</option>
-                            <option value="tutorial">Tutorial</option>
-                            <option value="evaluation">Evaluation</option>
-                            <option value="other">Other</option>
+                            {SESSION_TYPES.map((type) => (
+                                <option key={type} value={type}>
+                                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                                </option>
+                            ))}
                         </select>
 
                         <div className="modal-actions">
