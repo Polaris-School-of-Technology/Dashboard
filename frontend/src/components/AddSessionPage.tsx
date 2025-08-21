@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./addSession.css";    //  <-- (we will add a small css file below)
+import "./addSession.css";
+
+const API_BASE_URL = process.env.REACT_APP_API_URL; 
 
 interface Faculty { id: number; name: string; }
 interface Section { id: number; course_name: string; }
@@ -21,17 +23,22 @@ const AddSessionPage: React.FC = () => {
 
     useEffect(() => {
         const fetchDrop = async () => {
-            const facRes = await axios.get("http://localhost:8000/api/schedule/classSessions/getFaculty");
-            setFaculties(facRes.data);
-            const secRes = await axios.get("http://localhost:8000/api/schedule/classCourses");
-            setSections(secRes.data);
+            try {
+                const facRes = await axios.get(`${API_BASE_URL}/api/schedule/classSessions/getFaculty`);
+                setFaculties(facRes.data);
+
+                const secRes = await axios.get(`${API_BASE_URL}/api/schedule/classCourses`);
+                setSections(secRes.data);
+            } catch (err) {
+                console.error("Error fetching faculties or sections:", err);
+            }
         };
         fetchDrop();
     }, []);
 
     const handleSubmit = async () => {
         try {
-            await axios.post("http://localhost:8000/api/schedule/addSession", {
+            await axios.post(`${API_BASE_URL}/api/schedule/addSession`, {
                 section_id: Number(sectionId),
                 faculty_id: facultyId,
                 session_type: type,
@@ -43,6 +50,7 @@ const AddSessionPage: React.FC = () => {
             alert("Session Added");
             navigate("/class-sessions");
         } catch (err) {
+            console.error("Error creating session:", err);
             alert("Error creating session");
         }
     };

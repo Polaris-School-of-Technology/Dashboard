@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./WeeklySessions.css"; // import the CSS
+import "./WeeklySessions.css";
 
 interface Session {
     session_datetime: string;
@@ -10,6 +10,8 @@ interface Session {
 }
 
 const WeeklySessions: React.FC = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000"; // ✅ fallback to localhost
+
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -17,7 +19,7 @@ const WeeklySessions: React.FC = () => {
     useEffect(() => {
         const fetchSessions = async () => {
             try {
-                const res = await axios.get("http://localhost:8000/api/weekly/getAllWeeklySessions");
+                const res = await axios.get(`${API_BASE_URL}/api/weekly/getAllWeeklySessions`);
                 setSessions(res.data);
             } catch (err: any) {
                 setError(err.message || "Error fetching sessions");
@@ -27,7 +29,7 @@ const WeeklySessions: React.FC = () => {
         };
 
         fetchSessions();
-    }, []);
+    }, [API_BASE_URL]);
 
     if (loading) return <p className="loading">Loading sessions...</p>;
     if (error) return <p className="error">{error}</p>;

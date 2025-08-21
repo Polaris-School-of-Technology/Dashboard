@@ -4,10 +4,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./AttendanceReport.css";
 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 interface Student {
     id: number; // unique id for each attendance record
     student_name: string;
-    registration_id: string | null; // ✅ new field
+    registration_id: string | null;
     present: boolean;
 }
 
@@ -37,7 +39,7 @@ const AttendanceReport: React.FC = () => {
         setError(null);
 
         try {
-            let url = `http://localhost:8000/api/attendance/attendanceReport/${formatted}`;
+            let url = `${API_BASE_URL}/api/attendance/attendanceReport/${formatted}`;
             if (status !== "all") {
                 url += `?status=${status}`;
             }
@@ -50,14 +52,12 @@ const AttendanceReport: React.FC = () => {
         }
     };
 
-    // Toggle attendance function
     const toggleAttendance = async (attendanceId: number, currentStatus: boolean) => {
         try {
-            await axios.patch(`http://localhost:8000/api/attendance/${attendanceId}`, {
+            await axios.patch(`${API_BASE_URL}/api/attendance/${attendanceId}`, {
                 is_present: !currentStatus,
             });
 
-            // Update local state immediately
             setData(prev =>
                 prev.map(session => ({
                     ...session,

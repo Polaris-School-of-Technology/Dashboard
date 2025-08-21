@@ -3,12 +3,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./classSessions.css";
 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 interface Session {
     id: number;
     session_datetime: string;
     session_type: string;
     duration: number;
-    actual_faculty_id: string | null; // ✅ UUID is string
+    actual_faculty_id: string | null;
     faculty_name: string;
     course_name: string | null;
     section_id: number | null;
@@ -16,7 +18,7 @@ interface Session {
 }
 
 interface Faculty {
-    id: string; // ✅ UUID is string
+    id: string;
     name: string;
 }
 
@@ -48,17 +50,15 @@ const ClassSessions: React.FC = () => {
 
     useEffect(() => {
         // Fetch faculties & sections once
-        axios.get("http://localhost:8000/api/schedule/classSessions/getFaculty").then(res => setFaculties(res.data));
-        axios.get("http://localhost:8000/api/schedule/classCourses").then(res => setSections(res.data));
+        axios.get(`${API_BASE_URL}/api/schedule/classSessions/getFaculty`).then(res => setFaculties(res.data));
+        axios.get(`${API_BASE_URL}/api/schedule/classCourses`).then(res => setSections(res.data));
     }, []);
 
     const fetchSessions = async () => {
         if (!date) return;
         try {
             setLoading(true);
-            const res = await axios.get<Session[]>(
-                `http://localhost:8000/api/schedule/classSessions/getSessions/${date}`
-            );
+            const res = await axios.get<Session[]>(`${API_BASE_URL}/api/schedule/classSessions/getSessions/${date}`);
             setSessions(res.data);
             setError("");
         } catch {
@@ -72,10 +72,9 @@ const ClassSessions: React.FC = () => {
         if (!editSession) return;
 
         try {
-            // Combine date + time in IST
             const istDateTime = `${dateVal}T${timeVal}:00+05:30`;
 
-            await axios.patch(`http://localhost:8000/api/schedule/classSessions/${editSession.id}`, {
+            await axios.patch(`${API_BASE_URL}/api/schedule/classSessions/${editSession.id}`, {
                 actual_faculty_id: facultyId,
                 section_id: sectionId,
                 session_datetime: istDateTime,
@@ -96,7 +95,7 @@ const ClassSessions: React.FC = () => {
         if (!window.confirm("Are you sure you want to delete this session?")) return;
 
         try {
-            await axios.delete(`http://localhost:8000/api/schedule/classSessionsdelete/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/schedule/classSessionsdelete/${id}`);
             alert("🗑️ Session deleted successfully");
             fetchSessions();
         } catch (err) {
@@ -166,7 +165,6 @@ const ClassSessions: React.FC = () => {
                 </tbody>
             </table>
 
-            {/* --- EDIT MODAL --- */}
             {editSession && (
                 <div className="modal">
                     <div className="modal-content">
@@ -176,22 +174,15 @@ const ClassSessions: React.FC = () => {
                         <select value={facultyId} onChange={(e) => setFacultyId(e.target.value)}>
                             <option value="">--Select--</option>
                             {faculties.map((f) => (
-                                <option key={f.id} value={f.id}>
-                                    {f.name}
-                                </option>
+                                <option key={f.id} value={f.id}>{f.name}</option>
                             ))}
                         </select>
 
                         <label>Section</label>
-                        <select
-                            value={sectionId}
-                            onChange={(e) => setSectionId(e.target.value ? Number(e.target.value) : "")}
-                        >
+                        <select value={sectionId} onChange={(e) => setSectionId(e.target.value ? Number(e.target.value) : "")}>
                             <option value="">--Select--</option>
                             {sections.map((s) => (
-                                <option key={s.id} value={s.id}>
-                                    {s.course_name}
-                                </option>
+                                <option key={s.id} value={s.id}>{s.course_name}</option>
                             ))}
                         </select>
 
@@ -202,11 +193,7 @@ const ClassSessions: React.FC = () => {
                         <input type="time" value={timeVal} onChange={(e) => setTimeVal(e.target.value)} />
 
                         <label>Duration (min)</label>
-                        <input
-                            type="number"
-                            value={durationVal}
-                            onChange={(e) => setDurationVal(Number(e.target.value))}
-                        />
+                        <input type="number" value={durationVal} onChange={(e) => setDurationVal(Number(e.target.value))} />
 
                         <label>Venue</label>
                         <input value={venueVal} onChange={(e) => setVenueVal(e.target.value)} />
@@ -220,12 +207,8 @@ const ClassSessions: React.FC = () => {
                         </select>
 
                         <div className="modal-actions">
-                            <button className="save-btn" onClick={handleUpdate}>
-                                Save
-                            </button>
-                            <button className="cancel-btn" onClick={() => setEditSession(null)}>
-                                Cancel
-                            </button>
+                            <button className="save-btn" onClick={handleUpdate}>Save</button>
+                            <button className="cancel-btn" onClick={() => setEditSession(null)}>Cancel</button>
                         </div>
                     </div>
                 </div>

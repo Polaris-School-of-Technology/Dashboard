@@ -3,6 +3,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./facultySessions.css";
 
+
+
 interface Session {
   datetime: string;
   duration?: number;
@@ -10,6 +12,8 @@ interface Session {
 }
 
 const FacultySessions: React.FC = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL; // ✅ Use env variable
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
@@ -22,9 +26,7 @@ const FacultySessions: React.FC = () => {
       setLoading(true);
       const dateStr = selectedDate.toISOString().split("T")[0];
       try {
-        const res = await fetch(
-          `http://localhost:8000/api/weekly/facultySessions/${dateStr}`
-        );
+        const res = await fetch(`${API_BASE_URL}/api/weekly/facultySessions/${dateStr}`);
         const data = await res.json();
         setSessions(data);
         setExpandedFaculty(null);
@@ -36,7 +38,7 @@ const FacultySessions: React.FC = () => {
     };
 
     fetchSessions();
-  }, [selectedDate]);
+  }, [selectedDate, API_BASE_URL]);
 
   const sessionsByFaculty = sessions.reduce((acc: any, session) => {
     if (!acc[session.faculty]) acc[session.faculty] = [];
