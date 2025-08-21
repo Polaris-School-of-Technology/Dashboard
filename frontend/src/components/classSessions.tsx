@@ -203,6 +203,7 @@ const ClassSessions: React.FC = () => {
                             <option value="theory">Theory</option>
                             <option value="practical">Practical</option>
                             <option value="tutorial">Tutorial</option>
+                            <option value="tutorial">Evaluation</option>
                             <option value="other">Other</option>
                         </select>
 
