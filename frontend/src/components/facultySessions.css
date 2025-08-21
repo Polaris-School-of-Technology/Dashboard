@@ -1,0 +1,63 @@
+/* container similar to sessions-container */
+.table-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.datepicker-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.datepicker {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+/* Faculty card styled like clickable buttons in your second design */
+.faculty-card {
+    margin-bottom: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.faculty-button {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    background: #ede9fe;
+    /* subtle lavender background */
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    color: #4f46e5;
+    /* purple text */
+}
+
+.faculty-button:hover {
+    background: #ddd6fe;
+    /* darker lavender on hover */
+}
+
+.toggle {
+    font-size: 18px;
+    font-weight: bold;
+}

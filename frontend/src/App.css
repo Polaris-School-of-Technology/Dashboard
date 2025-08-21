@@ -1,0 +1,36 @@
+/* Base layout */
+.App {
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+  background-color: #f3f4f6;
+}
+
+/* Navigation links */
+.nav-link {
+  padding: 0.5rem 0.75rem;
+  font-weight: 500;
+  color: #4b5563;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #2563eb;
+}
+
+.active-link {
+  color: #2563eb !important;
+  border-bottom: 2px solid #2563eb !important;
+}
+
+
+/* Optional: smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optional: container padding */
+@media (min-width: 768px) {
+  .App {
+    padding: 1rem 2rem;
+  }
+}

@@ -1,0 +1,46 @@
+/* src/components/WeeklySessions.css */
+.table-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+thead {
+    background-color: #1e3a8a;
+    /* dark blue */
+    color: white;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f3f4f6;
+    /* light gray */
+}
+
+tbody tr:hover {
+    background-color: #e0f2fe;
+    /* light blue hover */
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    color: #1e3a8a;
+}
