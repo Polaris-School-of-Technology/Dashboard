@@ -3,10 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./addSession.css";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL; 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 interface Faculty { id: number; name: string; }
 interface Section { id: number; course_name: string; }
+
+// Allowed session types
+const SESSION_TYPES = ["theory", "practical", "tutorial", "evaluation", "other"];
 
 const AddSessionPage: React.FC = () => {
     const navigate = useNavigate();
@@ -19,7 +22,7 @@ const AddSessionPage: React.FC = () => {
     const [time, setTime] = useState("");
     const [duration, setDuration] = useState(60);
     const [venue, setVenue] = useState("");
-    const [type, setType] = useState<"theory" | "practical" | "tutorial" | "other">("theory");
+    const [type, setType] = useState("theory");
 
     useEffect(() => {
         const fetchDrop = async () => {
@@ -97,11 +100,12 @@ const AddSessionPage: React.FC = () => {
 
             <div className="form-group">
                 <label>Type</label>
-                <select value={type} onChange={(e) => setType(e.target.value as any)}>
-                    <option value="theory">theory</option>
-                    <option value="practical">practical</option>
-                    <option value="tutorial">tutorial</option>
-                    <option value="other">other</option>
+                <select value={type} onChange={(e) => setType(e.target.value)}>
+                    {SESSION_TYPES.map((t) => (
+                        <option key={t} value={t}>
+                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                        </option>
+                    ))}
                 </select>
             </div>
 
