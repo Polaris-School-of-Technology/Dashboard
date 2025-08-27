@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import weeklyScheduleRouter from "./routes/weeklySchedule.routes";
 import attendanceRouter from "./routes/attendance.routes"
 import scheduleRouter from "./routes/schedule.route"
+import searchRouter from "./routes/search.routes";
+
 
 dotenv.config();
 const app = express();
@@ -14,9 +16,12 @@ app.use(express.json());
 app.get("/", (_req, res) => {
     res.send("Backend is running");
 });
+
 app.use("/api/weekly", weeklyScheduleRouter);
 app.use("/api/attendance", attendanceRouter)
 app.use("/api/schedule", scheduleRouter)
+app.use("/api/search", searchRouter)
+
 
 
 const PORT = process.env.PORT || 8080;

@@ -1,0 +1,108 @@
+.quiz-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.questions-section {
+    margin-bottom: 20px;
+}
+
+/* Existing question card */
+.question-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+}
+
+/* Option checkboxes */
+.option {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.option input {
+    margin-right: 10px;
+}
+
+/* Add button */
+.create-btn,
+.submit-btn {
+    margin-top: 15px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    background-color: #574bda;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.create-btn:hover,
+.submit-btn:hover {
+    background-color: #4538b1;
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal header */
+.modal-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Buttons inside modal */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 15px;
+}
+
+.modal-btn.save {
+    background: #574bda;
+    color: #fff;
+}
+
+.modal-btn.cancel {
+    background: #ccc;
+}

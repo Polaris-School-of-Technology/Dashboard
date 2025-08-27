@@ -5,13 +5,13 @@ export const getSessionsByDate = async (req: Request, res: Response) => {
     try {
         const { date } = req.params;
 
-     
+
         const start = new Date(date);
         start.setHours(0, 0, 0, 0);
         const end = new Date(date);
         end.setHours(23, 59, 59, 999);
 
-     
+
         const { data, error } = await supabase
             .from("class_sessions")
             .select(`
@@ -59,7 +59,7 @@ export const updateSession = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { actual_faculty_id, section_id, session_datetime, duration, session_type, venue } = req.body;
 
-       
+
         let datetime = session_datetime;
         if (datetime && !datetime.includes("+")) {
             datetime = `${datetime.slice(0, 19)}+05:30`;
@@ -162,17 +162,55 @@ export const createSingleClassSessionHandler = async (req: Request, res: Respons
             status: "upcoming"
         };
 
-        const { data, error } = await supabase
+        // 1️⃣ Create the session
+        const { data: sessionData, error: sessionError } = await supabase
             .from("class_sessions")
             .insert([payload])
             .select("*")
             .single();
 
-        if (error) throw error;
+        if (sessionError) throw sessionError;
+
+        const session_id = sessionData.id;
+
+        // 2️⃣ Fetch all pre-defined feedback questions
+        const { data: questions, error: qError } = await supabase
+            .from("feedback_questions")
+            .select("id, question_text, question_type");
+
+        if (qError) throw qError;
+
+        const { data: options, error: oError } = await supabase
+            .from("feedback_question_options")
+            .select("id, option_text, question_id");
+
+        if (oError) throw oError;
+
+        // 3️⃣ Prepare session_questions entries
+        const sessionQuestions = questions.map((q) => ({
+            session_id,
+            is_generic: true,
+            feedback_question_id: q.id,
+            question_text: q.question_text,
+            question_type: q.question_type,
+            options: JSON.stringify(
+                options.filter((opt) => opt.question_id === q.id).map((opt) => opt.option_text)
+            ),
+        }));
+
+        // 4️⃣ Insert into session_questions
+        if (sessionQuestions.length > 0) {
+            const { error: insertError } = await supabase
+                .from("session_questions")
+                .insert(sessionQuestions);
+
+            if (insertError) throw insertError;
+        }
 
         return res.status(201).json({
             message: "Class session created successfully",
-            session: data
+            session: sessionData,
+            questionsAdded: sessionQuestions.length
         });
     } catch (err: any) {
         console.error(err);
@@ -180,21 +218,22 @@ export const createSingleClassSessionHandler = async (req: Request, res: Respons
     }
 };
 
+
 export const deleteClassSession = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    if (!id) return res.status(400).json({ error: "Session ID is required" });
+        if (!id) return res.status(400).json({ error: "Session ID is required" });
 
-    const { error } = await supabase
-      .from("class_sessions") 
-      .delete()
-      .eq("id", id);
+        const { error } = await supabase
+            .from("class_sessions")
+            .delete()
+            .eq("id", id);
 
-    if (error) throw error;
+        if (error) throw error;
 
-    return res.json({ message: "Session deleted successfully" });
-  } catch (error: any) {
-    return res.status(500).json({ error: error.message });
-  }
+        return res.json({ message: "Session deleted successfully" });
+    } catch (error: any) {
+        return res.status(500).json({ error: error.message });
+    }
 };

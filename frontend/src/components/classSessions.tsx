@@ -55,6 +55,16 @@ const ClassSessions: React.FC = () => {
     const [typeVal, setTypeVal] = useState("theory");
     const [venueVal, setVenueVal] = useState("");
 
+    const [showQuizModal, setShowQuizModal] = useState(false);
+    const [quizSessionId, setQuizSessionId] = useState<number | null>(null);
+
+    const [questions, setQuestions] = useState<any[]>([]);
+    const [selectedQuestions, setSelectedQuestions] = useState<number[]>([]);
+    const [newQuestion, setNewQuestion] = useState("");
+    const [newQuestionType, setNewQuestionType] = useState("long_text");
+    const [newOptions, setNewOptions] = useState<string[]>([""]);
+
+
     useEffect(() => {
         // Fetch faculties & sections once
         axios.get(`${API_BASE_URL}/api/schedule/classSessions/getFaculty`)
@@ -65,6 +75,17 @@ const ClassSessions: React.FC = () => {
             .then(res => setSections(res.data))
             .catch(err => console.error("Error fetching sections:", err));
     }, []);
+    const openQuizModal = async (sessionId: number) => {
+        setQuizSessionId(sessionId);
+        setShowQuizModal(true);
+
+        try {
+            const { data } = await axios.get(`${API_BASE_URL}/api/schedule/feedbackQuestions`);
+            setQuestions(data.questions || []);
+        } catch (err) {
+            console.error("Error fetching questions:", err);
+        }
+    };
 
     const fetchSessions = async () => {
         if (!date) return;
@@ -171,6 +192,15 @@ const ClassSessions: React.FC = () => {
                                 >
                                     🗑️ Delete
                                 </button>
+                                <button
+                                    onClick={() => navigate(`/quiz/${s.id}`)}
+                                    className="quiz-btn"
+                                    style={{ marginLeft: "8px", color: "black", background: "lightpink" }}
+                                >
+                                    ➕ Add Quiz
+                                </button>
+
+
                             </td>
                         </tr>
                     ))}
