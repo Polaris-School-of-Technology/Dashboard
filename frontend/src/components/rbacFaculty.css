@@ -1,0 +1,517 @@
+/* classSessions.css */
+
+/* General container */
+.sessions-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.sessions-container h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #1e3a8a;
+}
+
+/* Date picker section */
+.date-picker {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.date-picker input[type="date"] {
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.date-picker button {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #1e3a8a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.date-picker button:hover {
+    background-color: #3b5ac7;
+}
+
+/* Error and loading */
+.error {
+    color: #dc2626;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Table styling */
+.sessions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.sessions-table th,
+.sessions-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sessions-table th {
+    background-color: #1e40af;
+    color: white;
+    font-weight: 600;
+}
+
+.sessions-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Action buttons */
+.sessions-table button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.sessions-table button:first-child {
+    background-color: #16a34a;
+    color: white;
+}
+
+.sessions-table button:first-child:hover {
+    background-color: #22c55e;
+}
+
+.sessions-table button:last-child {
+    background-color: #2563eb;
+    color: white;
+}
+
+.sessions-table button:last-child:hover {
+    background-color: #3b82f6;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 41, 59, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1e3a8a;
+}
+
+/* Question list inside modal */
+.modal-content>div {
+    margin-bottom: 15px;
+}
+
+.question-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.question-inputs input[type="text"],
+.question-inputs select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    width: 100%;
+}
+
+.question-inputs button {
+    align-self: flex-start;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background-color: #2563eb;
+    color: #fff;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.question-inputs button:hover {
+    background-color: #3b82f6;
+}
+
+/* Modal actions buttons */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-actions button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.modal-actions button:first-child {
+    background-color: #16a34a;
+    color: white;
+}
+
+.modal-actions button:first-child:hover {
+    background-color: #22c55e;
+}
+
+.modal-actions button:last-child {
+    background-color: #dc2626;
+    color: white;
+}
+
+.modal-actions button:last-child:hover {
+    background-color: #ef4444;
+}
+
+/* Multiple choice option inputs */
+.question-inputs div input[type="text"] {
+    width: calc(100% - 30px);
+    margin-bottom: 5px;
+}
+
+/* Quiz Questions Card */
+.quiz-question-card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.quiz-question-card b {
+    font-size: 16px;
+    color: #1e3a8a;
+}
+
+.quiz-question-card .question-type {
+    font-size: 13px;
+    color: #6b7280;
+    margin-left: 5px;
+    font-style: italic;
+}
+
+.quiz-options {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 8px;
+}
+
+.quiz-options li {
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+/* Modal content scroll */
+.view-quiz-modal-content {
+    max-height: 75vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* Enhanced Quiz Modal Styles */
+
+/* Modal backdrop and container */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid #e5e7eb;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Modal header */
+.modal-content h2 {
+    margin: 0 0 20px 0;
+    color: #1e40af;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 3px solid #e5e7eb;
+    padding-bottom: 15px;
+}
+
+/* Quiz question cards - Enhanced styling */
+.quiz-question-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.quiz-question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: #3b82f6;
+}
+
+/* Question text styling */
+.question-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* Question type badge */
+.question-type-badge {
+    display: inline-block;
+    background: #3b82f6;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+}
+
+.question-type-badge.multiple-choice {
+    background: #10b981;
+}
+
+.question-type-badge.long-text {
+    background: #f59e0b;
+}
+
+/* Options styling */
+.quiz-options {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0 0;
+}
+
+.quiz-options li {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: #374151;
+    transition: all 0.2s ease;
+    position: relative;
+    padding-left: 40px;
+}
+
+.quiz-options li:hover {
+    border-color: #3b82f6;
+    background: #f0f9ff;
+}
+
+.quiz-options li::before {
+    content: counter(option-counter, upper-alpha);
+    counter-increment: option-counter;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #3b82f6;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.quiz-question-card {
+    counter-reset: option-counter;
+}
+
+/* Empty state styling */
+.empty-quiz-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+    font-size: 16px;
+    background: #f9fafb;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.empty-quiz-message::before {
+    content: "📝";
+    display: block;
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+/* Modal close button */
+.modal-close-btn {
+    background: #ef4444 !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    margin-top: 30px !important;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.modal-close-btn:hover {
+    background: #dc2626 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Question counter */
+.question-counter {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #1e40af;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.4);
+}
+
+/* Long text question styling */
+.long-text-indicator {
+    background: #f3f4f6;
+    border: 2px dashed #9ca3af;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 15px;
+    color: #6b7280;
+    font-style: italic;
+    text-align: center;
+}
+
+.long-text-indicator::before {
+    content: "✍️ ";
+    margin-right: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        margin: 10px;
+        padding: 20px;
+        max-height: 90vh;
+    }
+
+    .quiz-question-card {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .question-text {
+        font-size: 16px;
+    }
+
+    .quiz-options li {
+        padding: 10px 12px;
+        padding-left: 36px;
+        font-size: 14px;
+    }
+
+    .modal-content h2 {
+        font-size: 24px;
+    }
+}

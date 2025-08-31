@@ -26,7 +26,11 @@ const FacultySessions: React.FC = () => {
       setLoading(true);
       const dateStr = selectedDate.toISOString().split("T")[0];
       try {
-        const res = await fetch(`${API_BASE_URL}/api/weekly/facultySessions/${dateStr}`);
+        const res = await fetch(`${API_BASE_URL}/api/weekly/facultySessions/${dateStr}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const data = await res.json();
         setSessions(data);
         setExpandedFaculty(null);

@@ -19,7 +19,11 @@ const WeeklySessions: React.FC = () => {
     useEffect(() => {
         const fetchSessions = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/api/weekly/getAllWeeklySessions`);
+                const res = await axios.get(`${API_BASE_URL}/api/weekly/getAllWeeklySessions`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
                 setSessions(res.data);
             } catch (err: any) {
                 setError(err.message || "Error fetching sessions");

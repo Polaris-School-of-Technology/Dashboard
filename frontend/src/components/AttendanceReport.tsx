@@ -43,7 +43,11 @@ const AttendanceReport: React.FC = () => {
             if (status !== "all") {
                 url += `?status=${status}`;
             }
-            const res = await axios.get(url);
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
             setData(res.data.map((s: any) => ({ ...s, open: false })));
         } catch (err: any) {
             setError(err.message || "Error fetching report");
@@ -56,6 +60,10 @@ const AttendanceReport: React.FC = () => {
         try {
             await axios.patch(`${API_BASE_URL}/api/attendance/${attendanceId}`, {
                 is_present: !currentStatus,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
             });
 
             setData(prev =>

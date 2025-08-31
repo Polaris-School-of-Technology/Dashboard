@@ -5,6 +5,8 @@ import weeklyScheduleRouter from "./routes/weeklySchedule.routes";
 import attendanceRouter from "./routes/attendance.routes"
 import scheduleRouter from "./routes/schedule.route"
 import searchRouter from "./routes/search.routes";
+import loginRouter from "./routes/login.routes"
+import rbacFaculty from "./routes/rbacFaculty"
 
 
 dotenv.config();
@@ -21,6 +23,8 @@ app.use("/api/weekly", weeklyScheduleRouter);
 app.use("/api/attendance", attendanceRouter)
 app.use("/api/schedule", scheduleRouter)
 app.use("/api/search", searchRouter)
+app.use("/api/login", loginRouter)
+app.use("/api/rbacFaculty", rbacFaculty)
 
 
 
