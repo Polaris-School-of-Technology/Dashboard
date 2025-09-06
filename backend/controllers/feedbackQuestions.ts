@@ -44,10 +44,9 @@ export const createQuiz = async (req: Request, res: Response) => {
     try {
         const sessionQuestions: any[] = [];
 
-        // Only handle user-created (custom) questions
         if (newQuestions?.length) {
             for (const q of newQuestions) {
-                const { question_text, type, options } = q;
+                const { question_text, type, options, correct_option_value } = q;
 
                 sessionQuestions.push({
                     session_id: Number(session_id),
@@ -55,12 +54,12 @@ export const createQuiz = async (req: Request, res: Response) => {
                     feedback_question_id: null,
                     question_text,
                     question_type: type,
-                    options: JSON.stringify(options || [])
+                    options: JSON.stringify(options || []),
+                    correct_option_value: type === "correct_answer_type" ? correct_option_value : null // Save correct answer here
                 });
             }
         }
 
-        // Insert into database
         if (sessionQuestions.length > 0) {
             const { error } = await supabase
                 .from("session_questions")
@@ -83,7 +82,6 @@ export const createQuiz = async (req: Request, res: Response) => {
         });
     }
 };
-
 
 export const getSessionQuestionsBySessionId = async (req: Request, res: Response) => {
     try {
@@ -130,7 +128,6 @@ export const getSessionQuestionsBySessionId = async (req: Request, res: Response
     }
 };
 
-
 export const submitSessionFeedback = async (req: Request, res: Response) => {
     try {
         const { sessionId, studentId, facultyId, responses } = req.body;
@@ -139,16 +136,40 @@ export const submitSessionFeedback = async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Invalid request body" });
         }
 
-        // Transform responses into rows for the DB
-        const rows = responses.map((r: any) => ({
-            session_id: sessionId,
-            student_id: studentId,
-            faculty_id: facultyId,
-            question_id: r.questionId,
-            response_text: r.responseText || null,
+        const rows = await Promise.all(responses.map(async (r: any) => {
+            const { data: questionData, error: qError } = await supabase
+                .from("session_questions")
+                .select("correct_option_value, question_type")
+                .eq("id", r.questionId)
+                .single();
+
+            if (qError || !questionData) {
+                return {
+                    session_id: sessionId,
+                    student_id: studentId,
+                    faculty_id: facultyId,
+                    question_id: r.questionId,
+                    response_text: r.responseText || null,
+                    is_correct: null
+                };
+            }
+
+            let isCorrect: boolean | null = null;
+
+            if (questionData.question_type === "correct_answer_type" && questionData.correct_option_value) {
+                isCorrect = r.responseText?.trim() === questionData.correct_option_value.trim();
+            }
+
+            return {
+                session_id: sessionId,
+                student_id: studentId,
+                faculty_id: facultyId,
+                question_id: r.questionId,
+                response_text: r.responseText || null,
+                is_correct: isCorrect
+            };
         }));
 
-        // Insert into Supabase
         const { data, error } = await supabase
             .from("session_responses_feedback")
             .insert(rows)

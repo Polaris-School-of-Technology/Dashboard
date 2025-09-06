@@ -81,7 +81,8 @@ export const RBACcreateQuiz = async (req: Request, res: Response) => {
             feedback_question_id: null,
             question_text: q.question_text,
             question_type: q.type,
-            options: JSON.stringify(q.options || [])
+            options: JSON.stringify(q.options || []),
+            correct_option_value: q.correct_option_value // ✅ Add this line
         })) || [];
 
         if (sessionQuestions.length > 0) {
@@ -117,8 +118,8 @@ export const getQuizBySessionRbac = async (req: Request, res: Response) => {
             options: Array.isArray(q.options)
                 ? q.options
                 : q.options
-                ? JSON.parse(q.options)
-                : [],
+                    ? JSON.parse(q.options)
+                    : [],
         }));
 
         res.json(formatted);
@@ -180,9 +181,9 @@ export const updateQuestionRbac = async (req: Request, res: Response) => {
 
         if (error) throw error;
 
-        res.json({ 
-            message: "Question updated successfully", 
-            question: data[0] 
+        res.json({
+            message: "Question updated successfully",
+            question: data[0]
         });
 
     } catch (err) {
