@@ -14,13 +14,15 @@ interface Session {
     section_id: number | null;
 }
 
+type QuestionType = "long_text" | "multiple_choice" | "correct_answer_type";
+
 interface Question {
     id: number;
     question_text: string;
-    type: "long_text" | "multiple_choice";
+    type: QuestionType;
     options: string[];
+    correct_option_value?: string;
 }
-
 
 const RbacFacultyPage: React.FC = () => {
     const [date, setDate] = useState<string>("");
@@ -32,8 +34,9 @@ const RbacFacultyPage: React.FC = () => {
     const [currentSession, setCurrentSession] = useState<Session | null>(null);
     const [tempQuestions, setTempQuestions] = useState<Question[]>([]);
     const [tempQuestionText, setTempQuestionText] = useState("");
-    const [tempQuestionType, setTempQuestionType] = useState<"long_text" | "multiple_choice">("long_text");
+    const [tempQuestionType, setTempQuestionType] = useState<QuestionType>("long_text");
     const [tempOptions, setTempOptions] = useState<string[]>([""]);
+    const [selectedCorrectOption, setSelectedCorrectOption] = useState<string>("");
 
     const [viewQuizModalOpen, setViewQuizModalOpen] = useState(false);
     const [viewingQuiz, setViewingQuiz] = useState<Question[]>([]);
@@ -64,6 +67,7 @@ const RbacFacultyPage: React.FC = () => {
         setTempQuestionText("");
         setTempQuestionType("long_text");
         setTempOptions([""]);
+        setSelectedCorrectOption("");
     };
 
     const handleOptionChange = (index: number, value: string) => {
@@ -77,23 +81,31 @@ const RbacFacultyPage: React.FC = () => {
     const addTempQuestionToList = () => {
         if (!tempQuestionText.trim()) return alert("Enter question text");
 
-        const optionsArray = tempQuestionType === "multiple_choice"
-            ? tempOptions.filter((o) => o.trim() !== "")
-            : [];
+        const filteredOptions = tempOptions.filter((o) => o.trim() !== "");
 
-        setTempQuestions((prev) => [
-            ...prev,
-            {
-                id: Date.now(),
-                question_text: tempQuestionText,
-                type: tempQuestionType,
-                options: optionsArray,
-            },
-        ]);
+        if ((tempQuestionType === "multiple_choice" || tempQuestionType === "correct_answer_type") && filteredOptions.length === 0) {
+            return alert("Add at least one option");
+        }
 
+        if (tempQuestionType === "correct_answer_type" && !selectedCorrectOption) {
+            return alert("Select the correct answer");
+        }
+
+        const newQuestion: Question = {
+            id: Date.now(),
+            question_text: tempQuestionText,
+            type: tempQuestionType,
+            options: filteredOptions,
+            correct_option_value: tempQuestionType === "correct_answer_type" ? selectedCorrectOption : undefined,
+        };
+
+        setTempQuestions((prev) => [...prev, newQuestion]);
+
+        // Reset fields
         setTempQuestionText("");
         setTempQuestionType("long_text");
         setTempOptions([""]);
+        setSelectedCorrectOption("");
     };
 
     const submitQuiz = async () => {
@@ -124,8 +136,9 @@ const RbacFacultyPage: React.FC = () => {
             const formatted = (res.data || []).map((q: any) => ({
                 id: q.id,
                 question_text: q.question_text,
-                type: q.question_type as "long_text" | "multiple_choice",
+                type: q.question_type as QuestionType,
                 options: Array.isArray(q.options) ? q.options : (q.options ? JSON.parse(q.options) : []),
+                correct_answer: q.correct_option_value,
             }));
 
             setViewingQuiz(formatted);
@@ -135,7 +148,6 @@ const RbacFacultyPage: React.FC = () => {
             alert("Failed to fetch quiz");
         }
     };
-
 
     return (
         <div className="sessions-container">
@@ -190,10 +202,12 @@ const RbacFacultyPage: React.FC = () => {
                         {tempQuestions.map((q) => (
                             <div key={q.id} style={{ marginBottom: "10px" }}>
                                 <b>{q.question_text}</b> ({q.type})
-                                {q.type === "multiple_choice" && q.options.length > 0 && (
+                                {q.options.length > 0 && (
                                     <ul>
                                         {q.options.map((opt, oIdx) => (
-                                            <li key={oIdx}>{opt}</li>
+                                            <li key={oIdx}>
+                                                {opt} {q.correct_option_value === opt && "✅"}
+                                            </li>
                                         ))}
                                     </ul>
                                 )}
@@ -210,23 +224,34 @@ const RbacFacultyPage: React.FC = () => {
                             <select
                                 value={tempQuestionType}
                                 onChange={(e) =>
-                                    setTempQuestionType(e.target.value as "long_text" | "multiple_choice")
+                                    setTempQuestionType(e.target.value as QuestionType)
                                 }
                             >
                                 <option value="long_text">Descriptive</option>
                                 <option value="multiple_choice">Multiple Choice</option>
+                                <option value="correct_answer_type">Correct Answer Type</option>
                             </select>
 
-                            {tempQuestionType === "multiple_choice" && (
+                            {(tempQuestionType === "multiple_choice" || tempQuestionType === "correct_answer_type") && (
                                 <div>
                                     {tempOptions.map((opt, idx) => (
-                                        <input
-                                            key={idx}
-                                            type="text"
-                                            placeholder={`Option ${idx + 1}`}
-                                            value={opt}
-                                            onChange={(e) => handleOptionChange(idx, e.target.value)}
-                                        />
+                                        <div key={idx} style={{ display: "flex", gap: "10px", marginBottom: "5px" }}>
+                                            <input
+                                                type="text"
+                                                placeholder={`Option ${idx + 1}`}
+                                                value={opt}
+                                                onChange={(e) => handleOptionChange(idx, e.target.value)}
+                                            />
+                                            {tempQuestionType === "correct_answer_type" && (
+                                                <input
+                                                    type="radio"
+                                                    name="correctOption"
+                                                    checked={selectedCorrectOption === opt}
+                                                    onChange={() => setSelectedCorrectOption(opt)}
+                                                />
+                                            )}
+                                            {tempQuestionType === "correct_answer_type" && <span>Correct</span>}
+                                        </div>
                                     ))}
                                     <button onClick={addOptionField}>+ Add Option</button>
                                 </div>
@@ -244,7 +269,6 @@ const RbacFacultyPage: React.FC = () => {
             )}
 
             {/* View Quiz Modal */}
-
             {viewQuizModalOpen && (
                 <div className="modal">
                     <div className="modal-content">
@@ -262,17 +286,23 @@ const RbacFacultyPage: React.FC = () => {
                                         <div className="question-counter">{index + 1}</div>
 
                                         <div className={`question-type-badge ${question.type.replace('_', '-')}`}>
-                                            {question.type === 'multiple_choice' ? '☑️ Multiple Choice' : '📝 Long Answer'}
+                                            {question.type === 'multiple_choice'
+                                                ? '☑️ Multiple Choice'
+                                                : question.type === 'correct_answer_type'
+                                                    ? '✔️ Correct Answer Type'
+                                                    : '📝 Long Answer'}
                                         </div>
 
                                         <div className="question-text">
                                             {question.question_text}
                                         </div>
 
-                                        {question.type === "multiple_choice" && question.options.length > 0 ? (
+                                        {question.options.length > 0 ? (
                                             <ul className="quiz-options">
-                                                {question.options.map((option, optionIndex) => (
-                                                    <li key={optionIndex}>{option}</li>
+                                                {question.options.map((opt, optionIndex) => (
+                                                    <li key={optionIndex}>
+                                                        {opt} {question.correct_option_value === opt && "✅"}
+                                                    </li>
                                                 ))}
                                             </ul>
                                         ) : question.type === "long_text" ? (
