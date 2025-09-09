@@ -174,10 +174,11 @@ export const updateQuestionRbac = async (req: Request, res: Response) => {
             .update({
                 question_text,
                 question_type,
-                options: JSON.stringify(options || [])
+                options: options || []  // ✅ No stringify
             })
             .eq("id", Number(question_id))
             .select();
+
 
         if (error) throw error;
 

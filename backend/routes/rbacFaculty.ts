@@ -11,7 +11,7 @@ router.get("/rbacfaculty/sessions/:date", authenticate, RBACgetFacultySessionsBy
 router.post("/rbacquiz/create/:session_id", authenticate, RBACcreateQuiz);
 
 router.get("/getQuizRbac/:session_id", authenticate, getQuizBySessionRbac)
-router.post("/updateRbacQuestion/:question_id", updateQuestionRbac)
-router.post("/deleteRbacQuestion/:question_id", deleteQuestionRbac)
+router.put("/updateRbacQuestion/:question_id", authenticate, updateQuestionRbac)
+router.delete("/deleteRbacQuestion/:question_id", authenticate, deleteQuestionRbac)
 
 export default router;
