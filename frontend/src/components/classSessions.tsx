@@ -5,7 +5,7 @@ import "./classSessions.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-// Session interface
+// Session interface - updated to include batch info
 interface Session {
     id: number;
     session_datetime: string;
@@ -16,6 +16,10 @@ interface Session {
     course_name: string | null;
     section_id: number | null;
     venue?: string;
+    batch_info?: {
+        batch_id: number;
+        batch_name: string;
+    } | null;
 }
 
 // Faculty interface
@@ -30,6 +34,12 @@ interface Section {
     course_name: string;
 }
 
+// Batch interface
+interface Batch {
+    id: number;
+    batch_name: string;
+}
+
 // Allowed session types
 const SESSION_TYPES = ["theory", "practical", "tutorial", "evaluation", "other"];
 
@@ -37,6 +47,7 @@ const ClassSessions: React.FC = () => {
     const navigate = useNavigate();
 
     const [date, setDate] = useState<string>("");
+    const [batchId, setBatchId] = useState<string>("1"); // Default to batch 1
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
@@ -45,6 +56,7 @@ const ClassSessions: React.FC = () => {
 
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [sections, setSections] = useState<Section[]>([]);
+    const [batches, setBatches] = useState<Batch[]>([]);
 
     // form states
     const [facultyId, setFacultyId] = useState<string>("");
@@ -64,9 +76,8 @@ const ClassSessions: React.FC = () => {
     const [newQuestionType, setNewQuestionType] = useState("long_text");
     const [newOptions, setNewOptions] = useState<string[]>([""]);
 
-
     useEffect(() => {
-        // Fetch faculties & sections once
+        // Fetch faculties, sections, and batches once
         axios.get(`${API_BASE_URL}/api/schedule/classSessions/getFaculty`)
             .then(res => setFaculties(res.data))
             .catch(err => console.error("Error fetching faculties:", err));
@@ -74,7 +85,13 @@ const ClassSessions: React.FC = () => {
         axios.get(`${API_BASE_URL}/api/schedule/classCourses`)
             .then(res => setSections(res.data))
             .catch(err => console.error("Error fetching sections:", err));
+
+        // Fetch batches using existing endpoint
+        axios.get(`${API_BASE_URL}/api/attendance/batches`)
+            .then(res => setBatches(res.data))
+            .catch(err => console.error("Error fetching batches:", err));
     }, []);
+
     const openQuizModal = async (sessionId: number) => {
         setQuizSessionId(sessionId);
         setShowQuizModal(true);
@@ -91,7 +108,10 @@ const ClassSessions: React.FC = () => {
         if (!date) return;
         try {
             setLoading(true);
-            const res = await axios.get<Session[]>(`${API_BASE_URL}/api/schedule/classSessions/getSessions/${date}`);
+            // Updated API call to include batch_id as query parameter
+            const res = await axios.get<Session[]>(
+                `${API_BASE_URL}/api/schedule/classSessions/getSessions/${date}?batch_id=${batchId}`
+            );
             setSessions(res.data);
             setError("");
         } catch {
@@ -154,9 +174,32 @@ const ClassSessions: React.FC = () => {
             <h1>Class Sessions</h1>
             <button onClick={() => navigate("/sessions/add")}>+ Add Session</button>
 
-            <div className="date-picker">
-                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                <button onClick={fetchSessions}>Fetch Sessions</button>
+            <div className="filter-section">
+                <div className="batch-picker">
+                    <label>Select Batch:</label>
+                    <select
+                        value={batchId}
+                        onChange={(e) => setBatchId(e.target.value)}
+                        style={{ marginRight: "10px" }}
+                    >
+                        {batches.map((batch) => (
+                            <option key={batch.id} value={batch.id}>
+                                {batch.batch_name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="date-picker">
+                    <label>Select Date:</label>
+                    <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        style={{ marginRight: "10px" }}
+                    />
+                    <button onClick={fetchSessions}>Fetch Sessions</button>
+                </div>
             </div>
 
             {loading && <p>Loading sessions...</p>}
@@ -171,6 +214,7 @@ const ClassSessions: React.FC = () => {
                         <th>Faculty</th>
                         <th>Course</th>
                         <th>Section</th>
+                        <th>Batch</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -183,6 +227,7 @@ const ClassSessions: React.FC = () => {
                             <td>{s.faculty_name}</td>
                             <td>{s.course_name || "-"}</td>
                             <td>{s.section_id || "-"}</td>
+                            <td>{s.batch_info?.batch_name || "-"}</td>
                             <td>
                                 <button onClick={() => openEditModal(s)}>✏️ Edit</button>
                                 <button
@@ -199,8 +244,6 @@ const ClassSessions: React.FC = () => {
                                 >
                                     ➕ Add Quiz
                                 </button>
-
-
                             </td>
                         </tr>
                     ))}

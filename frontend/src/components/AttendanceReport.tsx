@@ -7,7 +7,7 @@ import "./AttendanceReport.css";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 interface Student {
-    id: number; // unique id for each attendance record
+    id: number;
     student_name: string;
     registration_id: string | null;
     present: boolean;
@@ -22,14 +22,35 @@ interface AttendanceGroup {
     open?: boolean;
 }
 
+interface Batch {
+    id: number;
+    batch_name: string;
+}
+
 const AttendanceReport: React.FC = () => {
     const [date, setDate] = useState<Date | null>(null);
     const [data, setData] = useState<AttendanceGroup[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<"all" | "present" | "absent">("all");
+    const [batches, setBatches] = useState<Batch[]>([]);
+    const [selectedBatch, setSelectedBatch] = useState<number | "all">("all");
 
-    const fetchReport = async (d: Date, status: "all" | "present" | "absent") => {
+    // Fetch batches on mount (no auth now)
+    useEffect(() => {
+        const fetchBatches = async () => {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/api/attendance/batches`);
+                setBatches(res.data || []);
+            } catch (err) {
+                console.error("Error fetching batches:", err);
+            }
+        };
+        fetchBatches();
+    }, []);
+
+    // Fetch attendance report (no auth now)
+    const fetchReport = async (d: Date, status: "all" | "present" | "absent", batchId?: number | "all") => {
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, "0");
         const day = String(d.getDate()).padStart(2, "0");
@@ -40,14 +61,14 @@ const AttendanceReport: React.FC = () => {
 
         try {
             let url = `${API_BASE_URL}/api/attendance/attendanceReport/${formatted}`;
-            if (status !== "all") {
-                url += `?status=${status}`;
-            }
-            const res = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
+            const params: string[] = [];
+
+            if (status !== "all") params.push(`status=${status}`);
+            if (batchId && batchId !== "all") params.push(`batch_id=${batchId}`);
+
+            if (params.length) url += `?${params.join("&")}`;
+
+            const res = await axios.get(url); // no Authorization now
             setData(res.data.map((s: any) => ({ ...s, open: false })));
         } catch (err: any) {
             setError(err.message || "Error fetching report");
@@ -56,14 +77,13 @@ const AttendanceReport: React.FC = () => {
         }
     };
 
+    // Toggle student attendance (still needs token)
     const toggleAttendance = async (attendanceId: number, currentStatus: boolean) => {
         try {
             await axios.patch(`${API_BASE_URL}/api/attendance/${attendanceId}`, {
                 is_present: !currentStatus,
             }, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
 
             setData(prev =>
@@ -80,6 +100,7 @@ const AttendanceReport: React.FC = () => {
         }
     };
 
+    // Export functions remain unchanged
     const exportToCSV = (session: AttendanceGroup) => {
         const filteredStudents = session.students.filter((s) => {
             if (statusFilter === "present") return s.present;
@@ -198,25 +219,37 @@ const AttendanceReport: React.FC = () => {
         document.body.removeChild(link);
     };
 
+    // Trigger fetch when date, status, or batch changes
     useEffect(() => {
-        if (date) fetchReport(date, statusFilter);
-    }, [statusFilter]);
+        if (date) fetchReport(date, statusFilter, selectedBatch);
+    }, [statusFilter, selectedBatch]);
 
     return (
         <div className="attendance-container">
             <h1 className="page-title">Attendance Report</h1>
 
-            <div className="date-picker-container">
+            <div className="filter-container">
                 <DatePicker
                     selected={date}
                     onChange={(d: Date | null) => {
                         setDate(d);
-                        if (d) fetchReport(d, statusFilter);
+                        if (d) fetchReport(d, statusFilter, selectedBatch);
                     }}
                     className="date-picker"
                     placeholderText="Select a date"
                     dateFormat="dd-MM-yyyy"
                 />
+
+                <select
+                    className="batch-dropdown"
+                    value={selectedBatch}
+                    onChange={(e) => setSelectedBatch(e.target.value === "all" ? "all" : Number(e.target.value))}
+                >
+                    <option value="all">All Batches</option>
+                    {batches.map(batch => (
+                        <option key={batch.id} value={batch.id}>{batch.batch_name}</option>
+                    ))}
+                </select>
             </div>
 
             <div className="filter-buttons">

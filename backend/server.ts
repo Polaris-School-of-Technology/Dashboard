@@ -29,10 +29,10 @@ async function seedUser(
 
 async function main() {
     await seedUser(
-        "soumen.mukherjee@polariscampus.com",
+        "ramandeep.singh@polariscampus.com",
         "1",
         "faculty",
-        "9133ad92-a3d9-4b5e-b9b1-dc310caa393a"
+        "4328485e-6b78-4e75-bc5a-a48489f2f7bc"
 
     );
 }

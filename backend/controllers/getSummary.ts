@@ -48,7 +48,7 @@ export const calculateQuizScores = async (req: Request, res: Response) => {
             }
 
             // 🔥 FIX: Access session_questions as object, not array
-            const correctOption = resp.session_questions?.correct_option_value;
+            const correctOption = (resp.session_questions as any)?.correct_option_value;
 
             console.log(`Student ${sid}: Response="${resp.response_text}", Correct="${correctOption}"`);
 
