@@ -13,11 +13,13 @@
   "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.56.0",
+    "@types/papaparse": "^5.3.16",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "papaparse": "^5.5.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Papa from "papaparse";
 import "./rbacFaculty.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -36,6 +37,11 @@ const RbacFacultyPage: React.FC = () => {
     const [viewQuizModalOpen, setViewQuizModalOpen] = useState(false);
     const [currentSession, setCurrentSession] = useState<Session | null>(null);
 
+    // CSV Import states
+    const [showCsvImportModal, setShowCsvImportModal] = useState(false);
+    const [csvFile, setCsvFile] = useState<File | null>(null);
+    const [csvImportError, setCsvImportError] = useState("");
+
     // Question handling
     const [tempQuestions, setTempQuestions] = useState<Question[]>([]);
     const [tempQuestionText, setTempQuestionText] = useState("");
@@ -66,6 +72,155 @@ const RbacFacultyPage: React.FC = () => {
         }
     };
 
+    // CSV Import Functions
+    const handleCsvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file && file.type === 'text/csv') {
+            setCsvFile(file);
+            setCsvImportError('');
+        } else {
+            setCsvImportError('Please select a valid CSV file');
+        }
+    };
+
+    const processCsvFile = () => {
+        if (!csvFile) return;
+
+        Papa.parse(csvFile, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: true,
+            complete: (results) => {
+                try {
+                    const importedQuestions: Question[] = [];
+                    const errors: string[] = [];
+
+                    results.data.forEach((row: any, index: number) => {
+                        const rowNum = index + 1;
+
+                        // Validate required fields
+                        if (!row.question_text || typeof row.question_text !== 'string' || !row.question_text.trim()) {
+                            errors.push(`Row ${rowNum}: Question text is required`);
+                            return;
+                        }
+
+                        // Validate question type
+                        const validTypes = ["long_text", "multiple_choice", "correct_answer_type"];
+                        const questionType = row.type || "long_text";
+                        if (!validTypes.includes(questionType)) {
+                            errors.push(`Row ${rowNum}: Invalid question type. Must be one of: ${validTypes.join(", ")}`);
+                            return;
+                        }
+
+                        // Parse options
+                        let options: string[] = [];
+                        if (row.options) {
+                            try {
+                                if (typeof row.options === 'string') {
+                                    // Handle comma-separated options
+                                    options = row.options.split(',').map((opt: string) => opt.trim()).filter((opt: string) => opt);
+                                } else if (Array.isArray(row.options)) {
+                                    options = row.options.filter((opt: any) => opt && typeof opt === 'string');
+                                }
+                            } catch (e) {
+                                errors.push(`Row ${rowNum}: Invalid options format`);
+                                return;
+                            }
+                        }
+
+                        // Validate options for multiple choice and correct answer types
+                        if ((questionType === "multiple_choice" || questionType === "correct_answer_type") && options.length === 0) {
+                            errors.push(`Row ${rowNum}: Multiple choice and correct answer questions must have options`);
+                            return;
+                        }
+
+                        // Validate correct answer ONLY for correct_answer_type
+                        let correctAnswer = row.correct_option_value;
+                        if (questionType === "correct_answer_type") {
+                            if (!correctAnswer || correctAnswer.toString().trim() === '') {
+                                errors.push(`Row ${rowNum}: Correct answer questions must specify the correct option`);
+                                return;
+                            }
+                            // Convert to string for comparison
+                            const correctAnswerStr = correctAnswer.toString().trim();
+                            if (!options.includes(correctAnswerStr)) {
+                                errors.push(`Row ${rowNum}: Correct option value must be one of the provided options`);
+                                return;
+                            }
+                            correctAnswer = correctAnswerStr;
+                        } else {
+                            // For other question types, ignore correct_option_value
+                            correctAnswer = undefined;
+                        }
+
+                        // Create question object
+                        const question: Question = {
+                            id: Date.now() + index,
+                            question_text: row.question_text.trim(),
+                            type: questionType as QuestionType,
+                            options: options,
+                            correct_option_value: correctAnswer
+                        };
+
+                        importedQuestions.push(question);
+                    });
+
+                    if (errors.length > 0) {
+                        setCsvImportError(errors.join('\n'));
+                        return;
+                    }
+
+                    if (importedQuestions.length > 0) {
+                        setTempQuestions(prev => [...prev, ...importedQuestions]);
+                        setShowCsvImportModal(false);
+                        setCsvFile(null);
+                        setCsvImportError('');
+                        alert(`✅ Imported ${importedQuestions.length} questions successfully`);
+                    } else {
+                        setCsvImportError('No valid questions found in CSV file');
+                    }
+                } catch (error) {
+                    setCsvImportError('Error processing CSV file');
+                }
+            },
+            error: (error) => {
+                setCsvImportError('Error reading CSV file: ' + error.message);
+            }
+        });
+    };
+
+    const downloadSampleCsv = () => {
+        const sampleData = [
+            {
+                question_text: 'What is the capital of France?',
+                type: 'multiple_choice',
+                options: 'Paris,London,Berlin,Madrid',
+                correct_option_value: ''
+            },
+            {
+                question_text: 'What is 2 + 2?',
+                type: 'correct_answer_type',
+                options: '3,4,5,6',
+                correct_option_value: '4'
+            },
+            {
+                question_text: 'Explain the concept of photosynthesis',
+                type: 'long_text',
+                options: '',
+                correct_option_value: ''
+            }
+        ];
+
+        const csv = Papa.unparse(sampleData);
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'quiz_questions_sample.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+
     // Quiz modal open
     const openQuizModal = (session: Session) => {
         setCurrentSession(session);
@@ -85,6 +240,11 @@ const RbacFacultyPage: React.FC = () => {
     };
 
     const addOptionField = () => setTempOptions([...tempOptions, ""]);
+
+    // Remove temp question from list
+    const removeTempQuestion = (id: number) => {
+        setTempQuestions(prev => prev.filter(q => q.id !== id));
+    };
 
     // Add temp question to list
     const addTempQuestionToList = () => {
@@ -117,18 +277,37 @@ const RbacFacultyPage: React.FC = () => {
 
     // Submit quiz to backend
     const submitQuiz = async () => {
-        if (!currentSession || tempQuestions.length === 0) return;
+        if (!currentSession || tempQuestions.length === 0) {
+            alert("Please add at least one question before submitting");
+            return;
+        }
 
         try {
-            await axios.post(`${API_BASE_URL}/api/rbacFaculty/rbacquiz/create/${currentSession.id}`, { newQuestions: tempQuestions }, {
+            // Transform questions to match backend format
+            const questionsForBackend = tempQuestions.map(q => ({
+                question_text: q.question_text,
+                type: q.type,
+                options: q.options,
+                correct_option_value: q.correct_option_value
+            }));
+
+            await axios.post(`${API_BASE_URL}/api/rbacFaculty/rbacquiz/create/${currentSession.id}`, {
+                newQuestions: questionsForBackend
+            }, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
+
             alert("✅ Quiz created successfully");
             setQuizModalOpen(false);
-        } catch {
-            alert("❌ Failed to create quiz");
+            setTempQuestions([]);
+        } catch (error: any) {
+            console.error("Quiz submission error:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.errors?.join('\n') || "Failed to create quiz";
+            alert("❌ " + errorMessage);
         }
     };
+
+    // [Rest of your existing functions remain the same - handleViewQuiz, startEditingQuestion, etc.]
 
     // View quiz
     const handleViewQuiz = async (sessionId: number) => {
@@ -173,7 +352,6 @@ const RbacFacultyPage: React.FC = () => {
         updated[index] = value;
         setEditingOptions(updated);
 
-        // If this was the correct option, update the correct option value
         if (editingCorrectOption === editingOptions[index]) {
             setEditingCorrectOption(value);
         }
@@ -190,7 +368,6 @@ const RbacFacultyPage: React.FC = () => {
         const updated = editingOptions.filter((_, i) => i !== index);
         setEditingOptions(updated);
 
-        // If we removed the correct option, reset it
         if (editingCorrectOption === removedOption) {
             setEditingCorrectOption("");
         }
@@ -199,15 +376,12 @@ const RbacFacultyPage: React.FC = () => {
     // Update question
     const updateQuestion = async (questionId: number, q: Question) => {
         try {
-            // Filter out empty options
             const filteredOptions = editingOptions.filter(opt => opt.trim() !== "");
 
-            // Validate that we have options for multiple choice/correct answer types
             if ((q.type === "multiple_choice" || q.type === "correct_answer_type") && filteredOptions.length === 0) {
                 return alert("Add at least one option");
             }
 
-            // Validate correct answer is selected for correct_answer_type
             if (q.type === "correct_answer_type" && !editingCorrectOption) {
                 return alert("Select the correct answer");
             }
@@ -218,7 +392,6 @@ const RbacFacultyPage: React.FC = () => {
                 options: filteredOptions
             };
 
-            // Add correct option value if it's a correct_answer_type question
             if (q.type === "correct_answer_type") {
                 payload.correct_option_value = editingCorrectOption;
             }
@@ -299,14 +472,50 @@ const RbacFacultyPage: React.FC = () => {
                     <div className="modal-content">
                         <h2>Add Quiz for Session {currentSession.id}</h2>
 
-                        {tempQuestions.map((q) => (
-                            <div key={q.id} className="question-preview">
-                                <b>{q.question_text}</b> ({q.type})
-                                {q.options.length > 0 && (
-                                    <ul>{q.options.map((opt, oIdx) => <li key={oIdx}>{opt}{q.correct_option_value === opt && " ✅"}</li>)}</ul>
-                                )}
+                        {/* CSV Import Button */}
+                        <div className="csv-import-section" style={{ marginBottom: "20px" }}>
+                            <button
+                                onClick={() => setShowCsvImportModal(true)}
+                                className="csv-import-btn"
+                                style={{ backgroundColor: "#28a745", color: "white", padding: "8px 16px", border: "none", borderRadius: "4px", cursor: "pointer" }}
+                            >
+                                📄 Import CSV Questions
+                            </button>
+                            <span style={{ marginLeft: "10px", fontSize: "14px", color: "#666" }}>
+                                {tempQuestions.length} question{tempQuestions.length !== 1 ? 's' : ''} added
+                            </span>
+                        </div>
+
+                        {/* Questions Preview */}
+                        {tempQuestions.length > 0 && (
+                            <div className="questions-preview" style={{ maxHeight: "200px", overflowY: "auto", marginBottom: "20px", border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                                <h4>Added Questions:</h4>
+                                {tempQuestions.map((q, index) => (
+                                    <div key={q.id} className="question-preview" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px", padding: "8px", backgroundColor: "#f8f9fa", borderRadius: "4px" }}>
+                                        <div style={{ flex: 1 }}>
+                                            <strong>{index + 1}. {q.question_text}</strong>
+                                            <div style={{ fontSize: "12px", color: "#666" }}>Type: {q.type}</div>
+                                            {q.options.length > 0 && (
+                                                <ul style={{ fontSize: "12px", margin: "5px 0" }}>
+                                                    {q.options.map((opt, oIdx) =>
+                                                        <li key={oIdx}>
+                                                            {opt}
+                                                            {q.correct_option_value === opt && " ✅"}
+                                                        </li>
+                                                    )}
+                                                </ul>
+                                            )}
+                                        </div>
+                                        <button
+                                            onClick={() => removeTempQuestion(q.id)}
+                                            style={{ color: "red", background: "none", border: "none", cursor: "pointer", fontSize: "16px" }}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        )}
 
                         <div className="question-form">
                             <input
@@ -358,7 +567,66 @@ const RbacFacultyPage: React.FC = () => {
                 </div>
             )}
 
-            {/* View Quiz Modal */}
+            {/* CSV Import Modal */}
+            {showCsvImportModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3>Import Questions from CSV</h3>
+
+                        <div style={{ marginBottom: "15px" }}>
+                            <p style={{ fontSize: "14px", color: "#666", marginBottom: "10px" }}>
+                                Upload a CSV file with columns: <strong>question_text</strong>, <strong>type</strong>, <strong>options</strong>, and <strong>correct_option_value</strong>
+                            </p>
+                            <input
+                                type="file"
+                                accept=".csv"
+                                onChange={handleCsvUpload}
+                                style={{ width: "100%", padding: "8px", border: "1px solid #ddd", borderRadius: "4px" }}
+                            />
+                        </div>
+
+                        {csvImportError && (
+                            <div style={{ color: "red", fontSize: "12px", marginBottom: "10px", whiteSpace: "pre-line" }}>
+                                {csvImportError}
+                            </div>
+                        )}
+
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+                            <button
+                                onClick={downloadSampleCsv}
+                                style={{ fontSize: "12px", color: "#007bff", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                            >
+                                📄 Download Sample CSV
+                            </button>
+                        </div>
+
+                        <div className="modal-actions">
+                            <button
+                                onClick={() => {
+                                    setShowCsvImportModal(false);
+                                    setCsvFile(null);
+                                    setCsvImportError('');
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={processCsvFile}
+                                disabled={!csvFile}
+                                style={{
+                                    backgroundColor: csvFile ? "#28a745" : "#ccc",
+                                    color: "white",
+                                    cursor: csvFile ? "pointer" : "not-allowed"
+                                }}
+                            >
+                                Import Questions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* View Quiz Modal - keeping your existing implementation */}
             {viewQuizModalOpen && (
                 <div className="modal">
                     <div className="modal-content">
