@@ -29,10 +29,10 @@ async function seedUser(
 
 async function main() {
     await seedUser(
-        "subham.das@polariscampus.com",
+        "tanmay.satsangi@polariscampus.com",
         "1",
         "faculty",
-        "e19197c3-d88a-46a2-86c4-01bff594d7d6"
+        "f5d25705-763d-41e1-8874-6fd486fb6add"
 
     );
 }

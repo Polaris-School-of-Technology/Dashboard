@@ -492,8 +492,10 @@ const RbacFacultyPage: React.FC = () => {
                                 <h4>Added Questions:</h4>
                                 {tempQuestions.map((q, index) => (
                                     <div key={q.id} className="question-preview" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px", padding: "8px", backgroundColor: "#f8f9fa", borderRadius: "4px" }}>
-                                        <div style={{ flex: 1 }}>
-                                            <strong>{index + 1}. {q.question_text}</strong>
+                                        <div style={{ flex: 1 }} className="question-text">
+                                            <strong style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
+                                                {index + 1}. {q.question_text}
+                                            </strong>
                                             <div style={{ fontSize: "12px", color: "#666" }}>Type: {q.type}</div>
                                             {q.options.length > 0 && (
                                                 <ul style={{ fontSize: "12px", margin: "5px 0" }}>
@@ -506,6 +508,8 @@ const RbacFacultyPage: React.FC = () => {
                                                 </ul>
                                             )}
                                         </div>
+
+
                                         <button
                                             onClick={() => removeTempQuestion(q.id)}
                                             style={{ color: "red", background: "none", border: "none", cursor: "pointer", fontSize: "16px" }}
@@ -518,12 +522,14 @@ const RbacFacultyPage: React.FC = () => {
                         )}
 
                         <div className="question-form">
-                            <input
-                                type="text"
+                            <textarea
                                 placeholder="Question text"
                                 value={tempQuestionText}
                                 onChange={(e) => setTempQuestionText(e.target.value)}
+                                rows={3}
+                                style={{ width: "100%", whiteSpace: "pre-line" }}
                             />
+
                             <select value={tempQuestionType} onChange={(e) => setTempQuestionType(e.target.value as QuestionType)}>
                                 <option value="long_text">Descriptive</option>
                                 <option value="multiple_choice">Multiple Choice</option>
@@ -691,7 +697,10 @@ const RbacFacultyPage: React.FC = () => {
                                     ) : (
                                         <div className="question-display">
                                             <div className="question-header">
-                                                <b>{q.question_text}</b>
+                                                <pre className="question-code">
+                                                    {q.question_text}
+                                                </pre>
+
                                                 <span className="question-type">({q.type})</span>
                                                 <div className="question-actions">
                                                     <button onClick={() => startEditingQuestion(q)}>✏️ Edit</button>
@@ -709,6 +718,7 @@ const RbacFacultyPage: React.FC = () => {
                                                 </ul>
                                             )}
                                         </div>
+
                                     )}
                                 </div>
                             ))

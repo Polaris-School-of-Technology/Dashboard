@@ -17,6 +17,8 @@ import AddSessionPage from "./components/AddSessionPage";
 import FeedbackPage from "./components/feedback";
 import LoginPage from "./components/LoginPage";
 import RbacfacultySessions from "./components/rbacFacultyPage";
+import AdminNotifications from "./components/Notifications";
+import RbacFacultyAttendnace from "./components/rbacFacultyAttenndacePage";
 
 import "./App.css";
 
@@ -38,15 +40,15 @@ function MainApp() {
     `nav-link ${isActive ? "active-link" : ""}`;
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('facultyId');
-    navigate('/login', { replace: true });
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("facultyId");
+    navigate("/login", { replace: true });
   };
 
   return (
     <div className="App bg-gray-100 min-h-screen relative">
-      {/* Logout button - Fixed at top right corner */}
+      {/* Logout button */}
       {!hideNavbar && (
         <button
           onClick={handleLogout}
@@ -74,12 +76,20 @@ function MainApp() {
                 <NavLink to="/class-sessions" className={navClass}>
                   Class Sessions
                 </NavLink>
+                <NavLink to="/admin-notifications" className={navClass}>
+                  Notifications
+                </NavLink>
               </>
             )}
             {role === "faculty" && (
-              <NavLink to="/rbac-faculty-sessions" className={navClass}>
-                My Sessions
-              </NavLink>
+              <>
+                <NavLink to="/rbac-faculty-sessions" className={navClass}>
+                  My Sessions
+                </NavLink>
+                <NavLink to="/rbac-faculty-attendance" className={navClass}>
+                  Attendance
+                </NavLink>
+              </>
             )}
           </div>
         </nav>
@@ -90,6 +100,7 @@ function MainApp() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
+          {/* Admin Routes */}
           <Route
             path="/weekly-sessions"
             element={
@@ -139,6 +150,16 @@ function MainApp() {
             }
           />
           <Route
+            path="/admin-notifications"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <AdminNotifications />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Faculty Routes */}
+          <Route
             path="/rbac-faculty-sessions"
             element={
               <PrivateRoute allowedRoles={["faculty"]}>
@@ -146,7 +167,16 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/rbac-faculty-attendance"
+            element={
+              <PrivateRoute allowedRoles={["faculty"]}>
+                <RbacFacultyAttendnace />
+              </PrivateRoute>
+            }
+          />
 
+          {/* Unauthorized */}
           <Route
             path="/unauthorized"
             element={
@@ -157,6 +187,7 @@ function MainApp() {
             }
           />
 
+          {/* Catch-all */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>

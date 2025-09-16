@@ -1,0 +1,258 @@
+/* Overall container */
+.attendance-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: "Inter", sans-serif;
+    color: #333;
+}
+
+/* Title */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Filters */
+.filters-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center;
+    gap: 15px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    margin-right: 10px;
+    color: #555;
+}
+
+.date-picker {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* Filter buttons */
+.filter-buttons button {
+    margin: 0 5px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.filter-buttons button:hover {
+    background-color: #dcdcdc;
+    transform: translateY(-2px);
+}
+
+.filter-buttons .active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Session card */
+.session-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+/* Session header */
+.session-header {
+    padding: 16px;
+    background: #f9f9f9;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    transition: background 0.3s;
+}
+
+.session-header:hover {
+    background: #f1f1f1;
+}
+
+.session-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.session-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #777;
+    flex: 1;
+    margin-left: 15px;
+}
+
+.session-header button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.session-header span {
+    font-size: 20px;
+    margin-left: 10px;
+    color: #007bff;
+}
+
+/* Search section inside a session */
+.search-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fdfdfd;
+    border-bottom: 1px solid #eee;
+}
+
+.search-section input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.search-section input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+}
+
+.search-section span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    background: #e8f0fe;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+/* Table */
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.attendance-table th,
+.attendance-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.attendance-table th {
+    background: #f5f5f5;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.attendance-table td {
+    font-size: 14px;
+    color: #444;
+}
+
+/* Action button in table */
+.attendance-table button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.attendance-table button:hover {
+    opacity: 0.9;
+}
+
+.attendance-table button:first-child {
+    background: #dc3545;
+    color: #fff;
+}
+
+.attendance-table button:last-child {
+    background: #28a745;
+    color: #fff;
+}
+
+/* No results */
+.student-list p {
+    padding: 12px;
+    text-align: center;
+    color: #888;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.status-present {
+    background-color: #28a745;
+    /* solid green */
+    color: #fff;
+    /* white text */
+    border: 1px solid #28a745;
+}
+
+.status-absent {
+    background-color: #dc3545;
+    /* solid red */
+    color: #fff;
+    /* white text */
+    border: 1px solid #dc3545;
+}
+
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-absent {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn-present {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn-action:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}

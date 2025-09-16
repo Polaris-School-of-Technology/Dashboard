@@ -8,6 +8,7 @@ import searchRouter from "./routes/search.routes";
 import loginRouter from "./routes/login.routes"
 import rbacFaculty from "./routes/rbacFaculty"
 import getSummary from "./routes/getsummary.routes"
+import notifications from "./routes/notification.routes"
 
 
 dotenv.config();
@@ -27,6 +28,7 @@ app.use("/api/search", searchRouter)
 app.use("/api/login", loginRouter)
 app.use("/api/rbacFaculty", rbacFaculty)
 app.use("/api/quiz", getSummary)
+app.use("/api/notifications", notifications)
 
 
 const PORT = process.env.PORT || 8080;

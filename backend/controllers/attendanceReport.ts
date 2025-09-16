@@ -137,8 +137,7 @@ export const attendanceReport = async (req: Request, res: Response) => {
         let { batch_id, status } = req.query;
 
         if (!date) return res.status(400).json({ error: "Pass date (YYYY-MM-DD)" });
-        batch_id = batch_id || "1"
-
+        batch_id = batch_id || "1";
 
         const startOfDay = new Date(`${date}T00:00:00+05:30`);
         const endOfDay = new Date(`${date}T23:59:59+05:30`);
@@ -156,12 +155,12 @@ export const attendanceReport = async (req: Request, res: Response) => {
         const { data: sessions, error: sessionErr } = await supabase
             .from("class_sessions")
             .select(`
-        id,
-        session_datetime,
-        actual_faculty_id,
-        section_id,
-        faculty:actual_faculty_id(name)
-      `)
+                id,
+                session_datetime,
+                actual_faculty_id,
+                section_id,
+                faculty:actual_faculty_id(name)
+            `)
             .in("section_id", sectionIds)
             .gte("session_datetime", startOfDay.toISOString())
             .lte("session_datetime", endOfDay.toISOString())
@@ -174,12 +173,12 @@ export const attendanceReport = async (req: Request, res: Response) => {
         const { data: attendanceRecords, error: attendanceErr } = await supabase
             .from("attendance_records")
             .select(`
-        id,
-        user_id,
-        is_present,
-        session_id,
-        profiles!user_id(name)
-      `)
+                id,
+                user_id,
+                is_present,
+                session_id,
+                profiles!user_id(name)
+            `)
             .in("session_id", sessionIds);
 
         if (attendanceErr) return res.status(500).json({ error: attendanceErr.message });
@@ -196,29 +195,39 @@ export const attendanceReport = async (req: Request, res: Response) => {
         // --- Step 5: Get registration_ids for all students ---
         const allUserIds = attendanceRecords.map((a: any) => a.user_id);
         let registrationMap: Record<number, string | null> = {};
+        let emailMap: Record<number, string | null> = {};
 
         if (allUserIds.length > 0) {
+            // registration_ids
             const { data: studentDetails, error: detailsErr } = await supabase
                 .from("student_details")
                 .select("user_id, registration_id")
                 .in("user_id", allUserIds);
 
             if (detailsErr) return res.status(500).json({ error: detailsErr.message });
-
             registrationMap = Object.fromEntries(
                 studentDetails.map((d) => [d.user_id, d.registration_id])
             );
+
+            // emails
+            const { data: emailDetails, error: emailErr } = await supabase
+                .from("user_contacts")
+                .select("user_id, email")
+                .in("user_id", allUserIds);
+
+            if (emailErr) return res.status(500).json({ error: emailErr.message });
+            emailMap = Object.fromEntries(emailDetails.map((e) => [e.user_id, e.email]));
         }
 
         // --- Step 6: Enrich sessions with course/batch info ---
         const { data: sectionDetails, error: sectionDetailsErr } = await supabase
             .from("course_sections")
             .select(`
-        id,
-        batch_id,
-        batches:batch_id(batch_name),
-        courses:course_id(course_name)
-      `)
+                id,
+                batch_id,
+                batches:batch_id(batch_name),
+                courses:course_id(course_name)
+            `)
             .in("id", sectionIds);
 
         if (sectionDetailsErr) return res.status(500).json({ error: sectionDetailsErr.message });
@@ -239,6 +248,7 @@ export const attendanceReport = async (req: Request, res: Response) => {
                     id: a.id,
                     student_name: a.profiles?.name ?? "N/A",
                     registration_id: registrationMap[a.user_id] ?? null,
+                    email: emailMap[a.user_id] ?? null, // <-- added email here
                     present: a.is_present,
                 }));
 
@@ -264,6 +274,7 @@ export const attendanceReport = async (req: Request, res: Response) => {
     }
 };
 
+
 // Helper function to get all batches for dropdown
 export const getBatches = async (req: Request, res: Response) => {
     try {
@@ -280,3 +291,4 @@ export const getBatches = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+

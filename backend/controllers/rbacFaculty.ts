@@ -321,3 +321,89 @@ const validateQuestionData = (question: any) => {
 };
 
 // Update your RBACcreateQuiz function to include validation:
+
+export const RBACFacultyAttendance = async (req: Request, res: Response) => {
+    try {
+        const { date } = req.params;
+        const user = (req as any).user;
+        const facultyId = user.facultyId;
+
+        const start = new Date(date);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(date);
+        end.setHours(23, 59, 59, 999);
+
+        // 1️⃣ Get class sessions for faculty on given date
+        const { data: sessions, error: sessionError } = await supabase
+            .from("class_sessions")
+            .select(`
+                id,
+                session_datetime,
+                session_type,
+                duration,
+                actual_faculty_id,
+                profiles!inner(name),
+                section_id (
+                  id,
+                  course_id (
+                    course_name
+                  )
+                )
+            `)
+            .gte("session_datetime", start.toISOString())
+            .lte("session_datetime", end.toISOString())
+            .eq("actual_faculty_id", facultyId)
+            .order("session_datetime", { ascending: true });
+
+        if (sessionError) throw sessionError;
+
+        if (!sessions || sessions.length === 0) {
+            return res.json([]); // no sessions found
+        }
+
+        // 2️⃣ Extract session IDs
+        const sessionIds = sessions.map(s => s.id);
+
+        // 3️⃣ Get attendance records for these session IDs
+        const { data: attendanceRecords, error: attendanceError } = await supabase
+            .from("attendance_records")
+            .select(`
+                id,
+                user_id,
+                is_present,
+                session_id,
+                profiles!inner(name)
+            `)
+            .in("session_id", sessionIds);
+
+        if (attendanceError) throw attendanceError;
+
+        // 4️⃣ Map attendance by session
+        const attendanceMap = new Map<number, any[]>();
+        attendanceRecords.forEach(record => {
+            if (!attendanceMap.has(record.session_id)) attendanceMap.set(record.session_id, []);
+            attendanceMap.get(record.session_id)!.push({
+                attendance_id: record.id,
+                student_name: record.profiles?.name ?? "N/A",
+                present: record.is_present
+            });
+        });
+
+        // 5️⃣ Combine sessions with their attendance
+        const result = sessions.map(session => ({
+            session_id: session.id,
+            session_datetime: session.session_datetime,
+            session_type: session.session_type,
+            duration: session.duration,
+            faculty_name: session.profiles?.name ?? "N/A",
+            course_name: session.section_id?.course_id?.course_name ?? null,
+            students: attendanceMap.get(session.id) || []
+        }));
+
+        res.json(result);
+
+    } catch (err: any) {
+        console.error("Faculty attendance fetch error:", err);
+        res.status(500).json({ error: "Failed to fetch sessions & attendance" });
+    }
+};

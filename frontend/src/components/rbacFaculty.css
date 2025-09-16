@@ -515,3 +515,23 @@
         font-size: 24px;
     }
 }
+
+.question-text {
+    white-space: pre-line;
+}
+
+.question-code {
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 4px;
+    display: block;
+    white-space: pre-wrap;
+    /* preserves newlines */
+    word-wrap: break-word;
+    /* wraps long lines */
+    font-family: monospace;
+    /* code font */
+    font-weight: bold;
+    /* makes it bold */
+    margin: 0 0 8px 0;
+}

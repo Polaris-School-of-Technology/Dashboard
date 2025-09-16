@@ -1,5 +1,5 @@
 import express from "express";
-import { RBACgetFacultySessionsByDate, RBACcreateQuiz, getQuizBySessionRbac, updateQuestionRbac, deleteQuestionRbac } from "../controllers/rbacFaculty"
+import { RBACgetFacultySessionsByDate, RBACcreateQuiz, getQuizBySessionRbac, RBACFacultyAttendance, updateQuestionRbac, deleteQuestionRbac } from "../controllers/rbacFaculty"
 import { authenticate } from "../middlewares/admin"
 
 const router = express.Router();
@@ -13,5 +13,6 @@ router.post("/rbacquiz/create/:session_id", authenticate, RBACcreateQuiz);
 router.get("/getQuizRbac/:session_id", authenticate, getQuizBySessionRbac)
 router.put("/updateRbacQuestion/:question_id", authenticate, updateQuestionRbac)
 router.delete("/deleteRbacQuestion/:question_id", authenticate, deleteQuestionRbac)
+router.get("/getAttendnaceForFaculty/:date", authenticate, RBACFacultyAttendance)
 
 export default router;
