@@ -569,8 +569,9 @@ body {
 
 /* Action buttons - improved */
 .edit-btn {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-    color: white;
+    background: #3b82f6 !important;
+    /* Force blue background */
+    color: white !important;
     padding: 8px 12px;
     border: none;
     border-radius: var(--radius-sm);
@@ -583,9 +584,27 @@ body {
 }
 
 .edit-btn:hover {
+    background: #2563eb !important;
+    /* Darker blue on hover */
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
+
+/* Alternative with gradient if you prefer */
+.edit-btn-gradient {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: white !important;
+    padding: 8px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
 
 /* Loading and error states */
 .loading-text {

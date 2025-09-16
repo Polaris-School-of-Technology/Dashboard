@@ -362,7 +362,7 @@ export const RBACFacultyAttendance = async (req: Request, res: Response) => {
         }
 
         // 2️⃣ Extract session IDs
-        const sessionIds = sessions.map(s => s.id);
+        const sessionIds = sessions.map((s: any) => s.id);
 
         // 3️⃣ Get attendance records for these session IDs
         const { data: attendanceRecords, error: attendanceError } = await supabase
@@ -380,22 +380,22 @@ export const RBACFacultyAttendance = async (req: Request, res: Response) => {
 
         // 4️⃣ Map attendance by session
         const attendanceMap = new Map<number, any[]>();
-        attendanceRecords.forEach(record => {
+        attendanceRecords?.forEach((record: any) => {
             if (!attendanceMap.has(record.session_id)) attendanceMap.set(record.session_id, []);
             attendanceMap.get(record.session_id)!.push({
                 attendance_id: record.id,
-                student_name: record.profiles?.name ?? "N/A",
+                student_name: Array.isArray(record.profiles) ? record.profiles[0]?.name : record.profiles?.name ?? "N/A",
                 present: record.is_present
             });
         });
 
         // 5️⃣ Combine sessions with their attendance
-        const result = sessions.map(session => ({
+        const result = sessions.map((session: any) => ({
             session_id: session.id,
             session_datetime: session.session_datetime,
             session_type: session.session_type,
             duration: session.duration,
-            faculty_name: session.profiles?.name ?? "N/A",
+            faculty_name: Array.isArray(session.profiles) ? session.profiles[0]?.name : session.profiles?.name ?? "N/A",
             course_name: session.section_id?.course_id?.course_name ?? null,
             students: attendanceMap.get(session.id) || []
         }));

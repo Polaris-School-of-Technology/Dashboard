@@ -542,7 +542,7 @@ const AttendanceReport: React.FC = () => {
                                                             )
                                                         }
                                                     />
-                                                    <div className="search-icon">🔍</div>
+                                                    <div className="search-icon"></div>
                                                     {session.searchQuery && (
                                                         <button
                                                             className="clear-search-btn"

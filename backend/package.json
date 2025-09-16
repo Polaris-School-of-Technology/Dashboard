@@ -25,8 +25,10 @@
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
     "@types/cors": "^2.8.19",
+    "@types/csv-parse": "^1.2.5",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.2.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",

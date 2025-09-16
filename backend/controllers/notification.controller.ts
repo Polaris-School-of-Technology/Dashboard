@@ -52,7 +52,7 @@ const getUserIdsFromContacts = async (identifiers: (string | number)[]): Promise
 /** ----------------------------
  * 1. Batch Notification
  * ---------------------------- */
-export const sendBatchNotification = async (req: Request, res: Response): Promise<void> => {
+export const sendBatchNotification = async (req: Request, res: Response): Promise<Response | undefined> => {
     try {
         const batchId = parseInt(req.params.batchId, 10);
         const { title, content, category = 'general', is_header = false } = req.body;
@@ -74,7 +74,7 @@ export const sendBatchNotification = async (req: Request, res: Response): Promis
 /** ----------------------------
  * 2. Global Notification
  * ---------------------------- */
-export const sendGlobalNotification = async (req: Request, res: Response): Promise<void> => {
+export const sendGlobalNotification = async (req: Request, res: Response): Promise<Response | undefined> => {
     try {
         const { title, content, category = 'general', is_header = false } = req.body;
 
@@ -94,7 +94,7 @@ export const sendGlobalNotification = async (req: Request, res: Response): Promi
 /** ----------------------------
  * 3. User Notification
  * ---------------------------- */
-export const sendUserNotification = async (req: Request, res: Response): Promise<void> => {
+export const sendUserNotification = async (req: Request, res: Response): Promise<Response | undefined> => {
     try {
         const { title, content, category = 'general', is_header = false } = req.body;
 
