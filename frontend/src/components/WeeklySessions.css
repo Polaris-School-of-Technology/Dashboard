@@ -1,46 +1,107 @@
 /* src/components/WeeklySessions.css */
+
 .table-container {
-    max-width: 900px;
+    max-width: 950px;
     margin: 2rem auto;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     overflow-x: auto;
+    font-family: "Inter", sans-serif;
 }
 
+/* Header */
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #1e3a8a;
+    /* dark blue */
+    font-weight: 700;
+}
+
+/* Calendar container */
+.calendar-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-container label {
+    font-weight: 500;
+    color: #374151;
+    /* dark gray */
+}
+
+.datepicker-input {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    /* light gray */
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.datepicker-input:focus {
+    border-color: #3b82f6;
+    /* blue focus */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Table */
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px;
+    min-width: 700px;
+    font-size: 0.95rem;
 }
 
+/* Table header */
 thead {
-    background-color: #1e3a8a;
-    /* dark blue */
-    color: white;
+    background: linear-gradient(90deg, #4f46e5, #3b82f6);
+    /* gradient purple-blue */
+    color: #fff;
 }
 
 th,
 td {
-    border: 1px solid #ddd;
     padding: 0.75rem 1rem;
     text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    /* light gray border */
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f3f4f6;
-    /* light gray */
+    background-color: #f9fafb;
+    /* very light gray */
 }
 
 tbody tr:hover {
     background-color: #e0f2fe;
     /* light blue hover */
+    transition: background-color 0.2s;
 }
 
-h1 {
-    text-align: center;
-    font-size: 1.75rem;
-    margin-bottom: 1rem;
-    color: #1e3a8a;
+tbody td {
+    color: #1f2937;
+    /* dark gray text */
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+    .table-container {
+        padding: 1rem;
+    }
+
+    table {
+        font-size: 0.85rem;
+    }
+
+    th,
+    td {
+        padding: 0.5rem;
+    }
 }

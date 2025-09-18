@@ -8,6 +8,7 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
+import axios from "axios"; // Add this import
 
 import WeeklySessions from "./components/weeklySessions";
 import FacultySessions from "./components/facultySessions";
@@ -19,8 +20,42 @@ import LoginPage from "./components/LoginPage";
 import RbacfacultySessions from "./components/rbacFacultyPage";
 import AdminNotifications from "./components/Notifications";
 import RbacFacultyAttendnace from "./components/rbacFacultyAttenndacePage";
+import AttendanceCSV from "./components/AttendanceCSV";
+
 
 import "./App.css";
+
+// Add axios interceptor for automatic logout on token expiry
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    const redirect = error.response?.data?.redirectToLogin;
+    const message = error.response?.data?.message || "Something went wrong";
+
+    // Handle only token errors, stop everything else
+    if (status === 401 || redirect) {
+      // Show only this message, nothing else runs after this
+      alert(message);
+
+      // Clear token and redirect
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("facultyId");
+      window.location.href = "/login";
+
+      // Stop here so no other error handler sees this error
+      return new Promise(() => { }); // block further processing
+    }
+
+    // For all other errors, continue normally
+    return Promise.reject(error);
+  }
+);
+
+
+
 
 function App() {
   return (
@@ -79,6 +114,10 @@ function MainApp() {
                 <NavLink to="/admin-notifications" className={navClass}>
                   Notifications
                 </NavLink>
+                <NavLink to="/attendance-csv" className={navClass}>
+                  Attendance CSV
+                </NavLink>
+
               </>
             )}
             {role === "faculty" && (
@@ -157,6 +196,15 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/attendance-csv"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <AttendanceCSV />
+              </PrivateRoute>
+            }
+          />
+
 
           {/* Faculty Routes */}
           <Route
