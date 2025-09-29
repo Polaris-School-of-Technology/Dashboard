@@ -8,7 +8,7 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
-import axios from "axios"; // Add this import
+import axios from "axios";
 
 import WeeklySessions from "./components/weeklySessions";
 import FacultySessions from "./components/facultySessions";
@@ -21,41 +21,49 @@ import RbacfacultySessions from "./components/rbacFacultyPage";
 import AdminNotifications from "./components/Notifications";
 import RbacFacultyAttendnace from "./components/rbacFacultyAttenndacePage";
 import AttendanceCSV from "./components/AttendanceCSV";
+import SessionAnalyticsDashboard from "./components/sessionAnalysis";
+import FacultyRating from "./components/facultyRatings";
+import PieChartForQuestion5 from "./components/otherAnalysis"
 
 
 import "./App.css";
 
-// Add axios interceptor for automatic logout on token expiry
-
+// Axios interceptor for token expiry
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
     const redirect = error.response?.data?.redirectToLogin;
-    const message = error.response?.data?.message || "Something went wrong";
+    const reqUrl = error.config?.url;
 
-    // Handle only token errors, stop everything else
-    if (status === 401 || redirect) {
-      // Show only this message, nothing else runs after this
-      alert(message);
+    if (reqUrl?.includes("/login")) {
+      return Promise.reject(error);
+    }
 
-      // Clear token and redirect
+    if (status === 401 || redirect || status === 403) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("facultyId");
       window.location.href = "/login";
-
-      // Stop here so no other error handler sees this error
-      return new Promise(() => { }); // block further processing
+      return new Promise(() => { });
     }
 
-    // For all other errors, continue normally
     return Promise.reject(error);
   }
 );
-
-
-
+// Add this after your existing axios.interceptors.response.use()
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 function App() {
   return (
@@ -75,11 +83,10 @@ function MainApp() {
     `nav-link ${isActive ? "active-link" : ""}`;
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("facultyId");
-    navigate("/login", { replace: true });
+    localStorage.clear();           // clears all localStorage items
+    window.location.href = "/login"; // forces full page reload → clean state
   };
+
 
   return (
     <div className="App bg-gray-100 min-h-screen relative">
@@ -117,6 +124,13 @@ function MainApp() {
                 <NavLink to="/attendance-csv" className={navClass}>
                   Attendance CSV
                 </NavLink>
+                <NavLink to="/session-analytics" className={navClass}>
+                  Session Analytics
+                </NavLink>
+                <NavLink to="/faculty-ratings" className={navClass}>
+                  Faculty Ratings
+                </NavLink>
+
 
               </>
             )}
@@ -204,6 +218,30 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/session-analytics"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <SessionAnalyticsDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/faculty-ratings"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <FacultyRating />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/pie-chart-question-5"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <PieChartForQuestion5 />
+              </PrivateRoute>
+            }
+          />
 
 
           {/* Faculty Routes */}
@@ -250,12 +288,44 @@ function PrivateRoute({
   children: React.ReactNode;
   allowedRoles?: string[];
 }) {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const [isReady, setIsReady] = React.useState(false);
+  const [redirectPath, setRedirectPath] = React.useState<string | null>(null);
 
-  if (!token) return <Navigate to="/login" replace />;
-  if (allowedRoles && !allowedRoles.includes(role ?? "")) {
-    return <Navigate to="/unauthorized" replace />;
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+      setRedirectPath("/login");
+      setIsReady(true);
+      return;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const now = Date.now() / 1000;
+
+      if (payload.exp < now) {
+        localStorage.clear();
+        setRedirectPath("/login");
+      } else if (allowedRoles && !allowedRoles.includes(role ?? "")) {
+        localStorage.clear();
+        setRedirectPath("/login");
+      } else {
+        setRedirectPath(null);
+      }
+    } catch {
+      localStorage.clear();
+      setRedirectPath("/login");
+    } finally {
+      setIsReady(true);
+    }
+  }, [allowedRoles]);
+
+  if (!isReady) return null;
+
+  if (redirectPath) {
+    return <Navigate to={redirectPath} replace />;
   }
 
   return <>{children}</>;

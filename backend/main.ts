@@ -9,7 +9,11 @@ import loginRouter from "./routes/login.routes"
 import rbacFaculty from "./routes/rbacFaculty"
 import getSummary from "./routes/getsummary.routes"
 import notifications from "./routes/notification.routes"
+import analysisRouter from "./routes/analysisRoutes"
 import attendnaceRouter from "./routes/allAttendanceRecords"
+import facultyRating from "./routes/facultyRating"
+import otherAnalysis from "./routes/otherAnalysis"
+import studentResponses from "./routes/studentResponseForASession"
 
 
 dotenv.config();
@@ -31,6 +35,10 @@ app.use("/api/rbacFaculty", rbacFaculty)
 app.use("/api/quiz", getSummary)
 app.use("/api/notifications", notifications)
 app.use("/api/attendance", attendnaceRouter)
+app.use("/api/analysis", analysisRouter)
+app.use("/api/faculty-rating", facultyRating)
+app.use("/api/other-analysis", otherAnalysis)
+app.use("/api/studentResponses", studentResponses)
 
 
 const PORT = process.env.PORT || 8080;

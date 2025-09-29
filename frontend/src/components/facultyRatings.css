@@ -1,0 +1,193 @@
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --bg-light: #f9fafb;
+    --bg-gradient: linear-gradient(135deg, #e0eafc, #cfdef3);
+    --text-dark: #1f2937;
+    --text-gray: #6b7280;
+    --success: #16a34a;
+    --warning: #f59e0b;
+    --danger: #dc2626;
+}
+
+/* General page layout */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-dark);
+}
+
+.page-container {
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+/* Cards */
+.chart-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+}
+
+.chart-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Filters */
+.chart-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.chart-controls label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-gray);
+}
+
+.chart-controls select,
+.chart-controls input {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.chart-controls select:focus,
+.chart-controls input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.chart-controls button {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.chart-controls button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.chart-controls button:disabled {
+    background: #a5b4fc;
+    cursor: not-allowed;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tabs button {
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    color: var(--text-gray);
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tabs button:hover {
+    color: var(--text-dark);
+    border-bottom-color: #e5e7eb;
+}
+
+.tabs button.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+/* Table */
+.ratings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.ratings-table th,
+.ratings-table td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ratings-table thead th {
+    background: #f3f4f6;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-gray);
+}
+
+.ratings-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Heatmap */
+.heatmap-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.heatmap-table th,
+.heatmap-table td {
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+}
+
+.heatmap-table th {
+    background: #f3f4f6;
+    font-weight: 600;
+}
+
+/* Messages */
+.no-data {
+    text-align: center;
+    color: var(--text-gray);
+    margin: 2rem 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.error-box {
+    background: #fee2e2;
+    color: var(--danger);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+}

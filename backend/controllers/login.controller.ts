@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // 3. Generate JWT (valid for 1 day)
+    // 3. Generate JWT (valid for 30 days)
     const token = jwt.sign(
       { id: user.id, role: user.role, facultyId: user.faculty_id },
       process.env.JWT_SECRET as string,
