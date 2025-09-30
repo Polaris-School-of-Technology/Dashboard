@@ -1,3 +1,4 @@
+// src/App.tsx
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -23,8 +24,9 @@ import RbacFacultyAttendnace from "./components/rbacFacultyAttenndacePage";
 import AttendanceCSV from "./components/AttendanceCSV";
 import SessionAnalyticsDashboard from "./components/sessionAnalysis";
 import FacultyRating from "./components/facultyRatings";
-import PieChartForQuestion5 from "./components/otherAnalysis"
 
+import ResetPassword from "./components/ResetPassword";
+import ForgotPasswordPage from "./components/forgotPassword";
 
 import "./App.css";
 
@@ -36,9 +38,7 @@ axios.interceptors.response.use(
     const redirect = error.response?.data?.redirectToLogin;
     const reqUrl = error.config?.url;
 
-    if (reqUrl?.includes("/login")) {
-      return Promise.reject(error);
-    }
+    if (reqUrl?.includes("/login")) return Promise.reject(error);
 
     if (status === 401 || redirect || status === 403) {
       localStorage.removeItem("token");
@@ -51,18 +51,14 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-// Add this after your existing axios.interceptors.response.use()
+
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    const token = localStorage.getItem("token");
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 function App() {
@@ -75,83 +71,85 @@ function App() {
 
 function MainApp() {
   const location = useLocation();
-  const navigate = useNavigate();
   const role = localStorage.getItem("role");
-  const hideNavbar = location.pathname === "/login";
+
+  // Define completely public pages that should have no navbar/dashboard
+  const publicPages = ["/login", "/reset-password"];
+  const isPublicPage = publicPages.includes(location.pathname);
 
   const navClass = ({ isActive }: { isActive: boolean }) =>
     `nav-link ${isActive ? "active-link" : ""}`;
 
   const handleLogout = () => {
-    localStorage.clear();           // clears all localStorage items
-    window.location.href = "/login"; // forces full page reload → clean state
+    localStorage.clear();
+    window.location.href = "/login";
   };
-
 
   return (
     <div className="App bg-gray-100 min-h-screen relative">
-      {/* Logout button */}
-      {!hideNavbar && (
-        <button
-          onClick={handleLogout}
-          className="logout-btn fixed top-4 right-4 z-50"
-        >
-          Logout
-        </button>
-      )}
+      {/* Navbar and Logout only for private/dashboard pages */}
+      {!isPublicPage && (
+        <>
+          <button
+            onClick={handleLogout}
+            className="logout-btn fixed top-4 right-4 z-50"
+          >
+            Logout
+          </button>
 
-      {/* Navigation */}
-      {!hideNavbar && (
-        <nav className="nav-container sticky top-0 z-40 bg-white shadow-lg border-b border-gray-200 px-6 py-4">
-          <div className="flex flex-wrap gap-6 justify-center md:justify-start">
-            {role === "admin" && (
-              <>
-                <NavLink to="/weekly-sessions" className={navClass}>
-                  Weekly Sessions
-                </NavLink>
-                <NavLink to="/faculty-sessions" className={navClass}>
-                  Faculty Sessions
-                </NavLink>
-                <NavLink to="/attendance-report" className={navClass}>
-                  Attendance Report
-                </NavLink>
-                <NavLink to="/class-sessions" className={navClass}>
-                  Class Sessions
-                </NavLink>
-                <NavLink to="/admin-notifications" className={navClass}>
-                  Notifications
-                </NavLink>
-                <NavLink to="/attendance-csv" className={navClass}>
-                  Attendance CSV
-                </NavLink>
-                <NavLink to="/session-analytics" className={navClass}>
-                  Session Analytics
-                </NavLink>
-                <NavLink to="/faculty-ratings" className={navClass}>
-                  Faculty Ratings
-                </NavLink>
+          <nav className="nav-container sticky top-0 z-40 bg-white shadow-lg border-b border-gray-200 px-6 py-4">
+            <div className="flex flex-wrap gap-6 justify-center md:justify-start">
+              {role === "admin" && (
+                <>
+                  <NavLink to="/weekly-sessions" className={navClass}>
+                    Weekly Sessions
+                  </NavLink>
+                  <NavLink to="/faculty-sessions" className={navClass}>
+                    Faculty Sessions
+                  </NavLink>
+                  <NavLink to="/attendance-report" className={navClass}>
+                    Attendance Report
+                  </NavLink>
+                  <NavLink to="/class-sessions" className={navClass}>
+                    Class Sessions
+                  </NavLink>
+                  <NavLink to="/admin-notifications" className={navClass}>
+                    Notifications
+                  </NavLink>
+                  <NavLink to="/attendance-csv" className={navClass}>
+                    Attendance CSV
+                  </NavLink>
+                  <NavLink to="/session-analytics" className={navClass}>
+                    Session Analytics
+                  </NavLink>
+                  <NavLink to="/faculty-ratings" className={navClass}>
+                    Faculty Ratings
+                  </NavLink>
 
-
-              </>
-            )}
-            {role === "faculty" && (
-              <>
-                <NavLink to="/rbac-faculty-sessions" className={navClass}>
-                  My Sessions
-                </NavLink>
-                <NavLink to="/rbac-faculty-attendance" className={navClass}>
-                  Attendance
-                </NavLink>
-              </>
-            )}
-          </div>
-        </nav>
+                </>
+              )}
+              {role === "faculty" && (
+                <>
+                  <NavLink to="/rbac-faculty-sessions" className={navClass}>
+                    My Sessions
+                  </NavLink>
+                  <NavLink to="/rbac-faculty-attendance" className={navClass}>
+                    Attendance
+                  </NavLink>
+                </>
+              )}
+            </div>
+          </nav>
+        </>
       )}
 
       {/* Main Content */}
       <div className="main-content px-4 py-6">
         <Routes>
+          {/* Public Pages */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Admin Routes */}
           <Route
@@ -231,14 +229,6 @@ function MainApp() {
             element={
               <PrivateRoute allowedRoles={["admin"]}>
                 <FacultyRating />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/pie-chart-question-5"
-            element={
-              <PrivateRoute allowedRoles={["admin"]}>
-                <PieChartForQuestion5 />
               </PrivateRoute>
             }
           />
@@ -324,9 +314,7 @@ function PrivateRoute({
 
   if (!isReady) return null;
 
-  if (redirectPath) {
-    return <Navigate to={redirectPath} replace />;
-  }
+  if (redirectPath) return <Navigate to={redirectPath} replace />;
 
   return <>{children}</>;
 }

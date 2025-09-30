@@ -22,15 +22,15 @@ const getRatingValue = (response: string): number | null => {
 // Initialize Vertex AI and Google Sheets auth once
 const vertexAI = new VertexAI({
     project: process.env.GCP_PROJECT_ID as string,
-    location: process.env.GCP_LOCATION || "asia-south1",
+    location: "us-central1",
     googleAuthOptions: {
         keyFilename: "service-account.json",
         scopes: ["https://www.googleapis.com/auth/cloud-platform"],
     },
 });
 
-const model = vertexAI.preview.getGenerativeModel({
-    model: "gemini-1.5-flash",
+const model = vertexAI.getGenerativeModel({
+    model: "gemini-2.5-flash-lite",
 });
 
 const auth = new google.auth.GoogleAuth({

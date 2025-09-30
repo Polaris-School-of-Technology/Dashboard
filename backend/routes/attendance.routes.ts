@@ -4,9 +4,9 @@ import { authenticate } from "../middlewares/admin";
 
 const router = Router();
 
-router.get("/attendanceReport/:date", attendanceReportold);
+router.get("/attendanceReport/:date", attendanceReport);
 router.patch("/:id", authenticate, updateAttendance);
-router.get("/attendanceReportBatchWise/:date", attendanceReport)
+router.get("/attendanceReportBatchWise/:date", attendanceReportold)
 router.get('/batches', getBatches);
 
 

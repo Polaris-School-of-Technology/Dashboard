@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+
 const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -11,6 +13,7 @@ const LoginPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setMessage(""); // Clear previous messages
         try {
             const res = await axios.post(`${API_BASE_URL}/api/login/login`, {
                 email,
@@ -22,19 +25,23 @@ const LoginPage: React.FC = () => {
 
             setMessage("✅ Login successful!");
 
-            // Redirect based on role
-            if (res.data.role === "admin") {
-                navigate("/weekly-sessions");
-            } else if (res.data.role === "faculty") {
-                navigate("/rbac-faculty-sessions");
-            } else {
-                // Fallback for unknown roles
-                navigate("/unauthorized");
-            }
-
+            // Navigate after a short delay to show success message
+            setTimeout(() => {
+                if (res.data.role === "admin") {
+                    navigate("/weekly-sessions");
+                } else if (res.data.role === "faculty") {
+                    navigate("/rbac-faculty-sessions");
+                } else {
+                    navigate("/unauthorized");
+                }
+            }, 500);
         } catch (err: any) {
             setMessage("❌ Invalid email or password");
         }
+    };
+
+    const handleForgotPasswordClick = () => {
+        navigate("/forgot-password");
     };
 
     return (
@@ -62,8 +69,18 @@ const LoginPage: React.FC = () => {
                     />
 
                     <button type="submit" className="login-button">
-                        Login
+                        LOGIN
                     </button>
+
+                    <div className="password-links">
+                        <p
+                            className="forgot-password-link"
+                            onClick={handleForgotPasswordClick}
+                        >
+                            Forgot Password?
+                        </p>
+
+                    </div>
                 </form>
 
                 {message && <p className="login-message">{message}</p>}
