@@ -31,7 +31,11 @@ const LoginPage: React.FC = () => {
                     navigate("/weekly-sessions");
                 } else if (res.data.role === "faculty") {
                     navigate("/rbac-faculty-sessions");
-                } else {
+                }
+                else if (res.data.role === "batchManager") {
+                    navigate("/evaluation-data"); // new page
+                }
+                else {
                     navigate("/unauthorized");
                 }
             }, 500);

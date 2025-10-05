@@ -24,9 +24,9 @@ import RbacFacultyAttendnace from "./components/rbacFacultyAttenndacePage";
 import AttendanceCSV from "./components/AttendanceCSV";
 import SessionAnalyticsDashboard from "./components/sessionAnalysis";
 import FacultyRating from "./components/facultyRatings";
-
 import ResetPassword from "./components/ResetPassword";
 import ForgotPasswordPage from "./components/forgotPassword";
+import StudentEvaluation from "./components/studentEvaluation"
 
 import "./App.css";
 
@@ -138,6 +138,15 @@ function MainApp() {
                   </NavLink>
                 </>
               )}
+              {role === "batchManager" && (
+                <>
+                  <NavLink to="/evaluation-data" className={navClass}>
+                    Evaluation Data
+                  </NavLink>
+
+                </>
+              )}
+
             </div>
           </nav>
         </>
@@ -251,6 +260,16 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/evaluation-data"
+            element={
+              <PrivateRoute allowedRoles={["batchManager"]}>
+                <StudentEvaluation />
+              </PrivateRoute>
+            }
+          />
+
+
 
           {/* Unauthorized */}
           <Route

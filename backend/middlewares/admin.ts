@@ -38,3 +38,13 @@ export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) 
     }
     next();
 };
+
+
+
+export const authorizeBatchManager = (req: Request, res: Response, next: NextFunction) => {
+    const user = (req as any).user;
+    if (user.role !== "batchManager") {
+        return res.status(403).json({ message: "Batch Managers only" });
+    }
+    next();
+};

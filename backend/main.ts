@@ -14,6 +14,8 @@ import attendnaceRouter from "./routes/allAttendanceRecords"
 import facultyRating from "./routes/facultyRating"
 import otherAnalysis from "./routes/otherAnalysis"
 import studentResponses from "./routes/studentResponseForASession"
+import studentEvaluation from "./routes/studentEvaluation"
+
 
 
 dotenv.config();
@@ -39,6 +41,8 @@ app.use("/api/analysis", analysisRouter)
 app.use("/api/faculty-rating", facultyRating)
 app.use("/api/other-analysis", otherAnalysis)
 app.use("/api/studentResponses", studentResponses)
+app.use("/api/evaluation", studentEvaluation)
+
 
 
 const PORT = process.env.PORT || 8080;

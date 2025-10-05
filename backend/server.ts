@@ -29,12 +29,13 @@ async function seedUser(
 
 async function main() {
     await seedUser(
-        "xyz@gmail.com",
+        "shivangi.shukla@polariscampus.com",
         "1",
-        "admin",
-        "15309a2"
+        "batchManager",
+        "a0a5f706-610d-4416-8695-67bc030955bd"
 
     );
 }
+
 
 main();
