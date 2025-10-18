@@ -12,6 +12,8 @@
     --warning-light: #fef3c7;
     --danger: #ef4444;
     --danger-light: #fee2e2;
+    --info: #3b82f6;
+    --info-light: #dbeafe;
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
@@ -90,10 +92,10 @@
     padding: 2rem;
 }
 
-/* Notification Type Selector */
+/* Notification Type Selector - Updated for 4 columns */
 .notification-type-selector {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
 }
@@ -252,7 +254,7 @@
     margin-bottom: 1.5rem;
 }
 
-/* Uploaded File Info - NEW STYLES */
+/* Uploaded File Info */
 .uploaded-file-info {
     display: flex;
     align-items: center;
@@ -263,6 +265,12 @@
     border-radius: 12px;
     margin-bottom: 1rem;
     animation: slideIn 0.3s ease-out;
+}
+
+/* Image file info variant */
+.uploaded-file-info.image-info {
+    background: linear-gradient(135deg, var(--info-light) 0%, #eff6ff 100%);
+    border-color: var(--info);
 }
 
 .file-details {
@@ -335,6 +343,17 @@
     border-color: var(--primary);
     background: rgba(99, 102, 241, 0.1);
     transform: scale(1.02);
+}
+
+/* Image upload variant */
+.file-upload-area.image-upload {
+    border-color: var(--info);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.file-upload-area.image-upload:hover {
+    border-color: var(--info);
+    background: rgba(59, 130, 246, 0.1);
 }
 
 .file-input-hidden {
@@ -491,6 +510,12 @@
 }
 
 /* Responsive Design */
+@media (max-width: 768px) {
+    .notification-type-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 640px) {
     .notifications-container {
         margin: 1rem auto;

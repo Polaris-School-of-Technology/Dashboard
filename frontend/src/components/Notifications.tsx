@@ -3,7 +3,7 @@ import axios from 'axios';
 import './Notification.css';
 
 type NotificationCategory = 'notice' | 'fees' | 'reminder' | 'general' | 'Hosteller';
-type NotificationType = 'batch' | 'global' | 'users';
+type NotificationType = 'batch' | 'global' | 'users' | 'parents';
 
 interface ResponseState {
     message: string;
@@ -29,6 +29,7 @@ const AdminNotifications: React.FC = () => {
     const [isHeader, setIsHeader] = useState(false);
     const [recipientIds, setRecipientIds] = useState('');
     const [csvFile, setCsvFile] = useState<File | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [response, setResponse] = useState<ResponseState>({ message: '', type: '' });
     const [loading, setLoading] = useState(false);
     const [dragOver, setDragOver] = useState(false);
@@ -68,9 +69,34 @@ const AdminNotifications: React.FC = () => {
         if (e.target.files?.length) setCsvFile(e.target.files[0]);
     };
 
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.length) {
+            const file = e.target.files[0];
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file');
+                return;
+            }
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                return;
+            }
+            setImageFile(file);
+        }
+    };
+
     const removeCsvFile = () => {
         setCsvFile(null);
         const fileInput = document.getElementById('csvFileInput') as HTMLInputElement | null;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    };
+
+    const removeImageFile = () => {
+        setImageFile(null);
+        const fileInput = document.getElementById('imageFileInput') as HTMLInputElement | null;
         if (fileInput) {
             fileInput.value = '';
         }
@@ -106,45 +132,52 @@ const AdminNotifications: React.FC = () => {
 
         try {
             let url = '';
-            let body: any = { title, content, category, is_header: isHeader };
             const token = localStorage.getItem('token');
-            const headers: any = { 'Content-Type': 'application/json' };
+            const headers: any = {};
             if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            // Create FormData for all requests
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+            formData.append('category', category);
+            formData.append('is_header', String(isHeader));
+
+            // Add image if present
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
 
             if (type === 'batch') {
                 if (batchId === '') throw new Error('Please select a batch.');
                 url = `${API_BASE_URL}/api/notifications/batch/${batchId}`;
             } else if (type === 'global') {
                 url = `${API_BASE_URL}/api/notifications/global`;
+            } else if (type === 'parents') {
+                url = `${API_BASE_URL}/api/notifications/parents`;
             } else if (type === 'users') {
                 url = `${API_BASE_URL}/api/notifications/users`;
 
                 if (csvFile) {
-                    const formData = new FormData();
-                    formData.append('file', csvFile);
-                    formData.append('title', title);
-                    formData.append('content', content);
-                    formData.append('category', category);
-                    formData.append('is_header', String(isHeader));
-
-                    const res = await axios.post(url, formData, {
-                        headers: { ...headers, 'Content-Type': 'multipart/form-data' },
-                    });
-                    setResponse({
-                        message: `✅ Notification sent successfully!\n${JSON.stringify(res.data, null, 2)}`,
-                        type: 'success',
-                    });
-                    resetForm();
-                    return;
-                } else {
-                    body.recipient_ids = recipientIds
+                    formData.append('recipients_file', csvFile);
+                } else if (recipientIds.trim()) {
+                    // For JSON recipient_ids, we need to send as array
+                    const ids = recipientIds
                         .split(',')
                         .map((v) => v.trim())
                         .filter((v) => v);
+
+                    // Append each ID individually for proper FormData handling
+                    ids.forEach(id => formData.append('recipient_ids[]', id));
+                } else {
+                    throw new Error('Please provide recipient IDs or upload a CSV file.');
                 }
             }
 
-            const res = await axios.post(url, body, { headers });
+            const res = await axios.post(url, formData, {
+                headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+            });
+
             setResponse({
                 message: `✅ Notification sent successfully!\n${JSON.stringify(res.data, null, 2)}`,
                 type: 'success',
@@ -165,9 +198,12 @@ const AdminNotifications: React.FC = () => {
         setIsHeader(false);
         setRecipientIds('');
         setCsvFile(null);
+        setImageFile(null);
         setBatchId('');
-        const fileInput = document.getElementById('csvFileInput') as HTMLInputElement | null;
-        if (fileInput) fileInput.value = '';
+        const csvInput = document.getElementById('csvFileInput') as HTMLInputElement | null;
+        const imageInput = document.getElementById('imageFileInput') as HTMLInputElement | null;
+        if (csvInput) csvInput.value = '';
+        if (imageInput) imageInput.value = '';
     };
 
     return (
@@ -182,11 +218,13 @@ const AdminNotifications: React.FC = () => {
                     <form onSubmit={handleSubmit} className="notifications-form">
                         {/* Notification Type Selector */}
                         <div className="notification-type-selector">
-                            {['batch', 'global', 'users'].map((t) => (
+                            {['batch', 'global', 'parents', 'users'].map((t) => (
                                 <label key={t} className={`type-option ${type === t ? 'active' : ''}`} onClick={() => handleTypeChange(t as NotificationType)}>
                                     <input type="radio" name="type" value={t} checked={type === t} onChange={() => handleTypeChange(t as NotificationType)} />
-                                    <span className="type-icon">{t === 'batch' ? '👥' : t === 'global' ? '🌍' : '🎯'}</span>
-                                    <div>{t === 'batch' ? 'Batch' : t === 'global' ? 'Global' : 'Specific Users'}</div>
+                                    <span className="type-icon">
+                                        {t === 'batch' ? '👥' : t === 'global' ? '🌍' : t === 'parents' ? '👨‍👩‍👧' : '🎯'}
+                                    </span>
+                                    <div>{t === 'batch' ? 'Batch' : t === 'global' ? 'Global' : t === 'parents' ? 'All Parents' : 'Specific Users'}</div>
                                 </label>
                             ))}
                         </div>
@@ -253,6 +291,48 @@ const AdminNotifications: React.FC = () => {
                             </div>
                         </div>
 
+                        {/* Image Upload Section - Available for ALL notification types */}
+                        <div className="form-group full">
+                            <label className="form-label">📸 Attach Image (Optional)</label>
+
+                            {imageFile && (
+                                <div className="uploaded-file-info image-info">
+                                    <div className="file-details">
+                                        <span className="file-icon">🖼️</span>
+                                        <span className="file-name">{imageFile.name}</span>
+                                        <span className="file-size">({(imageFile.size / 1024).toFixed(1)} KB)</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="remove-csv-btn"
+                                        onClick={removeImageFile}
+                                        title="Remove image"
+                                    >
+                                        ❌ Remove
+                                    </button>
+                                </div>
+                            )}
+
+                            {!imageFile && (
+                                <div
+                                    className="file-upload-area image-upload"
+                                    onClick={() => document.getElementById('imageFileInput')?.click()}
+                                >
+                                    <div className="upload-icon">🖼️</div>
+                                    <div className="upload-text">Click to upload image</div>
+                                    <div className="upload-subtext">JPG, PNG, GIF, WebP (Max 5MB)</div>
+                                </div>
+                            )}
+
+                            <input
+                                type="file"
+                                id="imageFileInput"
+                                className="file-input-hidden"
+                                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                onChange={handleImageUpload}
+                            />
+                        </div>
+
                         {/* Users Section */}
                         {type === 'users' && (
                             <div className="users-specific">
@@ -270,7 +350,6 @@ const AdminNotifications: React.FC = () => {
                                 <div className="form-group full">
                                     <label className="form-label">Or Upload CSV File</label>
 
-                                    {/* Show uploaded file info */}
                                     {csvFile && (
                                         <div className="uploaded-file-info">
                                             <div className="file-details">
@@ -289,7 +368,6 @@ const AdminNotifications: React.FC = () => {
                                         </div>
                                     )}
 
-                                    {/* File upload area - only show when no file */}
                                     {!csvFile && (
                                         <div
                                             className={`file-upload-area ${dragOver ? 'dragover' : ''}`}
@@ -304,7 +382,6 @@ const AdminNotifications: React.FC = () => {
                                         </div>
                                     )}
 
-                                    {/* Hidden file input */}
                                     <input
                                         type="file"
                                         id="csvFileInput"
