@@ -84,7 +84,7 @@ export const getSessionsByDate = async (req: Request, res: Response) => {
 
         // Default to batch "3A" if not provided, with fallback to batch 1
         let actualBatchId = "1"; // fallback default
-        
+
         if (!batch_id) {
             // Look for batch "3A" by name
             const { data: batchData, error: batchError } = await supabase
@@ -92,7 +92,7 @@ export const getSessionsByDate = async (req: Request, res: Response) => {
                 .select("id")
                 .eq("batch_name", "3A")
                 .single();
-            
+
             if (batchData && !batchError) {
                 actualBatchId = batchData.id.toString();
             }
@@ -156,7 +156,7 @@ export const getSessionsByDate = async (req: Request, res: Response) => {
             course_name: session.section_id?.course_id?.course_name || null,
             section_id: session.section_id?.id || null,
             venue: session.venue || null,
-            batch_info: session.section_id?.batches 
+            batch_info: session.section_id?.batches
                 ? {
                     batch_id: session.section_id.batch_id,
                     batch_name: session.section_id.batches.batch_name,

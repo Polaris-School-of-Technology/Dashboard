@@ -26,8 +26,13 @@ import SessionAnalyticsDashboard from "./components/sessionAnalysis";
 import FacultyRating from "./components/facultyRatings";
 import ResetPassword from "./components/ResetPassword";
 import ForgotPasswordPage from "./components/forgotPassword";
-import StudentEvaluation from "./components/studentEvaluation"
-
+import StudentEvaluation from "./components/studentEvaluation";
+import AdminJobs from "./components/AdminJobs";
+import CreateJob from "./components/CreateJob";
+import JobApplications from "./components/JobApplication";
+import JobDetails from "./components/jobDetails"
+import EditJob from "./components/EditJob";
+import MarksViewer from "./components/evalData"
 import "./App.css";
 
 // Axios interceptor for token expiry
@@ -125,9 +130,18 @@ function MainApp() {
                   <NavLink to="/faculty-ratings" className={navClass}>
                     Faculty Ratings
                   </NavLink>
+                  <NavLink to="/marks-viewer" className={navClass}>
+                    Marks Viewer
+                  </NavLink>
 
+
+                  {/* ⭐ NEW NAV LINK */}
+                  <NavLink to="/admin/jobs" className={navClass}>
+                    Job Portal
+                  </NavLink>
                 </>
               )}
+
               {role === "faculty" && (
                 <>
                   <NavLink to="/rbac-faculty-sessions" className={navClass}>
@@ -138,15 +152,14 @@ function MainApp() {
                   </NavLink>
                 </>
               )}
+
               {role === "batchManager" && (
                 <>
                   <NavLink to="/evaluation-data" className={navClass}>
                     Evaluation Data
                   </NavLink>
-
                 </>
               )}
-
             </div>
           </nav>
         </>
@@ -169,6 +182,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/faculty-sessions"
             element={
@@ -177,6 +191,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/attendance-report"
             element={
@@ -185,6 +200,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/class-sessions"
             element={
@@ -193,6 +209,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/sessions/add"
             element={
@@ -201,6 +218,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/quiz/:session_id"
             element={
@@ -209,6 +227,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/admin-notifications"
             element={
@@ -217,6 +236,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/attendance-csv"
             element={
@@ -225,6 +245,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/session-analytics"
             element={
@@ -233,6 +254,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/faculty-ratings"
             element={
@@ -241,7 +263,61 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/marks-viewer"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <MarksViewer />
+              </PrivateRoute>
+            }
+          />
 
+
+          {/* ⭐ NEW JOB PORTAL ROUTES */}
+          <Route
+            path="/admin/jobs"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <AdminJobs />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/admin/jobs/create"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <CreateJob />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/admin/jobs/:jobId"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <JobDetails />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/admin/jobs/:jobId/edit"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <EditJob />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/admin/jobs/:jobId/applications"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <JobApplications />
+              </PrivateRoute>
+            }
+          />
 
           {/* Faculty Routes */}
           <Route
@@ -252,6 +328,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/rbac-faculty-attendance"
             element={
@@ -260,6 +337,7 @@ function MainApp() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/evaluation-data"
             element={
@@ -268,8 +346,6 @@ function MainApp() {
               </PrivateRoute>
             }
           />
-
-
 
           {/* Unauthorized */}
           <Route

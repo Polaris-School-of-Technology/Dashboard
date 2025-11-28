@@ -15,6 +15,8 @@ import facultyRating from "./routes/facultyRating"
 import otherAnalysis from "./routes/otherAnalysis"
 import studentResponses from "./routes/studentResponseForASession"
 import studentEvaluation from "./routes/studentEvaluation"
+import jobRouter from "./routes/jobs.routes"
+import evalRoutes from "./routes/evaluation.routes"
 
 
 
@@ -42,6 +44,8 @@ app.use("/api/faculty-rating", facultyRating)
 app.use("/api/other-analysis", otherAnalysis)
 app.use("/api/studentResponses", studentResponses)
 app.use("/api/evaluation", studentEvaluation)
+app.use("/api/jobs", jobRouter)
+app.use("/api/eval", evalRoutes)
 
 
 

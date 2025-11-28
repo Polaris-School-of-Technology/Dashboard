@@ -1,0 +1,222 @@
+/* jobApplications.css */
+.applications-container {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 32px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.back-btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+    color: white;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(113, 128, 150, 0.4);
+}
+
+.applications-container h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.125rem;
+    color: #718096;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.applications-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    margin-top: 24px;
+}
+
+.applications-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 16px;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+}
+
+.applications-table td {
+    padding: 20px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: white;
+    vertical-align: middle;
+}
+
+.applications-table tbody tr:hover {
+    background-color: #f7fafc;
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.resume-btn {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.resume-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
+}
+
+.status-btn {
+    background: linear-gradient(135deg, #ed8936 0%, #d69e2e 100%);
+    color: white;
+}
+
+.status-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(237, 137, 54, 0.4);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 500px;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #667eea;
+    text-align: center;
+}
+
+.modal-content p {
+    margin: 12px 0;
+    color: #2d3748;
+}
+
+.modal-content label {
+    font-weight: 600;
+    margin: 16px 0 8px;
+    display: block;
+    color: #2d3748;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.modal-content select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    margin-bottom: 24px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    padding: 12px 32px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(72, 187, 120, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .applications-container {
+        margin: 10px;
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .applications-table {
+        font-size: 0.875rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+}

@@ -29,10 +29,10 @@ async function seedUser(
 
 async function main() {
     await seedUser(
-        "shivangi.shukla@polariscampus.com",
-        "1",
-        "batchManager",
-        "a0a5f706-610d-4416-8695-67bc030955bd"
+        "rahul.hedau@polariscampus.com",
+        "@1234@@@Rahul",
+        "admin",
+        "e98bd00d-b3c4-4395-9fee-38b8e23341fa"
 
     );
 }

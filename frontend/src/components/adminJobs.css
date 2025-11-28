@@ -1,0 +1,254 @@
+/* adminJobs.css */
+:root {
+    --primary-color: #667eea;
+    --primary-hover: #5a6fd8;
+    --secondary-color: #48bb78;
+    --danger-color: #f56565;
+    --danger-hover: #e53e3e;
+    --warning-color: #ed8936;
+    --background-light: #f8faff;
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --table-header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --table-row-hover: #f7fafc;
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    margin: 0;
+}
+
+.jobs-container {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 32px;
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 32px;
+    letter-spacing: -0.025em;
+}
+
+.create-job-btn {
+    padding: 12px 24px;
+
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
+    color: white;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.create-job-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(102, 126, 234, 0.5);
+}
+
+.loading-text {
+    text-align: center;
+    font-size: 1.125rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    padding: 32px;
+}
+
+.error {
+    text-align: center;
+    color: var(--danger-color);
+    font-weight: 600;
+    padding: 16px;
+    background-color: rgba(245, 101, 101, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(245, 101, 101, 0.2);
+    margin: 16px 0;
+}
+
+.jobs-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    margin-top: 24px;
+}
+
+.jobs-table th {
+    background: var(--table-header-bg);
+    color: white;
+    padding: 20px 16px;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    border: none;
+}
+
+.jobs-table td {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: white;
+    vertical-align: middle;
+}
+
+.jobs-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.jobs-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.jobs-table tbody tr:hover {
+    background-color: var(--table-row-hover);
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-campus {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #38a169 100%);
+}
+
+.badge-external {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #d69e2e 100%);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.table-btn {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-width: 90px;
+    transition: all 0.2s ease;
+}
+
+.view-btn {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    color: white;
+}
+
+.view-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
+}
+
+.applications-btn {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #38a169 100%);
+    color: white;
+}
+
+.applications-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .jobs-container {
+        margin: 10px;
+        padding: 20px;
+    }
+
+    .jobs-table {
+        font-size: 0.875rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .table-btn {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.jobs-container {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.jobs-table tbody tr {
+    animation: fadeInUp 0.3s ease-out forwards;
+    opacity: 0;
+}
+
+.jobs-table tbody tr:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.jobs-table tbody tr:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.jobs-table tbody tr:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.jobs-table tbody tr:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.jobs-table tbody tr:nth-child(5) {
+    animation-delay: 0.5s;
+}
