@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import { GoogleLogin } from "@react-oauth/google";
+
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -19,6 +21,7 @@ const LoginPage: React.FC = () => {
                 email,
                 password,
             });
+            console.log("Login response:", res.data);
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("role", res.data.role);
@@ -48,6 +51,40 @@ const LoginPage: React.FC = () => {
         navigate("/forgot-password");
     };
 
+    const handleGoogleSuccess = async (credentialResponse: any) => {
+        try {
+            setMessage("");
+
+            const res = await axios.post(
+                `${API_BASE_URL}/api/login/google`,
+                {
+                    token: credentialResponse.credential,
+                }
+            );
+
+            console.log("Google login response:", res.data);
+
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("role", res.data.role);
+
+            setMessage("✅ Google login successful!");
+
+            if (res.data.role === "admin") {
+                navigate("/weekly-sessions");
+            } else if (res.data.role === "faculty") {
+                navigate("/rbac-faculty-sessions");
+            } else if (res.data.role === "batchManager") {
+                navigate("/evaluation-data");
+            } else {
+                navigate("/unauthorized");
+            }
+        } catch (error) {
+            console.error(error);
+            setMessage("❌ Google login failed");
+        }
+    };
+
+
     return (
         <div className="login-container">
             <div className="login-card">
@@ -75,6 +112,14 @@ const LoginPage: React.FC = () => {
                     <button type="submit" className="login-button">
                         LOGIN
                     </button>
+
+                    <div style={{ marginTop: "15px", textAlign: "center" }}>
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => setMessage("❌ Google login failed")}
+                        />
+                    </div>
+
 
                     <div className="password-links">
                         <p

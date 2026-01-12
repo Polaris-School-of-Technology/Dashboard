@@ -5,6 +5,9 @@ import jwt from "jsonwebtoken";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -80,6 +83,66 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// ===== GOOGLE LOGIN =====
+export const googleLogin = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email) {
+      return res.status(400).json({ message: "Invalid Google token" });
+    }
+
+    const { email } = payload;
+
+    // Check if user exists
+    const { data: users, error } = await supabase
+      .from("dashboard_users")
+      .select("*")
+      .eq("email", email)
+      .limit(1);
+
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    const user = users?.[0];
+
+    if (!user) {
+      return res.status(401).json({ message: "User not registered" });
+    }
+
+    // Generate JWT
+    const jwtToken = jwt.sign(
+      { id: user.id, role: user.role, facultyId: user.faculty_id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "30d" }
+    );
+
+    return res.json({
+      message: "Google login successful",
+      token: jwtToken,
+      role: user.role,
+      facultyId: user.faculty_id,
+    });
+
+  } catch (err) {
+    console.error("Google login error:", err);
+    return res.status(500).json({ message: "Google login failed" });
+  }
+};
+
 // ===== EXISTING LOGOUT =====
 export const logout = async (req: Request, res: Response) => {
   try {
@@ -108,7 +171,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
       .limit(1);
 
     // In your forgotPassword function, change this part:
-    
+
 
     if (error) {
       console.error(error);

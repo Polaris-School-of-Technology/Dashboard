@@ -1,0 +1,129 @@
+.multiselect-container {
+    position: relative;
+    width: 250px;
+}
+
+.multiselect-trigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.multiselect-trigger:hover {
+    border-color: #9ca3af;
+}
+
+.multiselect-trigger.open {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.multiselect-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.multiselect-arrow {
+    color: #6b7280;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.multiselect-arrow.rotate {
+    transform: rotate(180deg);
+}
+
+.multiselect-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 50;
+    padding: 4px;
+}
+
+/* Custom Scrollbar */
+.multiselect-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.multiselect-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.multiselect-dropdown::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.multiselect-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+
+.multiselect-option {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.15s;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+.multiselect-option:hover {
+    background-color: #f3f4f6;
+}
+
+.multiselect-option.selected {
+    background-color: #eef2ff;
+    color: #4f46e5;
+    font-weight: 500;
+}
+
+.checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.multiselect-option:hover .checkbox {
+    border-color: #9ca3af;
+}
+
+.multiselect-option.selected .checkbox {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.multiselect-divider {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 4px 0;
+}

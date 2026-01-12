@@ -3,6 +3,7 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './facultyRatings.css';
+import MultiSelect from './MultiSelect';
 import {
     LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer
 } from 'recharts';
@@ -61,7 +62,8 @@ const AdminAnalytics = () => {
     };
 
     const [facultyList, setFacultyList] = useState<Faculty[]>([]);
-    const [selectedFaculty, setSelectedFaculty] = useState('all');
+    const [selectedFaculties, setSelectedFaculties] = useState<string[]>(['all']);
+    const [hoveredFaculty, setHoveredFaculty] = useState<string | null>(null);
     const [startDate, setStartDate] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
     const [endDate, setEndDate] = useState(new Date());
     const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
@@ -170,7 +172,9 @@ const AdminAnalytics = () => {
         setError(null);
 
         try {
-            const endpoint = selectedFaculty === 'all'
+            const isAllSelected = selectedFaculties.includes('all') || selectedFaculties.length === 0;
+
+            const endpoint = isAllSelected
                 ? `${API_BASE_URL}/api/faculty-rating/analytics/allFacultyRatings`
                 : `${API_BASE_URL}/api/faculty-rating/analytics/daily-aggregates`;
 
@@ -178,18 +182,17 @@ const AdminAnalytics = () => {
 
 
 
-
             const res = await axios.get(endpoint, {
                 params: {
                     start_date: startDate.toISOString().split('T')[0],
                     end_date: endDate.toISOString().split('T')[0],
-                    faculty_id: selectedFaculty !== 'all' ? selectedFaculty : undefined
+                    faculty_id: !isAllSelected ? selectedFaculties.join(',') : undefined
                 }
             });
 
             console.log('API Response:', res.data); // Debug log
 
-            if (selectedFaculty === 'all') {
+            if (isAllSelected) {
                 // directly set heatmap data, no transformation needed for your current API shape
                 setHeatmapData(res.data);
                 setTableData([]);
@@ -229,13 +232,19 @@ const AdminAnalytics = () => {
 
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
-            const entry = payload[0];
-            const facultyName = entry.dataKey;
-            const courseName = entry.payload[`__${facultyName}_course__`];
+            // If we are hovering a specific line, prioritize that entry
+            const targetEntry = hoveredFaculty
+                ? payload.find((p: any) => p.dataKey === hoveredFaculty)
+                : payload[0];
+
+            if (!targetEntry) return null;
+
+            const facultyName = targetEntry.dataKey;
+            const courseName = targetEntry.payload[`__${facultyName}_course__`];
             return (
                 <div className="custom-tooltip">
                     <p>{facultyName}</p>
-                    <p>Rating: {entry.value}/5</p>
+                    <p>Rating: {targetEntry.value}/5</p>
                     <p>Course: {courseName}</p>
                 </div>
             );
@@ -328,14 +337,15 @@ const AdminAnalytics = () => {
                 <div className="chart-controls">
                     <div className="control-group">
                         <label>Faculty</label>
-                        <select onChange={e => setSelectedFaculty(e.target.value)} value={selectedFaculty}>
-                            <option value="all">All Faculties</option>
-                            {facultyList.map(f => (
-                                <option key={f.faculty_id} value={f.faculty_id}>
-                                    {f.faculty_name} {f.department && `(${f.department})`}
-                                </option>
-                            ))}
-                        </select>
+                        <MultiSelect
+                            options={facultyList.map(f => ({
+                                value: f.faculty_id,
+                                label: f.faculty_name + (f.department ? ` (${f.department})` : '')
+                            }))}
+                            selectedValues={selectedFaculties}
+                            onChange={setSelectedFaculties}
+                            placeholder="Select Faculty..."
+                        />
                     </div>
                     <div className="control-group">
                         <label>Start Date</label>
@@ -386,16 +396,16 @@ const AdminAnalytics = () => {
                 {/* Debug info - remove in production */}
                 {process.env.NODE_ENV === 'development' && (
                     <div style={{ fontSize: '12px', color: '#666', margin: '10px 0' }}>
-                        Debug: {selectedFaculty === 'all' ? 'Heatmap' : 'Chart'} mode,
-                        {selectedFaculty === 'all' ? heatmapData.length : chartData.length} data points
+                        Debug: {selectedFaculties.includes('all') ? 'Heatmap' : 'Chart'} mode,
+                        {selectedFaculties.includes('all') ? heatmapData.length : chartData.length} data points
                     </div>
                 )}
 
-                {activeTab === 'chart' && selectedFaculty === 'all' && (
+                {activeTab === 'chart' && selectedFaculties.includes('all') && (
                     <Heatmap data={heatmapData} />
                 )}
 
-                {activeTab === 'chart' && selectedFaculty !== 'all' && chartData.length > 0 && (
+                {activeTab === 'chart' && !selectedFaculties.includes('all') && chartData.length > 0 && (
                     <div className="chart-container">
                         <ResponsiveContainer width="100%" height={500}>
                             <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
@@ -419,23 +429,37 @@ const AdminAnalytics = () => {
                                         style: { fill: '#111827', fontWeight: 'bold' }
                                     }}
                                 />
-                                <Tooltip content={<CustomTooltip />} />
+                                <Tooltip content={<CustomTooltip />} shared={false} cursor={{ strokeDasharray: '3 3' }} />
                                 <Legend
                                     wrapperStyle={{ paddingTop: '20px', color: '#374151', fontWeight: 600 }}
                                     iconType="circle"
                                 />
-                                {facultyKeys.map((key) => (
-                                    <Line
-                                        key={key}
-                                        type="monotone"
-                                        dataKey={key}
-                                        stroke="#1a1a1a"
-                                        strokeWidth={3}
-                                        dot={{ r: 6, fill: '#fff', strokeWidth: 2, stroke: '#1a1a1a' }}
-                                        activeDot={{ r: 9, fill: '#1a1a1a', strokeWidth: 2, stroke: '#fff' }}
-                                        name={key}
-                                    />
-                                ))}
+                                {facultyKeys.map((key, index) => {
+                                    const colors = [
+                                        '#4f46e5', '#db2777', '#16a34a', '#ea580c', '#0891b2',
+                                        '#9333ea', '#dc2626', '#b45309', '#059669', '#2563eb'
+                                    ];
+                                    const color = colors[index % colors.length];
+
+                                    const isHovered = hoveredFaculty === key;
+                                    const isDimmed = hoveredFaculty !== null && !isHovered;
+
+                                    return (
+                                        <Line
+                                            key={key}
+                                            type="monotone"
+                                            dataKey={key}
+                                            stroke={color}
+                                            strokeWidth={isHovered ? 4 : 3}
+                                            strokeOpacity={isDimmed ? 0.2 : 1}
+                                            dot={{ r: 6, fill: '#fff', strokeWidth: 2, stroke: color }}
+                                            activeDot={isHovered ? { r: 8, strokeWidth: 0 } : false}
+                                            name={key}
+                                            onMouseEnter={() => setHoveredFaculty(key)}
+                                            onMouseLeave={() => setHoveredFaculty(null)}
+                                        />
+                                    );
+                                })}
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
