@@ -509,7 +509,12 @@ export const getFacultyRatings = async (req: Request, res: Response): Promise<vo
 
         // Apply filters
         if (faculty_id && faculty_id !== "all") {
-            query = query.eq("faculty_id", faculty_id);
+            const facultyIds = faculty_id.split(',');
+            if (facultyIds.length > 1) {
+                query = query.in("faculty_id", facultyIds);
+            } else {
+                query = query.eq("faculty_id", faculty_id);
+            }
         }
         if (start_date) {
             query = query.gte("session_date", start_date);

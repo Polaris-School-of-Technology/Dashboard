@@ -1,10 +1,11 @@
 // routes/authRoutes.ts
 import { Router } from "express";
-import { login, logout, forgotPassword, resetPassword, changePassword } from "../controllers/login.controller"
+import { login, logout, forgotPassword, resetPassword, changePassword, googleLogin } from "../controllers/login.controller"
 
 const router = Router();
 
 router.post("/login", login);
+router.post("/google", googleLogin);
 router.post("/logout", logout)
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
