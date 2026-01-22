@@ -211,12 +211,12 @@ export const attendanceReport = async (req: Request, res: Response) => {
 
             // emails
             const { data: emailDetails, error: emailErr } = await supabase
-                .from("user_contacts")
-                .select("user_id, email")
-                .in("user_id", allUserIds);
+                .from("profiles")
+                .select("id, email")
+                .in("id", allUserIds);
 
             if (emailErr) return res.status(500).json({ error: emailErr.message });
-            emailMap = Object.fromEntries(emailDetails.map((e) => [e.user_id, e.email]));
+            emailMap = Object.fromEntries(emailDetails.map((e) => [e.id, e.email]));
         }
 
         // --- Step 6: Enrich sessions with course/batch info ---

@@ -3,3 +3,4 @@
 gcp-key.json
 service-account.json
 notification-key.json
+.env.yaml
