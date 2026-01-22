@@ -496,6 +496,7 @@ export const getFacultyRatings = async (req: Request, res: Response): Promise<vo
             .select(`
                 rating,
                 session_date,
+                session_id,
                 faculty_id,
                 profiles!inner(name),
                 class_sessions!inner(
@@ -527,7 +528,48 @@ export const getFacultyRatings = async (req: Request, res: Response): Promise<vo
             return;
         }
 
-        res.json(data || []);
+        // Get unique session IDs
+        const sessionIds = [...new Set(data?.map((r: any) => r.session_id))];
+
+        // Fetch student response counts for each session
+        const { data: responsesData, error: responsesError } = await supabase
+            .from("session_responses_feedback")
+            .select(`
+                session_id,
+                question_id,
+                session_questions!inner(
+                    feedback_question_id
+                )
+            `)
+            .in("session_id", sessionIds);
+
+        if (responsesError) {
+            console.error("Supabase error fetching responses:", responsesError);
+        }
+
+        // Count students who responded to feedback_question_id = 3 for each session
+        const sessionStudentCounts: Record<string, number> = {};
+        
+        (responsesData || []).forEach((response: any) => {
+            const sessionId = response.session_id;
+            const feedbackQuestionId = response.session_questions?.feedback_question_id;
+            
+            // Only count if feedback_question_id is 3
+            if (feedbackQuestionId === 3) {
+                if (!sessionStudentCounts[sessionId]) {
+                    sessionStudentCounts[sessionId] = 0;
+                }
+                sessionStudentCounts[sessionId] += 1;
+            }
+        });
+
+        // Add student counts to the response data
+        const dataWithCounts = (data || []).map((rating: any) => ({
+            ...rating,
+            student_count: sessionStudentCounts[rating.session_id] || 0
+        }));
+
+        res.json(dataWithCounts);
     } catch (err) {
         console.error("Error fetching faculty ratings:", err);
         res.status(500).json({ error: "Internal server error" });
@@ -552,6 +594,7 @@ export const getAllFacultyRatings = async (req: Request, res: Response): Promise
             .select(`
                 rating,
                 session_date,
+                session_id,
                 profiles!inner(name)
             `)
             .gte("session_date", start_date)
@@ -564,25 +607,67 @@ export const getAllFacultyRatings = async (req: Request, res: Response): Promise
             return;
         }
 
-        // Group by date and faculty, calculate averages
-        const grouped: Record<string, Record<string, { total: number; count: number }>> = {};
+        // Get unique session IDs
+        const sessionIds = [...new Set(data?.map((r: any) => r.session_id))];
+
+        // Fetch student response counts for each session
+        const { data: responsesData, error: responsesError } = await supabase
+            .from("session_responses_feedback")
+            .select(`
+                session_id,
+                question_id,
+                session_questions!inner(
+                    feedback_question_id
+                )
+            `)
+            .in("session_id", sessionIds);
+
+        if (responsesError) {
+            console.error("Supabase error fetching responses:", responsesError);
+        }
+
+        // Count students who responded to feedback_question_id = 3 for each session
+        const sessionStudentCounts: Record<string, number> = {};
+        
+        (responsesData || []).forEach((response: any) => {
+            const sessionId = response.session_id;
+            const feedbackQuestionId = response.session_questions?.feedback_question_id;
+            
+            // Only count if feedback_question_id is 3
+            if (feedbackQuestionId === 3) {
+                if (!sessionStudentCounts[sessionId]) {
+                    sessionStudentCounts[sessionId] = 0;
+                }
+                sessionStudentCounts[sessionId] += 1;
+            }
+        });
+
+        // Group by date and faculty, calculate averages and student counts
+        const grouped: Record<string, Record<string, { total: number; count: number; studentCount: number }>> = {};
 
         (data || []).forEach((r: any) => {
             const date = r.session_date;
             const faculty = getProfileName(r.profiles);
+            const sessionId = r.session_id;
 
             if (!grouped[date]) grouped[date] = {};
-            if (!grouped[date][faculty]) grouped[date][faculty] = { total: 0, count: 0 };
+            if (!grouped[date][faculty]) grouped[date][faculty] = { total: 0, count: 0, studentCount: 0 };
 
             grouped[date][faculty].total += r.rating ?? 0;
             grouped[date][faculty].count += 1;
+            
+            // Add student count from this session
+            if (sessionStudentCounts[sessionId]) {
+                grouped[date][faculty].studentCount += sessionStudentCounts[sessionId];
+            }
         });
 
-        // Format for heatmap: array of { date, Faculty 1: avg, Faculty 2: avg, ... }
+        // Format for heatmap: array of { date, Faculty 1: avg, Faculty 2: avg, Faculty 1_count, Faculty 2_count ... }
         const heatmapData = Object.entries(grouped).map(([date, faculties]) => {
             const row: Record<string, any> = { date };
             Object.entries(faculties).forEach(([faculty, stats]) => {
                 row[faculty] = Math.round((stats.total / stats.count) * 100) / 100;
+                row[`${faculty}_count`] = stats.studentCount;
             });
             return row;
         }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());

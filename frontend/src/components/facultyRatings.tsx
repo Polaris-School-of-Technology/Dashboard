@@ -13,6 +13,8 @@ interface FacultyRating {
     rating: number;
     session_date: string;
     faculty_id: string;
+    session_id: string;
+    student_count?: number;
     profiles: { name: string };
     class_sessions: {
         course_sections: {
@@ -24,7 +26,7 @@ interface FacultyRating {
 
 interface Faculty {
     faculty_id: string;
-    faculty_name: string;  // This matches your API response
+    faculty_name: string;
     department: string | null;
     title: string | null;
 }
@@ -38,13 +40,6 @@ interface ChartDataPoint {
 interface HeatmapDataPoint {
     date: string;
     [facultyName: string]: number | string;
-}
-
-// Add interface for the heatmap API response
-interface HeatmapRawData {
-    date: string;
-    faculty: string;
-    rating: number;
 }
 
 const AdminAnalytics = () => {
@@ -78,7 +73,7 @@ const AdminAnalytics = () => {
     const fetchFacultyList = async () => {
         try {
             const res = await axios.get(`${API_BASE_URL}/api/faculty-rating/analytics/faculty-list`);
-            console.log('Faculty list response:', res.data); // Debug log
+            console.log('Faculty list response:', res.data);
             setFacultyList(res.data);
         } catch (err) {
             console.error('Error fetching faculty list:', err);
@@ -88,19 +83,29 @@ const AdminAnalytics = () => {
 
     // Transform raw ratings data into chart-friendly format
     const transformChartData = (ratings: FacultyRating[]): ChartDataPoint[] => {
-        const groupedData: Record<string, Record<string, { ratings: number[]; courseName: string }>> = {};
+        const groupedData: Record<string, Record<string, { 
+            ratings: number[]; 
+            courseName: string;
+            studentCounts: number[];
+        }>> = {};
 
         ratings.forEach(rating => {
             const date = rating.session_date;
             const facultyName = rating.profiles.name;
             const courseName = rating.class_sessions?.course_sections?.courses?.course_name || 'N/A';
+            const studentCount = rating.student_count || 0;
 
             if (!groupedData[date]) groupedData[date] = {};
             if (!groupedData[date][facultyName]) {
-                groupedData[date][facultyName] = { ratings: [], courseName };
+                groupedData[date][facultyName] = { 
+                    ratings: [], 
+                    courseName,
+                    studentCounts: []
+                };
             }
 
             groupedData[date][facultyName].ratings.push(rating.rating);
+            groupedData[date][facultyName].studentCounts.push(studentCount);
         });
 
         const result: ChartDataPoint[] = Object.entries(groupedData).map(([date, facultyRatings]) => {
@@ -111,58 +116,17 @@ const AdminAnalytics = () => {
 
             Object.entries(facultyRatings).forEach(([facultyName, data]) => {
                 const avg = data.ratings.reduce((a, b) => a + b, 0) / data.ratings.length;
+                const totalStudents = data.studentCounts.reduce((a, b) => a + b, 0);
+                
                 dataPoint[facultyName] = Math.round(avg * 100) / 100;
                 dataPoint[`__${facultyName}_course__`] = data.courseName;
+                dataPoint[`__${facultyName}_count__`] = totalStudents;
             });
 
             return dataPoint;
         });
 
         return result.sort((a, b) => new Date(a.originalDate).getTime() - new Date(b.originalDate).getTime());
-    };
-
-    // FIXED: Transform raw all-faculty ratings into proper heatmap format
-    const transformHeatmapData = (data: HeatmapRawData[]): HeatmapDataPoint[] => {
-        console.log('Raw heatmap data:', data); // Debug log
-
-        if (!Array.isArray(data)) {
-            console.error('Expected array but got:', typeof data);
-            return [];
-        }
-
-        // Group by date first
-        const groupedByDate: Record<string, Record<string, number>> = {};
-
-        data.forEach(item => {
-            if (!item.date || !item.faculty || item.rating === undefined) {
-                console.warn('Invalid data item:', item);
-                return;
-            }
-
-            if (!groupedByDate[item.date]) {
-                groupedByDate[item.date] = {};
-            }
-
-            // If multiple ratings for same faculty on same date, take average
-            if (groupedByDate[item.date][item.faculty]) {
-                const existingRating = groupedByDate[item.date][item.faculty];
-                groupedByDate[item.date][item.faculty] = (existingRating + item.rating) / 2;
-            } else {
-                groupedByDate[item.date][item.faculty] = item.rating;
-            }
-        });
-
-        // Convert to heatmap format
-        const result = Object.entries(groupedByDate).map(([date, facultyRatings]) => {
-            const heatmapPoint: HeatmapDataPoint = { date };
-            Object.entries(facultyRatings).forEach(([facultyName, rating]) => {
-                heatmapPoint[facultyName] = Math.round(rating * 100) / 100;
-            });
-            return heatmapPoint;
-        });
-
-        console.log('Transformed heatmap data:', result.slice(0, 2)); // Debug log
-        return result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     };
 
     const fetchAnalytics = async () => {
@@ -174,10 +138,7 @@ const AdminAnalytics = () => {
                 ? `${API_BASE_URL}/api/faculty-rating/analytics/allFacultyRatings`
                 : `${API_BASE_URL}/api/faculty-rating/analytics/daily-aggregates`;
 
-            console.log('Fetching from:', endpoint); // Debug log
-
-
-
+            console.log('Fetching from:', endpoint);
 
             const res = await axios.get(endpoint, {
                 params: {
@@ -187,10 +148,10 @@ const AdminAnalytics = () => {
                 }
             });
 
-            console.log('API Response:', res.data); // Debug log
+            console.log('API Response:', res.data);
 
             if (selectedFaculty === 'all') {
-                // directly set heatmap data, no transformation needed for your current API shape
+                // API now returns data in the correct format directly
                 setHeatmapData(res.data);
                 setTableData([]);
             } else {
@@ -199,11 +160,9 @@ const AdminAnalytics = () => {
                 setChartData(transformChartData(ratingsArray));
             }
 
-
         } catch (err: any) {
             console.error('Error fetching analytics:', err);
 
-            // Better error handling
             if (err.response?.status === 401) {
                 setError('Session expired. Please login again.');
             } else if (err.response?.status === 500) {
@@ -232,18 +191,23 @@ const AdminAnalytics = () => {
             const entry = payload[0];
             const facultyName = entry.dataKey;
             const courseName = entry.payload[`__${facultyName}_course__`];
+            const studentCount = entry.payload[`__${facultyName}_count__`];
+            
             return (
                 <div className="custom-tooltip">
                     <p>{facultyName}</p>
                     <p>Rating: {entry.value}/5</p>
                     <p>Course: {courseName}</p>
+                    {studentCount !== undefined && (
+                        <p>Students: {studentCount}</p>
+                    )}
                 </div>
             );
         }
         return null;
     };
 
-    // IMPROVED: Heatmap component with better data handling
+    // Updated Heatmap component with student count display
     const Heatmap = ({ data }: { data: HeatmapDataPoint[] }) => {
         if (!data || data.length === 0) {
             return (
@@ -253,17 +217,18 @@ const AdminAnalytics = () => {
             );
         }
 
-        // Calculate all faculties from the data
+        // Get all faculty names (excluding _count fields and date)
         const allFaculties = Array.from(new Set(
             data.flatMap(row =>
                 Object.keys(row).filter(key =>
                     key !== 'date' &&
+                    !key.endsWith('_count') &&
                     typeof row[key] === 'number'
                 )
             )
         ));
 
-        console.log('Heatmap faculties:', allFaculties); // Debug log
+        console.log('Heatmap faculties:', allFaculties);
 
         if (allFaculties.length === 0) {
             return (
@@ -277,6 +242,7 @@ const AdminAnalytics = () => {
             <div className="heatmap-container">
                 <div className="heatmap-info">
                     <p>Faculty Performance Heatmap ({data.length} days, {allFaculties.length} faculty members)</p>
+                    <small style={{ color: '#666' }}>Hover over cells to see student response count</small>
                 </div>
                 <table className="heatmap-table">
                     <thead>
@@ -295,23 +261,32 @@ const AdminAnalytics = () => {
                                 <td>{new Date(row.date).toLocaleDateString()}</td>
                                 {allFaculties.map(faculty => {
                                     const rating = row[faculty];
+                                    const studentCount = row[`${faculty}_count`];
                                     const numericRating = typeof rating === 'number' ? rating : undefined;
+                                    const numericCount = typeof studentCount === 'number' ? studentCount : 0;
 
                                     return (
                                         <td
                                             key={faculty}
                                             style={{
                                                 backgroundColor: getHeatmapColor(numericRating),
-                                                color: '#000', // always black text
+                                                color: '#000',
                                                 textAlign: 'center',
                                                 padding: '8px 4px',
                                                 fontWeight: numericRating !== undefined ? 600 : 400,
+                                                position: 'relative',
                                             }}
-                                            title={`${faculty}: ${numericRating !== undefined ? numericRating : 'No rating'}`}
+                                            title={`${faculty}: ${numericRating !== undefined ? numericRating + '/5' : 'No rating'}\nStudents responded: ${numericCount}`}
                                         >
-                                            {numericRating !== undefined ? numericRating : '-'}
+                                            {numericRating !== undefined ? (
+                                                <div>
+                                                    <div style={{ fontSize: '16px' }}>{numericRating}</div>
+                                                    <div style={{ fontSize: '11px', color: '#666', marginTop: '2px' }}>
+                                                        ({numericCount} {numericCount === 1 ? 'student' : 'students'})
+                                                    </div>
+                                                </div>
+                                            ) : '-'}
                                         </td>
-
                                     );
                                 })}
                             </tr>
@@ -383,7 +358,6 @@ const AdminAnalytics = () => {
                     </div>
                 )}
 
-                {/* Debug info - remove in production */}
                 {process.env.NODE_ENV === 'development' && (
                     <div style={{ fontSize: '12px', color: '#666', margin: '10px 0' }}>
                         Debug: {selectedFaculty === 'all' ? 'Heatmap' : 'Chart'} mode,
@@ -451,6 +425,7 @@ const AdminAnalytics = () => {
                                     <th>Course</th>
                                     <th>Batch</th>
                                     <th>Rating</th>
+                                    <th>Students</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -467,6 +442,7 @@ const AdminAnalytics = () => {
                                                 {row.rating}/5
                                             </span>
                                         </td>
+                                        <td>{row.student_count || 0}</td>
                                     </tr>
                                 ))}
                             </tbody>
