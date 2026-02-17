@@ -118,7 +118,7 @@ export default function UploadStudentEvaluations() {
   };
 
   const downloadSampleCSV = () => {
-    const sampleData = `MSU Email,Student Marks in %,Last Week's Attendance %,Final Marks in %,Attendance Criteria,
+    const sampleData = `MSU Email,Student Marks in %,Last Week's Attendance %,Attendance Criteria,Final Marks in %,
 gatikumawat@gmail.com,77,88,90,Met`;
 
     const blob = new Blob([sampleData], { type: 'text/csv' });

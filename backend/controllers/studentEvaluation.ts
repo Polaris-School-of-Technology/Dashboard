@@ -108,8 +108,9 @@ export const uploadStudentEvaluations = async (req: Request, res: Response) => {
                 const email = row['MSU Email'] || row['MSU_Email'] || row['Email'] || row['email'];
                 const student_marks_in_percentage = row['Student Marks in %']
                 const last_weeks_attendance_percentage = row["Last Week's Attendance %"]
-                const final_marks_in_percentage = row['Final Marks in %']
                 const attendance_criteria = row['Attendance Criteria']
+                const final_marks_in_percentage = row['Final Marks in %']
+                
 
                 if (!email) {
                     results.failed.push({
