@@ -281,7 +281,8 @@ export const getBatches = async (req: Request, res: Response) => {
         const { data, error } = await supabase
             .from('batches')
             .select('id, batch_name')
-            .order('batch_name', { ascending: true });
+            .order('batch_name', { ascending: true })
+             .eq("batch_type", 1);
 
         if (error) return res.status(500).json({ error: error.message });
 

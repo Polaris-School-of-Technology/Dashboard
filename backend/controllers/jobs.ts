@@ -539,7 +539,8 @@ export const getAllBatches = async (req: Request, res: Response) => {
     try {
         const { data, error } = await supabase
             .from("batches")
-            .select("*");
+            .select("*")
+            .eq("batch_type", 1);
 
         if (error) throw error;
 
