@@ -46,8 +46,7 @@ export const getAllBatches = async (req: Request, res: Response) => {
         // Fetch all rows from "batches" table
         const { data, error } = await supabase
             .from("batches")
-            .select("*")
-            .eq("batch_type", 1);;  // selects all columns
+            .select("*");  // selects all columns
 
         if (error) throw error;
 
