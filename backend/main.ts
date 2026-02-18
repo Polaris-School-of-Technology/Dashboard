@@ -48,8 +48,7 @@ app.use("/api/jobs", jobRouter)
 app.use("/api/eval", evalRoutes)
 
 
-
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const PORT = parseInt(process.env.PORT || '8080', 10);
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });

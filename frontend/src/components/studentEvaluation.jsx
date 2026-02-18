@@ -118,10 +118,8 @@ export default function UploadStudentEvaluations() {
   };
 
   const downloadSampleCSV = () => {
-    const sampleData = `Username,Student Name,MSU Email,Set,User Score,Total Score,Tab Switches,Is Blocked,Reset Score
-gatikumawat,Gati Kumawat,gatikumawat@gmail.com,HTMLASS01,100,200,0,FALSE,HTMLASS01
-priyanshudp25,Priyanshu Dwivedi,PRIYANSHUD.p25@medhaviskillsuniversity.edu.in,HTMLASS01,200,200,0,FALSE,HTMLASS01
-prathamchp25,Pratham Prasad Choudhari,PRATHAMCH.p25@medhaviskillsuniversity.edu.in,HTMLASS01,200,200,0,FALSE,HTMLASS01`;
+    const sampleData = `MSU Email,Student Marks in %,Last Week's Attendance %,Attendance Criteria,Final Marks in %,
+gatikumawat@gmail.com,77,88,90,Met`;
 
     const blob = new Blob([sampleData], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);

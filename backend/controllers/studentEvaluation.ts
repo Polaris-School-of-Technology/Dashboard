@@ -106,8 +106,11 @@ export const uploadStudentEvaluations = async (req: Request, res: Response) => {
             try {
                 // Get email from CSV - try common column names
                 const email = row['MSU Email'] || row['MSU_Email'] || row['Email'] || row['email'];
-                const studentScore = row['User Score'] || row['Student Score'] || row['student_score'];
-                const totalScore = row['Total Score'] || row['total_score'] || 200; // Default to 200 if not provided
+                const student_marks_in_percentage = row['Student Marks in %']
+                const last_weeks_attendance_percentage = row["Last Week's Attendance %"]
+                const attendance_criteria = row['Attendance Criteria']
+                const final_marks_in_percentage = row['Final Marks in %']
+                
 
                 if (!email) {
                     results.failed.push({
@@ -142,8 +145,10 @@ export const uploadStudentEvaluations = async (req: Request, res: Response) => {
                         batch_id: Number(batch_id),
                         course_id: Number(course_id),
                         date: date,
-                        student_score: Number(studentScore) || 0,
-                        total_score: Number(totalScore) || 200,
+                        student_marks_in_percentage: student_marks_in_percentage,
+                        final_marks_in_percentage: final_marks_in_percentage,
+                        last_weeks_attendance_percentage: last_weeks_attendance_percentage,
+                        attendance_criteria: attendance_criteria,
                         type: type
                     })
                     .select()
