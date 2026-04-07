@@ -98,7 +98,93 @@ const JobDetails: React.FC = () => {
 
     return (
         <div className="job-details-container">
-            {/* rest of your JSX unchanged */}
+            <div className="header-section">
+                <button onClick={() => navigate('/admin/jobs')} className="back-btn">
+                    ← Back to Jobs
+                </button>
+            </div>
+
+            <div className="job-header">
+                <div className="company-logo">
+                    {job.company.charAt(0).toUpperCase()}
+                </div>
+                <div className="job-title-section">
+                    <h1>{job.title}</h1>
+                    <h2>{job.company} - {job.location}</h2>
+                </div>
+            </div>
+
+            <div className="job-info-grid">
+                <div className="info-card">
+                    <span className="info-label">Mode</span>
+                    <span className="info-value">{job.mode}</span>
+                </div>
+                <div className="info-card">
+                    <span className="info-label">Type</span>
+                    <span className="info-value">{job.type}</span>
+                </div>
+                <div className="info-card">
+                    <span className="info-label">Package</span>
+                    <span className="info-value">{job.package}</span>
+                </div>
+            </div>
+
+            <div className="content-section">
+                <div className="section">
+                    <h3>About Role</h3>
+                    <p>{job.description?.aboutRole}</p>
+                </div>
+
+                <div className="section">
+                    <h3>Additional Information</h3>
+                    <p>{job.description?.additionalInformation}</p>
+                </div>
+
+                <div className="section">
+                    <h3>Eligibility Criteria</h3>
+                    <div className="subsection">
+                        <h4>Required Skills</h4>
+                        <div className="skills-container">
+                            {job.eligibilityCriteria?.requiredSkills?.flat()?.length > 0 ? (
+                                job.eligibilityCriteria.requiredSkills.flat().map((skill, index) => (
+                                    <span key={index} className="skill-badge">{String(skill)}</span>
+                                ))
+                            ) : (
+                                <p>Not specified</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="subsection">
+                        <h4>Minimum CGPA</h4>
+                        <p>{job.eligibilityCriteria?.academicRequirements?.minimumCGPA || "N/A"}</p>
+                    </div>
+                    <div className="subsection">
+                        <h4>Preferred Qualifications</h4>
+                        {job.eligibilityCriteria?.academicRequirements?.preferredQualifications?.length > 0 ? (
+                            <ul>
+                                {job.eligibilityCriteria.academicRequirements.preferredQualifications.map((qual, index) => (
+                                    <li key={index}>{String(qual)}</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>Not specified</p>
+                        )}
+                    </div>
+                </div>
+
+                {job.attachedDocuments && job.attachedDocuments.length > 0 && (
+                    <div className="section">
+                        <h3>Attached Documents</h3>
+                        <div className="documents-list">
+                            {job.attachedDocuments.map((doc, index) => (
+                                <a key={index} href={doc.url} target="_blank" rel="noopener noreferrer" className="document-link">
+                                    📄 {doc.name}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
