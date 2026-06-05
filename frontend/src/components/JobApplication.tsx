@@ -26,6 +26,8 @@ const JobApplications: React.FC = () => {
     const [error, setError] = useState('');
     const [selectedApp, setSelectedApp] = useState<Application | null>(null);
     const [newStatus, setNewStatus] = useState('');
+    const [isDownloadingCSV, setIsDownloadingCSV] = useState(false);
+    const [downloadError, setDownloadError] = useState('');
 
     useEffect(() => {
         fetchApplications();
@@ -69,6 +71,56 @@ const JobApplications: React.FC = () => {
         setNewStatus(app.status);
     };
 
+    // ✅ Download Applications as CSV
+    const downloadCSV = async () => {
+        if (applications.length === 0) {
+            setDownloadError('No applications to download');
+            return;
+        }
+
+        setDownloadError('');
+        setIsDownloadingCSV(true);
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(
+                `${API_BASE_URL}/api/jobs/admin/jobs/${jobId}/applications/csv`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(
+                    errorData.error || `Failed to download: ${response.status} ${response.statusText}`
+                );
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // Get filename from Content-Disposition header or use default
+            const contentDisposition = response.headers.get('content-disposition');
+            let filename = 'job_applications.csv';
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                if (filenameMatch) {
+                    filename = filenameMatch[1];
+                }
+            }
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Error downloading CSV:', err);
+            setDownloadError(err instanceof Error ? err.message : 'Failed to download CSV');
+        } finally {
+            setIsDownloadingCSV(false);
+        }
+    };
+
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'Applied':
@@ -91,10 +143,19 @@ const JobApplications: React.FC = () => {
                     ← Back to Jobs
                 </button>
                 <h1>Job Applications</h1>
+                <button
+                    onClick={downloadCSV}
+                    disabled={isDownloadingCSV || applications.length === 0}
+                    className="download-csv-btn"
+                    title="Download applications as CSV file"
+                >
+                    {isDownloadingCSV ? '⏳ Generating CSV...' : '📥 Download CSV'}
+                </button>
             </div>
 
             {loading && <p className="loading-text">Loading applications...</p>}
             {error && <p className="error">{error}</p>}
+            {downloadError && <p className="error">{downloadError}</p>}
 
             {!loading && applications.length === 0 && (
                 <p className="no-data">No applications found for this job.</p>
