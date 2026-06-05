@@ -321,6 +321,7 @@ export const getJobById = async (req: Request, res: Response) => {
 
 
 // ✅ GET ALL APPLICATIONS FOR A SPECIFIC JOB (Admin sees who applied)
+// ✅ GET ALL APPLICATIONS FOR A SPECIFIC JOB (Admin sees who applied)
 export const getJobApplications = async (req: Request, res: Response) => {
     try {
         const { jobId } = req.params;
@@ -330,12 +331,12 @@ export const getJobApplications = async (req: Request, res: Response) => {
             .select(`
                 id,
                 user_id,
-                resume_url,
+                job_id,
                 cover_letter,
                 status,
                 created_at,
                 last_updated,
-                users!inner(id, email, full_name)
+                profiles!inner(name, email)
             `)
             .eq('job_id', jobId)
             .order('created_at', { ascending: false });
@@ -345,9 +346,9 @@ export const getJobApplications = async (req: Request, res: Response) => {
         const applications = data.map((app: any) => ({
             id: app.id,
             userId: app.user_id,
-            studentName: app.users?.full_name || 'N/A',
-            studentEmail: app.users?.email || 'N/A',
-            resumeUrl: app.resume_url,
+            jobId: app.job_id,
+            studentName: app.profiles?.name || 'N/A',
+            studentEmail: app.profiles?.email || 'N/A',
             coverLetter: app.cover_letter,
             status: app.status,
             appliedAt: app.created_at,
@@ -370,6 +371,99 @@ export const getJobApplications = async (req: Request, res: Response) => {
         });
     }
 };
+
+export const downloadApplicationsCSV = async (req: Request, res: Response) => {
+    try {
+        const { jobId } = req.params;
+ 
+        // ✅ Fetch the job details to get company name
+        const { data: jobData, error: jobError } = await supabase
+            .from('jobs')
+            .select('id, company, title')
+            .eq('id', jobId)
+            .single();
+ 
+        if (jobError || !jobData) {
+            return res.status(404).json({
+                success: false,
+                message: 'Job not found'
+            });
+        }
+ 
+        // ✅ Fetch all applications for this job
+        const { data: applications, error: appError } = await supabase
+            .from('job_applications')
+            .select(`
+                id,
+                user_id,
+                job_id,
+                cover_letter,
+                status,
+                created_at,
+                last_updated,
+                profiles!inner(name, email)
+            `)
+            .eq('job_id', jobId)
+            .order('created_at', { ascending: false });
+ 
+        if (appError) {
+            throw new Error(appError.message);
+        }
+ 
+        if (!applications || applications.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No applications found for this job'
+            });
+        }
+ 
+        // ✅ Function to escape CSV values
+        const escapeCSV = (value: any) => {
+            if (value === null || value === undefined) return '""';
+            const stringValue = value.toString();
+            if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+                return '"' + stringValue.replace(/"/g, '""') + '"';
+            }
+            return stringValue;
+        };
+ 
+        // ✅ Create CSV headers
+        const headers = ['Student Name', 'Email', 'Status', 'Applied At', 'Last Updated', 'Cover Letter'];
+        let csvContent = headers.join(',') + '\n';
+ 
+        // ✅ Add data rows
+        applications.forEach((app: any) => {
+            const row = [
+                escapeCSV(app.profiles?.name || 'N/A'),
+                escapeCSV(app.profiles?.email || 'N/A'),
+                escapeCSV(app.status),
+                escapeCSV(new Date(app.created_at).toLocaleString()),
+                escapeCSV(new Date(app.last_updated).toLocaleString()),
+                escapeCSV(app.cover_letter || 'N/A'),
+            ];
+            csvContent += row.join(',') + '\n';
+        });
+ 
+        // ✅ Create filename with company name
+        const sanitizedCompany = jobData.company.replace(/[^a-zA-Z0-9-_]/g, '_');
+        const filename = `job_applications_${sanitizedCompany}_${new Date().toISOString().split('T')[0]}.csv`;
+ 
+        // ✅ Send CSV file
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(csvContent);
+ 
+    } catch (error) {
+        const err = error as Error;
+        console.error('Error downloading applications CSV:', err.message);
+ 
+        return res.status(500).json({
+            success: false,
+            message: err.message || 'Failed to download CSV'
+        });
+    }
+};
+ 
 
 // ✅ UPDATE APPLICATION STATUS (Admin moves student: Applied → Interview → Selected/Rejected)
 export const updateApplicationStatus = async (req: Request, res: Response) => {

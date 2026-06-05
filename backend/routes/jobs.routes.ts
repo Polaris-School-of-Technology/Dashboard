@@ -16,7 +16,8 @@ import {
     getJobStatuses,
     getAllDropdownOptions,
     getJobFullDetails,
-    updateJob
+    updateJob,
+    downloadApplicationsCSV 
 } from '../controllers/jobs'
 
 const router = Router();
@@ -80,6 +81,9 @@ router.get('/cities', getCities); // Get all cities
 // BATCH ROUTES
 // ============================================
 router.get('/batches', getAllBatches); // Get all batches
+router.get(
+    '/admin/jobs/:jobId/applications/csv',downloadApplicationsCSV 
+);
 
 // ============================================
 // DROPDOWN OPTIONS ROUTES
