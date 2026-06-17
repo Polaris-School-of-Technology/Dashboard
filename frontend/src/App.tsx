@@ -34,7 +34,6 @@ import JobDetails from "./components/jobDetails"
 import EditJob from "./components/EditJob";
 import MarksViewer from "./components/evalData"
 import "./App.css";
-
 // Axios interceptor for token expiry
 axios.interceptors.response.use(
   (response) => response,
@@ -91,7 +90,7 @@ function MainApp() {
   };
 
   return (
-    <div className="App bg-gray-100 min-h-screen relative">
+    <div className="App min-h-screen relative">
       {/* Navbar and Logout only for private/dashboard pages */}
       {!isPublicPage && (
         <>
@@ -102,8 +101,8 @@ function MainApp() {
             Logout
           </button>
 
-          <nav className="nav-container sticky top-0 z-40 bg-white shadow-lg border-b border-gray-200 px-6 py-4">
-            <div className="flex flex-wrap gap-6 justify-center md:justify-start">
+          <nav className="nav-container sticky top-0 z-40 px-6 pt-8 pb-4">
+            <div className="flex flex-wrap gap-6 justify-center items-center">
               {role === "admin" && (
                 <>
                   <NavLink to="/weekly-sessions" className={navClass}>

@@ -1,381 +1,282 @@
 @import '../styles/theme.css';
 
-/* Sessions Container */
 .sessions-container {
-    max-width: 1400px;
-    margin: var(--space-xl) auto;
-    padding: var(--card-padding);
-    background-color: var(--card-bg);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-xl);
-    backdrop-filter: var(--backdrop-blur);
-    border: var(--card-border);
+  max-width: 1220px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 204, 63, 0.18);
+  box-shadow: 0 25px 80px rgba(255, 204, 63, 0.08);
 }
 
-/* Page Title */
-h1 {
-    text-align: center;
-    font-size: var(--text-h1-size);
-    font-weight: var(--font-weight-extrabold);
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: var(--space-2xl);
-    letter-spacing: var(--text-h1-letter-spacing);
+.sessions-container h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-accent);
+  margin-bottom: 2rem;
 }
 
-/* Filter Section */
+.sessions-container > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1.75rem 0;
+  padding: 0.9rem 1.6rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--gradient-button-primary);
+  color: var(--color-black);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  box-shadow: var(--shadow-button-primary);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sessions-container > button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-button-primary-hover);
+}
+
 .filter-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    flex-wrap: wrap;
-    gap: var(--space-lg);
-    margin-bottom: var(--space-2xl);
-    padding: var(--filter-padding);
-    background: var(--filter-bg);
-    border-radius: var(--filter-border-radius);
-    border: var(--filter-border);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+  padding: 1.75rem;
+  background: rgba(255, 204, 63, 0.08);
+  border: 1px solid rgba(255, 204, 63, 0.16);
+  border-radius: var(--radius-lg);
 }
 
-/* Batch & Date Picker */
 .batch-picker,
 .date-picker {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .batch-picker label,
 .date-picker label {
-    font-weight: var(--text-label-weight);
-    font-size: var(--text-label-size);
-    color: var(--text-label-color);
-    text-transform: var(--text-label-transform);
-    letter-spacing: var(--text-label-letter-spacing);
+  font-weight: var(--text-label-weight);
+  color: var(--color-text-white);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
 }
 
-/* Date/Select Inputs */
-input[type="date"],
-select {
-    padding: var(--input-date-padding);
-    border: var(--input-date-border);
-    border-radius: var(--input-date-border-radius);
-    font-size: var(--input-date-font-size);
-    background-color: var(--input-date-bg);
-    transition: var(--transition-normal);
-    box-shadow: var(--shadow-sm);
+.batch-picker select,
+.date-picker input,
+.date-picker button {
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 204, 63, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 0.95rem;
 }
 
-input[type="date"]:focus,
-select:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    transform: translateY(-2px);
+.batch-picker select,
+.date-picker input {
+  appearance: none;
 }
 
-/* Primary Buttons */
-button {
-    padding: var(--btn-primary-padding);
-    border-radius: var(--btn-primary-border-radius);
-    border: none;
-    font-weight: var(--font-weight-semibold);
-    cursor: pointer;
-    transition: var(--transition-normal);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-sm);
-    font-size: var(--text-small-size);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    box-shadow: var(--shadow-sm);
+.date-picker button {
+  background: var(--gradient-button-primary);
+  color: var(--color-black);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition-normal);
 }
 
-.primary-btn,
-button:not(.table-btn):not(.edit-btn):not(.delete-btn):not(.quiz-btn):not(.save-btn):not(.cancel-btn) {
-    background: var(--btn-primary-bg);
-    color: white;
-    border: none;
+.date-picker button:hover {
+  background: #ffe071;
 }
 
-.primary-btn:hover,
-button:not(.table-btn):not(.edit-btn):not(.delete-btn):not(.quiz-btn):not(.save-btn):not(.cancel-btn):hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px -8px rgba(102, 126, 234, 0.5);
+.error {
+  color: var(--color-danger);
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-/* Sessions Table */
 .sessions-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: var(--table-border-radius);
-    overflow: hidden;
-    box-shadow: var(--table-shadow);
-    margin-top: var(--space-lg);
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+}
+
+.sessions-table thead {
+  background: var(--gradient-table-header);
+}
+
+.sessions-table th,
+.sessions-table td {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid rgba(255, 204, 63, 0.12);
+  color: white;
+  font-size: 0.95rem;
 }
 
 .sessions-table th {
-    background: var(--table-header-bg);
-    color: var(--table-header-color);
-    padding: 1.25rem 1rem;
-    text-align: left;
-    font-weight: var(--font-weight-bold);
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    border: none;
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .sessions-table td {
-    padding: 1.25rem 1rem;
-    border-bottom: var(--table-border);
-    background-color: var(--table-bg);
-    vertical-align: middle;
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.sessions-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.sessions-table tbody tr {
-    transition: var(--transition-fast);
-}
-
-.sessions-table tbody tr:hover {
-    background-color: var(--table-row-hover-bg);
-    transform: scale(1.01);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.sessions-table tbody tr:hover td {
+  background: rgba(255, 204, 63, 0.12);
 }
 
 .sessions-table td:last-child {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-/* Table Buttons */
-.table-btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: var(--font-weight-semibold);
-    border-radius: var(--radius-sm);
-    min-width: 70px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+.sessions-table button {
+  padding: 0.7rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.85rem;
+  transition: var(--transition-normal);
+  min-width: 82px;
 }
 
-.edit-btn {
-    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-    color: white;
-    border: none;
+.sessions-table button:first-child {
+  background: var(--color-accent);
+  color: var(--color-black);
 }
 
-.edit-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
+.sessions-table button:first-child:hover,
+.quiz-btn:hover {
+  background: #ffe071;
 }
 
 .delete-btn {
-    background: var(--btn-danger-bg);
-    color: white;
-    border: none;
-}
-
-.delete-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--btn-danger-shadow);
+  background: rgba(245, 101, 101, 0.95);
+  color: white;
 }
 
 .quiz-btn {
-    background: var(--btn-warning-bg);
-    color: white;
-    border: none;
+  background: rgba(255, 204, 63, 0.98);
+  color: var(--color-black);
 }
 
-.quiz-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--btn-warning-shadow);
-}
-
-/* Modal Styles */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--modal-bg);
-    backdrop-filter: blur(8px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  z-index: 1000;
 }
 
 .modal-content {
-    width: var(--modal-content-width);
-    max-width: var(--modal-content-max-width);
-    padding: var(--modal-content-padding);
-    background: var(--modal-content-bg);
-    border-radius: var(--modal-content-border-radius);
-    box-shadow: var(--modal-content-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: var(--backdrop-blur);
+  width: min(92%, 760px);
+  background: #111111;
+  border: 1px solid rgba(255, 204, 63, 0.18);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
 }
 
-.modal-content h3 {
-    font-size: var(--text-h3-size);
-    font-weight: var(--text-h3-weight);
-    margin-bottom: var(--space-lg);
-    color: var(--text-h3-color);
-    text-align: center;
-}
-
+.modal-content h3,
 .modal-content label {
-    font-weight: var(--text-label-weight);
-    margin: var(--space-md) 0 var(--space-sm);
-    display: block;
-    color: var(--color-text-primary);
-    font-size: var(--text-label-size);
-    text-transform: var(--text-label-transform);
-    letter-spacing: var(--text-label-letter-spacing);
+  color: white;
 }
 
-.modal-content input,
-.modal-content select {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: var(--space-md);
+.modal-content select,
+.modal-content input {
+  width: 100%;
+  margin-top: 0.45rem;
+  margin-bottom: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 204, 63, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
 }
 
-/* Modal Actions */
+.modal-content input[type='number'] {
+  max-width: 200px;
+}
+
 .modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-md);
-    margin-top: var(--space-2xl);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
 }
 
-.save-btn {
-    background: var(--btn-secondary-bg);
-    color: white;
-    border: none;
-    padding: var(--btn-secondary-padding);
+.modal-actions button {
+  padding: 0.95rem 1.4rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
 }
 
-.save-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--btn-secondary-shadow);
+.modal-actions button.save-btn {
+  background: var(--gradient-button-primary);
+  color: var(--color-black);
 }
 
-.cancel-btn {
-    background: linear-gradient(135deg, var(--color-text-secondary) 0%, #4a5568 100%);
-    color: white;
-    border: none;
-    padding: var(--btn-primary-padding);
+.modal-actions button.cancel-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
 }
 
-.cancel-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px -8px rgba(113, 128, 150, 0.5);
+@media (max-width: 920px) {
+  .sessions-container {
+    padding: 1.5rem;
+  }
+
+  .sessions-table th,
+  .sessions-table td {
+    padding: 0.85rem 0.9rem;
+  }
 }
 
-/* Error & Loading Messages */
-.error {
-    text-align: center;
-    color: var(--text-error-color);
-    font-weight: var(--text-error-weight);
-    padding: var(--error-padding);
-    background-color: rgba(245, 101, 101, 0.1);
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(245, 101, 101, 0.2);
-    margin: var(--space-md) 0;
-}
+@media (max-width: 760px) {
+  .filter-section {
+    grid-template-columns: 1fr;
+  }
 
-.loading-text {
-    text-align: center;
-    font-size: 1.125rem;
-    color: var(--color-primary);
-    font-weight: var(--font-weight-semibold);
-    padding: var(--space-2xl);
-}
+  .sessions-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .sessions-container {
-        margin: 10px;
-        padding: var(--space-lg);
-    }
+  .sessions-table thead,
+  .sessions-table tbody,
+  .sessions-table tr,
+  .sessions-table th,
+  .sessions-table td {
+    display: table-cell;
+  }
 
-    .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
+  .sessions-table td:last-child {
+    flex-wrap: wrap;
+  }
 
-    .batch-picker,
-    .date-picker {
-        min-width: auto;
-    }
-
-    .sessions-table {
-        font-size: var(--text-small-size);
-    }
-
-    .sessions-table td:last-child {
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .table-btn {
-        width: 100%;
-        min-width: auto;
-    }
-}
-
-/* Add some nice animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.sessions-container {
-    animation: fadeInUp var(--transition-slow);
-}
-
-.sessions-table tbody tr {
-    animation: fadeInUp var(--transition-slow) forwards;
-    opacity: 0;
-}
-
-.sessions-table tbody tr:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-.sessions-table tbody tr:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.sessions-table tbody tr:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.sessions-table tbody tr:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.sessions-table tbody tr:nth-child(5) {
-    animation-delay: 0.5s;
+  .sessions-container > button {
+    width: 100%;
+  }
 }

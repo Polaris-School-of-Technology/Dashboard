@@ -39,8 +39,8 @@
   --color-bg-hover: rgba(255,204,63,0.06);
   
   /* Border Colors */
-  --color-border: #e2e8f0;
-  --color-border-light: rgba(255, 255, 255, 0.2);
+  --color-border: rgba(255,204,63,0.24);
+  --color-border-light: rgba(255,204,63,0.14);
   
   /* Overlay */
   --color-overlay: rgba(0, 0, 0, 0.7);
@@ -52,15 +52,15 @@
   
   /* ========== GRADIENTS ========== */
   
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-primary-alt: linear-gradient(135deg, var(--color-info) 0%, #6366f1 100%);
-  --gradient-table-header: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-button-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-  --gradient-button-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
-  --gradient-button-danger: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-dark) 100%);
-  --gradient-button-warning: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
-  --gradient-text-primary: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
-  --gradient-filter-section: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  --gradient-primary: linear-gradient(135deg, #000000 0%, #101010 100%);
+  --gradient-primary-alt: linear-gradient(135deg, #111111 0%, #222222 100%);
+  --gradient-table-header: linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(30,30,30,0.98) 100%);
+  --gradient-button-primary: linear-gradient(135deg, rgba(255,204,63,1) 0%, rgba(235,180,35,1) 100%);
+  --gradient-button-secondary: linear-gradient(135deg, rgba(255,204,63,0.18) 0%, rgba(255,204,63,0.28) 100%);
+  --gradient-button-danger: linear-gradient(135deg, rgba(255,140,0,1) 0%, rgba(255,190,55,1) 100%);
+  --gradient-button-warning: linear-gradient(135deg, rgba(255,204,63,0.35) 0%, rgba(255,204,63,0.18) 100%);
+  --gradient-text-primary: linear-gradient(135deg, #FFCC3F 0%, #f0b530 100%);
+  --gradient-filter-section: linear-gradient(135deg, rgba(255,204,63,0.06) 0%, rgba(255,204,63,0.08) 100%);
   
   /* ========== SHADOWS ========== */
   

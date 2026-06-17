@@ -1,93 +1,115 @@
 @import '../styles/theme.css';
 
 .table-container {
-    max-width: 950px;
-    margin: var(--space-2xl) auto;
-    padding: var(--space-2xl);
-    background: var(--card-bg);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg-primary);
-    overflow-x: auto;
-    font-family: var(--font-family);
+  max-width: 950px;
+  margin: var(--space-2xl) auto;
+  padding: var(--space-2xl);
+  background: rgba(0, 0, 0, 0.94);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
+  border: 1px solid rgba(255, 204, 63, 0.18);
+  color: white;
+  font-family: var(--font-family);
 }
 
 h1 {
-    text-align: center;
-    font-size: var(--text-h1-size);
-    margin-bottom: var(--space-lg);
-    color: var(--color-primary);
-    font-weight: var(--font-weight-bold);
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: var(--space-xl);
+  color: var(--color-accent);
+  font-weight: var(--font-weight-extrabold);
 }
 
 .calendar-container {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
 }
 
 .calendar-container label {
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  color: white;
 }
 
 .datepicker-input {
-    padding: 0.5rem var(--space-md);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    font-size: 1rem;
-    outline: none;
-    transition: var(--transition-normal);
+  width: 280px;
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 204, 63, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
 }
 
 .datepicker-input:focus {
-    border-color: var(--color-info);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(255, 204, 63, 0.2);
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
-    font-size: 0.95rem;
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+  font-size: 0.95rem;
 }
 
 thead {
-    background: var(--gradient-table-header);
-    color: white;
+  background: var(--gradient-table-header);
+  color: white;
 }
 
 th,
 td {
-    padding: 0.75rem var(--space-md);
-    text-align: left;
-    border-bottom: 1px solid var(--color-border);
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 204, 63, 0.12);
 }
 
 tbody tr:nth-child(even) {
-    background-color: var(--table-row-hover-bg);
+  background-color: rgba(255, 204, 63, 0.05);
 }
 
 tbody tr:hover {
-    background-color: rgba(59, 130, 246, 0.1);
-    transition: var(--transition-fast);
+  background-color: rgba(255, 204, 63, 0.12);
 }
 
 tbody td {
-    color: var(--color-text-primary);
+  color: white;
+}
+
+.btn-view,
+.btn-download {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
+  transition: var(--transition-normal);
+}
+
+.btn-view {
+  background: var(--color-accent);
+  color: var(--color-black);
+}
+
+.btn-download {
+  background: rgba(255, 204, 63, 0.14);
+  color: white;
+  border: 1px solid rgba(255, 204, 63, 0.28);
+}
+
+.btn-view:hover,
+.btn-download:hover {
+  background: #ffe071;
 }
 
 @media (max-width: 768px) {
-    .table-container {
-        padding: var(--space-md);
-    }
+  .table-container {
+    padding: var(--space-lg);
+  }
 
-    table {
-        font-size: 0.85rem;
-    }
-
-    th,
-    td {
-        padding: 0.5rem var(--space-sm);
-    }
+  table {
+    font-size: 0.85rem;
+  }
 }
