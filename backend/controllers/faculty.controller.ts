@@ -4,7 +4,7 @@ import { config } from '../config/main';
 
 const supabaseAdmin = createClient(
   config.supabaseUrl,
-  config.supabaseServiceRoleKey,
+  config.supabaseSecretKey,
   {
     auth: {
       autoRefreshToken: false,
