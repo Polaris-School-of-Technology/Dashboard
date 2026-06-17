@@ -1,48 +1,43 @@
-/* reset.css */
+@import '../styles/theme.css';
 
-/* Fullscreen center wrapper */
 .reset-password-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* full viewport height */
-    background: #f9fafb;
-    /* light gray background */
-    padding: 1rem;
+    background: var(--color-bg-light);
+    padding: var(--space-md);
 }
 
-/* Centered card container */
 .reset-password-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     max-width: 420px;
     width: 100%;
-    background: #fff;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    background: var(--card-bg);
+    padding: var(--space-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg-primary);
     text-align: center;
 }
 
-/* Card header */
 .reset-password-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-lg);
 }
 
 .reset-password-title {
     font-size: 1.5rem;
-    font-weight: 700;
-    margin-top: 0.5rem;
+    font-weight: var(--font-weight-bold);
+    margin-top: var(--space-sm);
+    color: var(--color-text-primary);
 }
 
 .reset-password-subtitle {
     font-size: 0.9rem;
-    color: #6b7280;
+    color: var(--color-text-secondary);
 }
 
-/* Input groups */
 .form-group {
     margin-bottom: 1.25rem;
     text-align: left;
@@ -51,10 +46,16 @@
 .input-wrapper {
     display: flex;
     align-items: center;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    background: #f9fafb;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+    background: var(--color-bg-light);
+    transition: var(--transition-normal);
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--input-shadow-focus);
 }
 
 .input-wrapper input {
@@ -62,158 +63,54 @@
     outline: none;
     background: transparent;
     flex: 1;
-    padding: 0.4rem;
+    padding: 0.25rem;
+    color: var(--color-text-primary);
 }
 
 .input-icon {
-    margin-right: 0.5rem;
-    color: #6b7280;
+    margin-right: var(--space-sm);
+    color: var(--color-text-secondary);
 }
 
 .toggle-btn {
     background: none;
     border: none;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--color-text-secondary);
+    transition: var(--transition-normal);
 }
 
-/* Password strength bars */
-.password-strength {
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
-    text-align: left;
+.toggle-btn:hover {
+    color: var(--color-primary);
 }
 
-.strength-bars {
-    display: flex;
-    gap: 0.25rem;
-    margin-bottom: 0.25rem;
+.password-strength-label {
+    font-weight: var(--font-weight-semibold);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-sm);
 }
 
-.bar {
-    flex: 1;
-    height: 6px;
-    border-radius: 4px;
+.password-strength-bar {
+    height: 4px;
+    background: var(--color-border);
+    border-radius: 2px;
+    margin-bottom: var(--space-md);
+    overflow: hidden;
 }
 
-.red {
-    background: #ef4444;
+.password-strength-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: var(--transition-normal);
 }
 
-.orange {
-    background: #f97316;
-}
-
-.yellow {
-    background: #facc15;
-}
-
-.blue {
-    background: #3b82f6;
-}
-
-.green {
-    background: #10b981;
-}
-
-.gray {
-    background: #d1d5db;
-}
-
-/* Success & error messages */
-.error-text,
-.success-text {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.85rem;
-}
-
-.error-text {
-    color: #ef4444;
-}
-
-.success-text {
-    color: #10b981;
-}
-
-.error-box {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #fee2e2;
-    color: #b91c1c;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-    text-align: left;
-}
-
-/* Submit button */
-.submit-btn {
-    width: 100%;
-    padding: 0.75rem;
-    background: #3b82f6;
-    color: white;
-    font-weight: 600;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.submit-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.spinner {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    100% {
-        transform: rotate(360deg);
+@media (max-width: 768px) {
+    .reset-password-container {
+        padding: var(--space-xl);
     }
-}
 
-/* Back link */
-.back-to-login {
-    margin-top: 1rem;
-}
-
-.back-to-login button {
-    background: none;
-    border: none;
-    color: #3b82f6;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-/* Security tips */
-.security-tips {
-    margin-top: 2rem;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-.tips-title {
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    margin-bottom: 0.75rem;
-}
-
-.tips-list {
-    list-style: none;
-    padding: 0;
-    color: #4b5563;
+    .reset-password-title {
+        font-size: 1.25rem;
+    }
 }

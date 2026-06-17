@@ -1,57 +1,50 @@
-/* src/components/WeeklySessions.css */
+@import '../styles/theme.css';
 
 .table-container {
     max-width: 950px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl);
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg-primary);
     overflow-x: auto;
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-family);
 }
 
-/* Header */
 h1 {
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    color: #1e3a8a;
-    /* dark blue */
-    font-weight: 700;
+    font-size: var(--text-h1-size);
+    margin-bottom: var(--space-lg);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
 }
 
-/* Calendar container */
 .calendar-container {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
 }
 
 .calendar-container label {
-    font-weight: 500;
-    color: #374151;
-    /* dark gray */
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
 }
 
 .datepicker-input {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    /* light gray */
+    padding: 0.5rem var(--space-md);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
     font-size: 1rem;
     outline: none;
-    transition: border 0.2s, box-shadow 0.2s;
+    transition: var(--transition-normal);
 }
 
 .datepicker-input:focus {
-    border-color: #3b82f6;
-    /* blue focus */
+    border-color: var(--color-info);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-/* Table */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -59,41 +52,34 @@ table {
     font-size: 0.95rem;
 }
 
-/* Table header */
 thead {
-    background: linear-gradient(90deg, #4f46e5, #3b82f6);
-    /* gradient purple-blue */
-    color: #fff;
+    background: var(--gradient-table-header);
+    color: white;
 }
 
 th,
 td {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem var(--space-md);
     text-align: left;
-    border-bottom: 1px solid #e5e7eb;
-    /* light gray border */
+    border-bottom: 1px solid var(--color-border);
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f9fafb;
-    /* very light gray */
+    background-color: var(--table-row-hover-bg);
 }
 
 tbody tr:hover {
-    background-color: #e0f2fe;
-    /* light blue hover */
-    transition: background-color 0.2s;
+    background-color: rgba(59, 130, 246, 0.1);
+    transition: var(--transition-fast);
 }
 
 tbody td {
-    color: #1f2937;
-    /* dark gray text */
+    color: var(--color-text-primary);
 }
 
-/* Responsive table */
 @media (max-width: 768px) {
     .table-container {
-        padding: 1rem;
+        padding: var(--space-md);
     }
 
     table {
@@ -102,6 +88,6 @@ tbody td {
 
     th,
     td {
-        padding: 0.5rem;
+        padding: 0.5rem var(--space-sm);
     }
 }

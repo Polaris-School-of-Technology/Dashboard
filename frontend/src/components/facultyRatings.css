@@ -1,14 +1,4 @@
-:root {
-    --primary: #4f46e5;
-    --primary-dark: #4338ca;
-    --bg-light: #f9fafb;
-    --bg-gradient: linear-gradient(135deg, #e0eafc, #cfdef3);
-    --text-dark: #1f2937;
-    --text-gray: #6b7280;
-    --success: #16a34a;
-    --warning: #f59e0b;
-    --danger: #dc2626;
-}
+
 
 /* General page layout */
 body {

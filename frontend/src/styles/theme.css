@@ -1,0 +1,356 @@
+/* =====================================================
+  POLARIS DASHBOARD - CENTRALIZED THEME SYSTEM
+  Single source of truth for all design tokens
+  -> Adjusted for Black & Yellow theme (Montserrat)
+  ===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+:root {
+  /* ========== COLOR PALETTE ========== */
+  
+  /* Primary Colors (Black & Yellow theme) */
+  --color-accent: #FFCC3F; /* yellow */
+  --color-accent-dark: #e6b233;
+  --color-black: #000000;
+  
+  /* Secondary Colors */
+  --color-secondary: #48bb78;
+  --color-secondary-dark: #38a169;
+  
+  /* Accent Colors */
+  --color-danger: #f56565;
+  --color-danger-dark: #e53e3e;
+  --color-warning: #ed8936;
+  --color-warning-dark: #d69e2e;
+  --color-info: #3b82f6;
+  --color-info-dark: #2563eb;
+  
+  /* Neutral / Text Colors */
+  --color-text-primary: var(--color-accent);
+  --color-text-secondary: rgba(255,204,63,0.85);
+  --color-text-light: rgba(255,204,63,0.6);
+  --color-text-white: #ffffff;
+
+  
+  /* Background Colors */
+  --color-bg-dark: var(--color-black);
+  --color-bg-white: #ffffff;
+  --color-bg-hover: rgba(255,204,63,0.06);
+  
+  /* Border Colors */
+  --color-border: #e2e8f0;
+  --color-border-light: rgba(255, 255, 255, 0.2);
+  
+  /* Overlay */
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* Navigation */
+  --color-nav-text: var(--color-text-secondary);
+  --color-nav-active: var(--color-black);
+  --color-nav-hover: var(--color-accent);
+  
+  /* ========== GRADIENTS ========== */
+  
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-primary-alt: linear-gradient(135deg, var(--color-info) 0%, #6366f1 100%);
+  --gradient-table-header: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-button-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  --gradient-button-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+  --gradient-button-danger: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-dark) 100%);
+  --gradient-button-warning: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+  --gradient-text-primary: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+  --gradient-filter-section: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  
+  /* ========== SHADOWS ========== */
+  
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 15px rgba(59, 130, 246, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg-primary: 0 8px 25px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Button Shadows */
+  --shadow-button-primary: 0 4px 15px rgba(59, 130, 246, 0.3);
+  --shadow-button-primary-hover: 0 8px 25px rgba(59, 130, 246, 0.4);
+  --shadow-button-danger: 0 4px 12px rgba(245, 101, 101, 0.4);
+  --shadow-button-warning: 0 4px 12px rgba(237, 137, 54, 0.4);
+  --shadow-button-secondary: 0 8px 25px -8px rgba(72, 187, 120, 0.5);
+  
+  /* Nav Shadows */
+  --shadow-nav: 0 6px 20px rgba(59, 130, 246, 0.2);
+  --shadow-nav-active: 0 6px 20px rgba(59, 130, 246, 0.4);
+  --shadow-nav-hover: 0 8px 25px rgba(59, 130, 246, 0.5);
+  
+  /* ========== SPACING ========== */
+  
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* ========== BORDER RADIUS ========== */
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 50px;
+  
+  /* ========== TYPOGRAPHY ========== */
+  
+  --font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* ========== TRANSITIONS ========== */
+  
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s ease-out;
+  
+  /* ========== BACKDROP ========== */
+  
+  --backdrop-blur: blur(10px);
+  --backdrop-light: rgba(255, 255, 255, 0.95);
+  
+  /* ========== BUTTON STYLES ========== */
+  
+  /* Primary Button */
+  --btn-primary-bg: var(--gradient-button-primary);
+  --btn-primary-color: white;
+  --btn-primary-padding: 0.75rem 1.5rem;
+  --btn-primary-shadow: var(--shadow-button-primary);
+  --btn-primary-hover-shadow: var(--shadow-button-primary-hover);
+  --btn-primary-font-weight: 600;
+  --btn-primary-border-radius: var(--radius-md);
+  
+  /* Secondary Button */
+  --btn-secondary-bg: var(--gradient-button-secondary);
+  --btn-secondary-color: white;
+  --btn-secondary-padding: 0.75rem 1.5rem;
+  --btn-secondary-shadow: var(--shadow-button-secondary);
+  --btn-secondary-font-weight: 600;
+  --btn-secondary-border-radius: var(--radius-md);
+  
+  /* Danger Button */
+  --btn-danger-bg: var(--gradient-button-danger);
+  --btn-danger-color: white;
+  --btn-danger-padding: 0.75rem 1.5rem;
+  --btn-danger-shadow: var(--shadow-button-danger);
+  --btn-danger-font-weight: 600;
+  --btn-danger-border-radius: var(--radius-md);
+  
+  /* Warning Button */
+  --btn-warning-bg: var(--gradient-button-warning);
+  --btn-warning-color: white;
+  --btn-warning-padding: 0.75rem 1.5rem;
+  --btn-warning-shadow: var(--shadow-button-warning);
+  --btn-warning-font-weight: 600;
+  --btn-warning-border-radius: var(--radius-md);
+  
+  /* Small Table Button */
+  --btn-table-padding: 0.5rem 0.75rem;
+  --btn-table-font-size: 0.75rem;
+  --btn-table-border-radius: var(--radius-sm);
+  --btn-table-min-width: 70px;
+  
+  /* ========== TEXT STYLES ========== */
+  
+  /* Heading 1 */
+  --text-h1-size: 2.5rem;
+  --text-h1-weight: 800;
+  --text-h1-gradient: var(--gradient-text-primary);
+  --text-h1-letter-spacing: -0.025em;
+  
+  /* Heading 3 */
+  --text-h3-size: 1.75rem;
+  --text-h3-weight: 700;
+  --text-h3-color: var(--color-primary);
+  
+  /* Label */
+  --text-label-weight: 600;
+  --text-label-size: 0.875rem;
+  --text-label-color: var(--color-text-primary);
+  --text-label-transform: uppercase;
+  --text-label-letter-spacing: 0.05em;
+  
+  /* Body Text (global defaults per request) */
+  --text-body-size: 1rem; /* 16px */
+  --text-body-color: var(--color-text-primary);
+  --text-body-weight: 600;
+  
+  /* Small Text */
+  --text-small-size: 0.875rem;
+  --text-small-color: var(--color-text-secondary);
+  
+  /* Error Text */
+  --text-error-color: var(--color-danger);
+  --text-error-weight: 600;
+  
+  /* ========== INPUT STYLES ========== */
+  
+  --input-padding: 0.75rem 1rem;
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --input-border: 1px solid rgba(59, 130, 246, 0.2);
+  --input-border-radius: var(--radius-md);
+  --input-shadow: var(--shadow-sm);
+  --input-border-focus: 1px solid var(--color-info);
+  --input-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  --input-bg-focus: rgba(255, 255, 255, 1);
+  
+  /* Date/Select Input */
+  --input-date-padding: 0.75rem 1rem;
+  --input-date-border: 2px solid var(--color-border);
+  --input-date-border-radius: var(--radius-md);
+  --input-date-font-size: 1rem;
+  --input-date-bg: white;
+  
+  /* ========== FILTER SECTION STYLES ========== */
+  
+  --filter-bg: var(--gradient-filter-section);
+  --filter-border: 1px solid rgba(102, 126, 234, 0.1);
+  --filter-border-radius: var(--radius-lg);
+  --filter-padding: 1.5rem;
+  --filter-gap: 1.5rem;
+  
+  /* ========== TABLE STYLES ========== */
+  
+  --table-bg: rgba(255, 255, 255, 0.95);
+  --table-header-bg: var(--gradient-table-header);
+  --table-header-color: white;
+  --table-header-padding: 1.25rem 1rem;
+  --table-row-hover-bg: var(--color-bg-hover);
+  --table-row-padding: 1.25rem 1rem;
+  --table-border: 1px solid var(--color-border);
+  --table-border-radius: var(--radius-lg);
+  --table-shadow: var(--shadow-lg);
+  
+  /* ========== MODAL STYLES ========== */
+  
+  --modal-bg: rgba(0, 0, 0, 0.7);
+  --modal-content-bg: white;
+  --modal-content-padding: 2.5rem;
+  --modal-content-border-radius: var(--radius-xl);
+  --modal-content-shadow: var(--shadow-xl);
+  --modal-content-max-width: 500px;
+  --modal-content-width: 90%;
+  
+  /* ========== CARD STYLES ========== */
+  
+  --card-bg: var(--color-bg-white);
+  --card-padding: 2rem;
+  --card-border-radius: var(--radius-xl);
+  --card-shadow: var(--shadow-xl);
+  --card-border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* ========== ERROR MESSAGE STYLES ========== */
+  
+  --error-bg: rgba(254, 242, 242, 0.95);
+  --error-border: 1px solid rgba(248, 113, 113, 0.3);
+  --error-border-radius: var(--radius-lg);
+  --error-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
+  --error-color: var(--color-danger);
+  --error-padding: 1rem;
+}
+
+/* ========== BASE STYLES ========== */
+
+* {
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg-dark);
+  color: var(--text-body-color);
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-family);
+  font-weight: var(--text-body-weight);
+  font-size: var(--text-body-size);
+  line-height: 1; /* 100% */
+  letter-spacing: 0%;
+}
+
+/* ========== GLOBAL H2 RULES (generalized heading styling) ========== */
+h2 {
+  color: var(--color-accent);
+  padding: 0.25rem 0;
+  margin: 0.5rem 0;
+  font-size: 1.125rem; /* 18px */
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ========== NAVIGATION SPECIFICS ========== */
+.nav-container {
+  background: var(--color-black);
+  color: var(--color-accent);
+  box-shadow: none;
+  border-bottom: 1px solid rgba(255,204,63,0.08);
+}
+
+.nav-container .nav-link {
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: var(--font-weight-regular);
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-container .nav-link:hover {
+  color: var(--color-accent);
+}
+
+.nav-container .nav-link.active-link {
+  background: var(--color-accent);
+  color: var(--color-black);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+/* Logout button styling */
+.logout-btn {
+  background: var(--color-accent);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-semibold);
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255,204,63,0.18);
+}
+
+.logout-btn:hover {
+  filter: brightness(0.98);
+}
+
+/* ========== CUSTOM SCROLLBAR ========== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary-alt);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+}
