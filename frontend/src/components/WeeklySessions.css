@@ -1,115 +1,365 @@
 @import '../styles/theme.css';
 
+/* ---------- Layout / page shell ---------- */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(1rem, 4vw, 3.5rem);
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(244, 197, 66, 0.08), transparent 60%),
+    #050505;
+}
+
 .table-container {
-  max-width: 950px;
-  margin: var(--space-2xl) auto;
-  padding: var(--space-2xl);
-  background: rgba(0, 0, 0, 0.94);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
-  border: 1px solid rgba(255, 204, 63, 0.18);
-  color: white;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.96), rgba(8, 8, 8, 0.98));
+  border-radius: 20px;
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(244, 197, 66, 0.1) inset;
+  border: 1px solid rgba(244, 197, 66, 0.16);
+  color: #f5f5f5;
   font-family: var(--font-family);
+  animation: fade-in 0.5s ease both;
+}
+
+/* ---------- Header ---------- */
+.page-header {
+  text-align: center;
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
 }
 
 h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: var(--space-xl);
-  color: var(--color-accent);
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0;
+  letter-spacing: -0.02em;
+  color: #f4c542;
   font-weight: var(--font-weight-extrabold);
 }
 
+.page-subtitle {
+  margin: 0.65rem 0 0;
+  color: rgba(245, 245, 245, 0.55);
+  font-size: 1rem;
+}
+
+/* ---------- Date picker ---------- */
 .calendar-container {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
+  gap: 0.85rem;
+  margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
   flex-wrap: wrap;
 }
 
 .calendar-container label {
   font-weight: var(--font-weight-semibold);
-  color: white;
+  color: rgba(245, 245, 245, 0.85);
+  font-size: 0.95rem;
 }
 
 .datepicker-input {
-  width: 280px;
-  padding: 0.95rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 204, 63, 0.25);
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+  width: 260px;
+  max-width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(244, 197, 66, 0.22);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.datepicker-input:hover {
+  border-color: rgba(244, 197, 66, 0.45);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .datepicker-input:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(255, 204, 63, 0.2);
+  outline: none;
+  border-color: #f4c542;
+  box-shadow: 0 0 0 4px rgba(244, 197, 66, 0.18);
+}
+
+/* ---------- Sections ---------- */
+.section {
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+h2 {
+  font-size: 1.35rem;
+  color: #f4c542;
+  margin: 0 0 1.1rem;
+  font-weight: var(--font-weight-bold);
+}
+
+/* ---------- Table ---------- */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px;
+  min-width: 560px;
   font-size: 0.95rem;
 }
 
 thead {
-  background: var(--gradient-table-header);
-  color: white;
+  background: linear-gradient(180deg, rgba(244, 197, 66, 0.16), rgba(244, 197, 66, 0.06));
+}
+
+thead th {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: var(--font-weight-bold);
+  color: #f4c542;
 }
 
 th,
 td {
-  padding: 1rem 1.25rem;
+  padding: 1.05rem 1.35rem;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 204, 63, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+tbody tr {
+  transition: background-color 0.18s ease;
 }
 
 tbody tr:nth-child(even) {
-  background-color: rgba(255, 204, 63, 0.05);
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 tbody tr:hover {
-  background-color: rgba(255, 204, 63, 0.12);
+  background-color: rgba(244, 197, 66, 0.09);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
 tbody td {
-  color: white;
+  color: rgba(245, 245, 245, 0.9);
 }
 
+.duration-pill {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(244, 197, 66, 0.14);
+  border: 1px solid rgba(244, 197, 66, 0.25);
+  color: #f4c542;
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.85rem;
+}
+
+/* ---------- States ---------- */
+.loading,
+.error {
+  text-align: center;
+  padding: 1.25rem;
+  font-size: 0.95rem;
+}
+
+.loading {
+  color: rgba(245, 245, 245, 0.6);
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: clamp(2rem, 5vw, 3.5rem) 1.5rem;
+  border: 1px dashed rgba(244, 197, 66, 0.22);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  animation: fade-in 0.5s ease both;
+}
+
+.empty-state-icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+  color: #f4c542;
+  background: rgba(244, 197, 66, 0.1);
+  border: 1px solid rgba(244, 197, 66, 0.22);
+}
+
+.empty-state-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #f5f5f5;
+}
+
+.empty-state-text {
+  margin: 0;
+  max-width: 420px;
+  color: rgba(245, 245, 245, 0.55);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.empty-state-action {
+  margin-top: 1rem;
+}
+
+/* ---------- CSV cards ---------- */
+.csv-card {
+  margin-bottom: 1rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.csv-card:hover {
+  border-color: rgba(244, 197, 66, 0.3);
+  transform: translateY(-1px);
+}
+
+.csv-card-name {
+  margin: 0 0 0.85rem;
+  font-weight: var(--font-weight-semibold);
+  color: #f5f5f5;
+  word-break: break-all;
+}
+
+.csv-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Buttons ---------- */
 .btn-view,
 .btn-download {
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
+  padding: 0.7rem 1.15rem;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
   font-weight: var(--font-weight-semibold);
-  transition: var(--transition-normal);
+  font-size: 0.9rem;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-view {
-  background: var(--color-accent);
-  color: var(--color-black);
+  background: #f4c542;
+  color: #1a1300;
+}
+
+.btn-view:hover {
+  background: #ffd95e;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(244, 197, 66, 0.25);
 }
 
 .btn-download {
-  background: rgba(255, 204, 63, 0.14);
-  color: white;
-  border: 1px solid rgba(255, 204, 63, 0.28);
+  background: rgba(244, 197, 66, 0.12);
+  color: #f4c542;
+  border: 1px solid rgba(244, 197, 66, 0.3);
 }
 
-.btn-view:hover,
 .btn-download:hover {
-  background: #ffe071;
+  background: rgba(244, 197, 66, 0.2);
+  transform: translateY(-1px);
 }
 
+/* ---------- CSV preview ---------- */
+.csv-preview {
+  margin-top: 1.75rem;
+}
+
+.csv-preview h3 {
+  color: #f4c542;
+  margin-bottom: 1rem;
+}
+
+.csv-preview-block {
+  margin-bottom: 1.75rem;
+}
+
+.csv-preview-block h4 {
+  margin: 0 0 0.65rem;
+  color: rgba(245, 245, 245, 0.9);
+  word-break: break-all;
+}
+
+.csv-preview-note {
+  font-style: italic;
+  margin-top: 0.75rem;
+  color: rgba(245, 245, 245, 0.5);
+  font-size: 0.85rem;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .table-container {
-    padding: var(--space-lg);
+    border-radius: 16px;
+  }
+
+  .calendar-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .datepicker-input {
+    width: 100%;
   }
 
   table {
     font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 0.85rem 1rem;
+  }
+
+  .csv-card-actions .btn-view,
+  .csv-card-actions .btn-download {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8rem;
   }
 }

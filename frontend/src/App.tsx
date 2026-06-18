@@ -10,6 +10,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import axios from "axios";
+import { BriefcaseBusiness, ChevronDown, LogOut } from "lucide-react";
 
 import WeeklySessions from "./components/weeklySessions";
 import FacultySessions from "./components/facultySessions";
@@ -84,6 +85,15 @@ function MainApp() {
   const navClass = ({ isActive }: { isActive: boolean }) =>
     `nav-link ${isActive ? "active-link" : ""}`;
 
+  const moreRoutes = [
+    { to: "/session-analytics", label: "Session Analytics" },
+    { to: "/faculty-ratings", label: "Faculty Ratings" },
+    { to: "/marks-viewer", label: "Marks Viewer" },
+  ];
+  const isMoreActive = moreRoutes.some((route) =>
+    location.pathname.startsWith(route.to)
+  );
+
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/login";
@@ -93,16 +103,19 @@ function MainApp() {
     <div className="App min-h-screen relative">
       {/* Navbar and Logout only for private/dashboard pages */}
       {!isPublicPage && (
-        <>
-          <button
-            onClick={handleLogout}
-            className="logout-btn fixed top-4 right-4 z-50"
-          >
-            Logout
-          </button>
+        <nav className="nav-container sticky top-0 z-40">
+          <div className="nav-shell">
+            <div className="nav-brand">
+              <div className="nav-brand-icon">
+                <BriefcaseBusiness size={26} strokeWidth={2.1} />
+              </div>
+              <div>
+                <div className="nav-brand-title">Polaris Admin</div>
+                <div className="nav-brand-subtitle">Campus Operations</div>
+              </div>
+            </div>
 
-          <nav className="nav-container sticky top-0 z-40 px-6 pt-8 pb-4">
-            <div className="flex flex-wrap gap-6 justify-center items-center">
+            <div className="nav-menu">
               {role === "admin" && (
                 <>
                   <NavLink to="/weekly-sessions" className={navClass}>
@@ -123,18 +136,24 @@ function MainApp() {
                   <NavLink to="/attendance-csv" className={navClass}>
                     Attendance CSV
                   </NavLink>
-                  <NavLink to="/session-analytics" className={navClass}>
-                    Session Analytics
-                  </NavLink>
-                  <NavLink to="/faculty-ratings" className={navClass}>
-                    Faculty Ratings
-                  </NavLink>
-                  <NavLink to="/marks-viewer" className={navClass}>
-                    Marks Viewer
-                  </NavLink>
 
+                  <div className="nav-more">
+                    <button
+                      type="button"
+                      className={`nav-more-trigger ${isMoreActive ? "active-link" : ""}`}
+                    >
+                      More
+                      <ChevronDown size={16} strokeWidth={2.2} />
+                    </button>
+                    <div className="nav-more-menu">
+                      {moreRoutes.map((route) => (
+                        <NavLink key={route.to} to={route.to} className={navClass}>
+                          {route.label}
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
 
-                  {/* ⭐ NEW NAV LINK */}
                   <NavLink to="/admin/jobs" className={navClass}>
                     Job Portal
                   </NavLink>
@@ -160,8 +179,13 @@ function MainApp() {
                 </>
               )}
             </div>
-          </nav>
-        </>
+
+            <button onClick={handleLogout} className="logout-btn">
+              <LogOut size={17} strokeWidth={2.1} />
+              Logout
+            </button>
+          </div>
+        </nav>
       )}
 
       {/* Main Content */}

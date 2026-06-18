@@ -1,395 +1,275 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, Search, AlertCircle, Loader, Award, BookOpen, FileText, User, TrendingUp, Target } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  ChevronDown, Search, AlertCircle, Loader2, Award,
+  BookOpen, FileText, User, TrendingUp, Target, Sparkles,
+} from 'lucide-react';
 import './MarksViewer.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-interface Semester {
-    id: string;
-    semester_name: string;
-}
-
-interface Subject {
-    id: string;
-    subject_name: string;
-}
-
-interface Component {
-    id: string;
-    name: string;
-}
-
+interface Semester  { id: string; semester_name: string }
+interface Subject   { id: string; subject_name: string }
+interface Component { id: string; name: string }
 interface MarksResult {
-    SubjectId: string;
-    ComponentId: string;
-    SubjectName: string;
-    ComponentName: string;
-    MarksObtained: number;
-    TotalMarks: number;
-    StudentName: string;
-    RollNumber: string;
+  SubjectId: string; ComponentId: string;
+  SubjectName: string; ComponentName: string;
+  MarksObtained: number; TotalMarks: number;
+  StudentName: string; RollNumber: string;
 }
 
 export default function MarksViewer() {
-    const [semesters, setSemesters] = useState<Semester[]>([]);
-    const [subjects, setSubjects] = useState<Subject[]>([]);
-    const [components, setComponents] = useState<Component[]>([]);
-    const [marksResult, setMarksResult] = useState<MarksResult | null>(null);
+  const [semesters, setSemesters]   = useState<Semester[]>([]);
+  const [subjects, setSubjects]     = useState<Subject[]>([]);
+  const [components, setComponents] = useState<Component[]>([]);
+  const [result, setResult]         = useState<MarksResult | null>(null);
 
-    const [selectedSemester, setSelectedSemester] = useState('');
-    const [selectedSubject, setSelectedSubject] = useState('');
-    const [selectedComponent, setSelectedComponent] = useState('');
-    const [rollNumber, setRollNumber] = useState('');
+  const [semId, setSemId]   = useState('');
+  const [subId, setSubId]   = useState('');
+  const [compId, setCompId] = useState('');
+  const [roll, setRoll]     = useState('');
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState('');
 
-    useEffect(() => {
-        const fetchSemesters = async () => {
-            try {
-                setError('');
-                const response = await fetch(`${API_BASE_URL}/api/eval/semesters`);
-                if (!response.ok) throw new Error('Failed to load semesters');
-                const data = await response.json();
-                setSemesters(data);
-            } catch (err) {
-                setError('Failed to load semesters');
-                console.error(err);
-            }
-        };
-        fetchSemesters();
-    }, []);
+  // --- data fetching (unchanged logic) ---
+  useEffect(() => {
+    (async () => {
+      try {
+        const r = await fetch(`${API_BASE_URL}/api/eval/semesters`);
+        if (!r.ok) throw new Error();
+        setSemesters(await r.json());
+      } catch { setError('Failed to load semesters'); }
+    })();
+  }, []);
 
-    useEffect(() => {
-        if (!selectedSemester) {
-            setSubjects([]);
-            setSelectedSubject('');
-            setComponents([]);
-            setSelectedComponent('');
-            return;
-        }
+  useEffect(() => {
+    if (!semId) { setSubjects([]); setSubId(''); setComponents([]); setCompId(''); return; }
+    (async () => {
+      try {
+        const r = await fetch(`${API_BASE_URL}/api/eval/subjects/${semId}`);
+        if (!r.ok) throw new Error();
+        setSubjects(await r.json()); setSubId(''); setComponents([]); setCompId('');
+      } catch { setError('Failed to load subjects'); }
+    })();
+  }, [semId]);
 
-        const fetchSubjects = async () => {
-            try {
-                setError('');
-                const response = await fetch(`${API_BASE_URL}/api/eval/subjects/${selectedSemester}`);
-                if (!response.ok) throw new Error('Failed to load subjects');
-                const data = await response.json();
-                setSubjects(data);
-                setSelectedSubject('');
-                setComponents([]);
-                setSelectedComponent('');
-            } catch (err) {
-                setError('Failed to load subjects');
-                console.error(err);
-            }
-        };
-        fetchSubjects();
-    }, [selectedSemester]);
+  useEffect(() => {
+    if (!subId) { setComponents([]); setCompId(''); return; }
+    (async () => {
+      try {
+        const r = await fetch(`${API_BASE_URL}/api/eval/components/${subId}`);
+        if (!r.ok) throw new Error();
+        setComponents(await r.json()); setCompId('');
+      } catch { setError('Failed to load components'); }
+    })();
+  }, [subId]);
 
-    useEffect(() => {
-        if (!selectedSubject) {
-            setComponents([]);
-            setSelectedComponent('');
-            return;
-        }
+  const canSubmit = semId && subId && compId && roll.trim() && !loading;
 
-        const fetchComponents = async () => {
-            try {
-                setError('');
-                const response = await fetch(`${API_BASE_URL}/api/eval/components/${selectedSubject}`);
-                if (!response.ok) throw new Error('Failed to load components');
-                const data = await response.json();
-                setComponents(data);
-                setSelectedComponent('');
-            } catch (err) {
-                setError('Failed to load components');
-                console.error(err);
-            }
-        };
-        fetchComponents();
-    }, [selectedSubject]);
+  const handleSearch = async () => {
+    setError(''); setResult(null);
+    if (!canSubmit) { setError('Please fill in all fields'); return; }
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        semesterId: semId, subjectId: subId, componentId: compId, rollNumber: roll.trim(),
+      });
+      const r = await fetch(`${API_BASE_URL}/api/eval/marks?${params}`);
+      if (!r.ok) throw new Error((await r.json()).error || 'Failed to fetch marks');
+      setResult(await r.json());
+    } catch (e: any) { setError(e.message || 'Failed to fetch marks'); }
+    finally { setLoading(false); }
+  };
 
-    const handleSearch = async () => {
-        setError('');
-        setSuccess(false);
-        setMarksResult(null);
+  const percent = useMemo(
+    () => result ? +(result.MarksObtained / result.TotalMarks * 100).toFixed(1) : 0,
+    [result],
+  );
+  const grade = useMemo(() => getGrade(percent), [percent]);
 
-        if (!selectedSemester || !selectedSubject || !selectedComponent || !rollNumber.trim()) {
-            setError('Please fill in all fields');
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const params = new URLSearchParams({
-                semesterId: selectedSemester,
-                subjectId: selectedSubject,
-                componentId: selectedComponent,
-                rollNumber: rollNumber.trim(),
-            });
-
-            const response = await fetch(`${API_BASE_URL}/api/eval/marks?${params}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to fetch marks');
-            }
-
-            const data = await response.json();
-            setMarksResult(data);
-            setSuccess(true);
-        } catch (err: any) {
-            setError(err.message || 'Failed to fetch marks');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const percentage = marksResult
-        ? ((marksResult.MarksObtained / marksResult.TotalMarks) * 100).toFixed(1)
-        : 0;
-
-    const getGradeInfo = (percent: number) => {
-        if (percent >= 90) return { grade: 'A+', className: 'grade-a-plus' };
-        if (percent >= 80) return { grade: 'A', className: 'grade-a' };
-        if (percent >= 70) return { grade: 'B+', className: 'grade-b-plus' };
-        if (percent >= 60) return { grade: 'B', className: 'grade-b' };
-        if (percent >= 50) return { grade: 'C', className: 'grade-c' };
-        if (percent >= 40) return { grade: 'D', className: 'grade-d' };
-        return { grade: 'F', className: 'grade-f' };
-    };
-
-    const gradeInfo = getGradeInfo(Number(percentage));
-
-    return (
-        <div className="marks-viewer-container">
-            <div className="marks-viewer-content">
-                {/* Header */}
-                <div className="header-section">
-                    <div className="header-icon">
-                        <Award size={32} />
-                    </div>
-                    <h1 className="header-title">Student Marks Viewer</h1>
-                    <p className="header-subtitle">Track your academic performance</p>
-                </div>
-
-                <div className="main-grid">
-                    {/* Search Panel */}
-                    <div className="search-panel">
-                        <div className="search-card">
-                            <div className="card-header">
-                                <div className="header-icon-small">
-                                    <Search size={20} />
-                                </div>
-                                <h2 className="card-title">Search Marks</h2>
-                            </div>
-
-                            {error && (
-                                <div className="alert alert-error">
-                                    <AlertCircle size={18} />
-                                    <p>{error}</p>
-                                </div>
-                            )}
-
-                            {success && (
-                                <div className="alert alert-success">
-                                    <p>✓ Marks retrieved successfully!</p>
-                                </div>
-                            )}
-
-                            <div className="form-fields">
-                                <div className="form-group">
-                                    <label className="form-label">Semester *</label>
-                                    <div className="select-wrapper">
-                                        <select
-                                            value={selectedSemester}
-                                            onChange={(e) => setSelectedSemester(e.target.value)}
-                                            className="form-select"
-                                        >
-                                            <option value="">Select Semester</option>
-                                            {semesters.map((sem) => (
-                                                <option key={sem.id} value={sem.id}>{sem.semester_name}</option>
-                                            ))}
-                                        </select>
-                                        <ChevronDown className="select-icon" size={20} />
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Subject *</label>
-                                    <div className="select-wrapper">
-                                        <select
-                                            value={selectedSubject}
-                                            onChange={(e) => setSelectedSubject(e.target.value)}
-                                            disabled={!selectedSemester}
-                                            className="form-select"
-                                        >
-                                            <option value="">
-                                                {selectedSemester ? 'Select Subject' : 'Select Semester First'}
-                                            </option>
-                                            {subjects.map((subj) => (
-                                                <option key={subj.id} value={subj.id}>{subj.subject_name}</option>
-                                            ))}
-                                        </select>
-                                        <ChevronDown className="select-icon" size={20} />
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Component *</label>
-                                    <div className="select-wrapper">
-                                        <select
-                                            value={selectedComponent}
-                                            onChange={(e) => setSelectedComponent(e.target.value)}
-                                            disabled={!selectedSubject}
-                                            className="form-select"
-                                        >
-                                            <option value="">
-                                                {selectedSubject ? 'Select Component' : 'Select Subject First'}
-                                            </option>
-                                            {components.map((comp) => (
-                                                <option key={comp.id} value={comp.id}>{comp.name}</option>
-                                            ))}
-                                        </select>
-                                        <ChevronDown className="select-icon" size={20} />
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Roll Number *</label>
-                                    <input
-                                        type="text"
-                                        placeholder="e.g., 240410700041"
-                                        value={rollNumber}
-                                        onChange={(e) => setRollNumber(e.target.value)}
-                                        className="form-input"
-                                    />
-                                </div>
-
-                                <button
-                                    onClick={handleSearch}
-                                    disabled={loading || !selectedSemester || !selectedSubject || !selectedComponent || !rollNumber}
-                                    className="search-button"
-                                >
-                                    {loading ? (
-                                        <>
-                                            <Loader size={20} className="spinner" />
-                                            <span>Searching...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Search size={20} />
-                                            <span>Search Marks</span>
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Results Panel */}
-                    <div className="results-panel">
-                        {marksResult ? (
-                            <div className="results-content">
-                                {/* Student Info Card */}
-                                <div className="student-card">
-                                    <div className="student-header">
-                                        <div className="student-icon">
-                                            <User size={28} />
-                                        </div>
-                                        <div>
-                                            <h2 className="student-name">{marksResult.StudentName}</h2>
-                                            <p className="student-roll">Roll No: {marksResult.RollNumber}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Marks Details Card */}
-                                <div className="marks-card">
-                                    <h3 className="marks-title">
-                                        <FileText size={24} />
-                                        Marks Details
-                                    </h3>
-
-                                    <div className="marks-details">
-                                        <div className="detail-row">
-                                            <div className="detail-label">
-                                                <div className="detail-icon icon-blue">
-                                                    <BookOpen size={20} />
-                                                </div>
-                                                <span>Subject</span>
-                                            </div>
-                                            <span className="detail-value">{marksResult.SubjectName}</span>
-                                        </div>
-
-                                        <div className="detail-row">
-                                            <div className="detail-label">
-                                                <div className="detail-icon icon-purple">
-                                                    <FileText size={20} />
-                                                </div>
-                                                <span>Component</span>
-                                            </div>
-                                            <span className="detail-value">{marksResult.ComponentName}</span>
-                                        </div>
-
-                                        <div className="detail-row highlight-row">
-                                            <div className="detail-label">
-                                                <div className="detail-icon icon-primary">
-                                                    <Target size={20} />
-                                                </div>
-                                                <span>Marks Obtained</span>
-                                            </div>
-                                            <div className="marks-display">
-                                                <span className="marks-obtained">{marksResult.MarksObtained}</span>
-                                                <span className="marks-separator">/</span>
-                                                <span className="marks-total">{marksResult.TotalMarks}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="detail-row">
-                                            <div className="detail-label">
-                                                <div className="detail-icon icon-green">
-                                                    <TrendingUp size={20} />
-                                                </div>
-                                                <span>Percentage</span>
-                                            </div>
-                                            <span className={`percentage-value ${gradeInfo.className}`}>{percentage}%</span>
-                                        </div>
-
-                                        <div className="detail-row">
-                                            <div className="detail-label">
-                                                <div className="detail-icon icon-yellow">
-                                                    <Award size={20} />
-                                                </div>
-                                                <span>Grade</span>
-                                            </div>
-                                            <span className={`grade-badge ${gradeInfo.className}`}>
-                                                {gradeInfo.grade}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="no-results">
-                                <div className="no-results-icon">
-                                    <Search size={48} />
-                                </div>
-                                <h3 className="no-results-title">No Results Yet</h3>
-                                <p className="no-results-text">
-                                    Fill in all the required fields in the search panel and click "Search Marks" to view your academic performance
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="mv">
+      {/* ───── Top bar ───── */}
+      <header className="mv__topbar">
+        <div className="mv__brand">
+          <span className="mv__logo"><Award size={18} /></span>
+          <div className="mv__brandText">
+            <span className="mv__brandTitle">Marks Viewer</span>
+            <span className="mv__brandSub">Academic performance tracker</span>
+          </div>
         </div>
-    );
+        <div className="mv__topMeta">
+          <Sparkles size={14} /> Live results
+        </div>
+      </header>
+
+      {/* ───── Workspace ───── */}
+      <main className="mv__grid">
+        {/* Search panel */}
+        <section className="mv__panel mv__panel--search" aria-label="Search marks">
+          <div className="mv__panelHead">
+            <h2>Search</h2>
+            <p>Select the term, subject, and component.</p>
+          </div>
+
+          {error && (
+            <div className="mv__alert" role="alert">
+              <AlertCircle size={16} /><span>{error}</span>
+            </div>
+          )}
+
+          <div className="mv__form">
+            <Field label="Semester" step="1">
+              <Select value={semId} onChange={setSemId}
+                placeholder="Select semester"
+                options={semesters.map(s => ({ value: s.id, label: s.semester_name }))} />
+            </Field>
+
+            <Field label="Subject" step="2">
+              <Select value={subId} onChange={setSubId}
+                disabled={!semId}
+                placeholder={semId ? 'Select subject' : 'Pick a semester first'}
+                options={subjects.map(s => ({ value: s.id, label: s.subject_name }))} />
+            </Field>
+
+            <Field label="Component" step="3">
+              <Select value={compId} onChange={setCompId}
+                disabled={!subId}
+                placeholder={subId ? 'Select component' : 'Pick a subject first'}
+                options={components.map(c => ({ value: c.id, label: c.name }))} />
+            </Field>
+
+            <Field label="Roll number" step="4">
+              <input
+                className="mv__input"
+                inputMode="numeric"
+                placeholder="e.g., 240410700041"
+                value={roll}
+                onChange={(e) => setRoll(e.target.value)}
+              />
+            </Field>
+
+            <button className="mv__cta" onClick={handleSearch} disabled={!canSubmit}>
+              {loading
+                ? <><Loader2 size={16} className="mv__spin" /> Searching…</>
+                : <><Search size={16} /> Search marks</>}
+            </button>
+          </div>
+        </section>
+
+        {/* Results panel */}
+        <section className="mv__panel mv__panel--results" aria-live="polite">
+          {!result ? (
+            <EmptyState />
+          ) : (
+            <>
+              <div className="mv__resultHead">
+                <div className="mv__student">
+                  <span className="mv__avatar"><User size={18} /></span>
+                  <div>
+                    <h3>{result.StudentName}</h3>
+                    <span className="mv__rollChip">Roll · {result.RollNumber}</span>
+                  </div>
+                </div>
+                <span className={`mv__grade mv__grade--${grade.key}`}>
+                  {grade.letter}
+                </span>
+              </div>
+
+              {/* Score hero */}
+              <div className="mv__score">
+                <div className="mv__scoreFigures">
+                  <span className="mv__scoreObtained">{result.MarksObtained}</span>
+                  <span className="mv__scoreSlash">/</span>
+                  <span className="mv__scoreTotal">{result.TotalMarks}</span>
+                </div>
+                <div className="mv__scoreMeta">
+                  <span className="mv__percent">{percent}%</span>
+                  <span className="mv__scoreLabel">{grade.label}</span>
+                </div>
+                <div className="mv__bar" role="progressbar"
+                  aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
+                  <span style={{ width: `${Math.min(percent, 100)}%` }} />
+                </div>
+              </div>
+
+              {/* Breakdown */}
+              <dl className="mv__facts">
+                <Fact icon={<BookOpen size={14} />} label="Subject"   value={result.SubjectName} />
+                <Fact icon={<FileText size={14} />} label="Component" value={result.ComponentName} />
+                <Fact icon={<Target size={14} />}   label="Obtained"  value={`${result.MarksObtained} / ${result.TotalMarks}`} />
+                <Fact icon={<TrendingUp size={14} />} label="Percentage" value={`${percent}%`} />
+              </dl>
+            </>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+/* ───────── Subcomponents ───────── */
+
+function Field({ label, step, children }: { label: string; step: string; children: React.ReactNode }) {
+  return (
+    <label className="mv__field">
+      <span className="mv__fieldLabel">
+        <span className="mv__step">{step}</span>{label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function Select({
+  value, onChange, options, placeholder, disabled,
+}: {
+  value: string; onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  placeholder: string; disabled?: boolean;
+}) {
+  return (
+    <div className={`mv__select ${disabled ? 'is-disabled' : ''}`}>
+      <select value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
+        <option value="">{placeholder}</option>
+        {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select>
+      <ChevronDown size={16} />
+    </div>
+  );
+}
+
+function Fact({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div className="mv__fact">
+      <dt>{icon}{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="mv__empty">
+      <div className="mv__emptyIcon"><Search size={20} /></div>
+      <h3>Nothing to show yet</h3>
+      <p>Complete the four fields on the left and your results will appear here.</p>
+      <ol className="mv__emptySteps">
+        <li><span>1</span> Choose a semester</li>
+        <li><span>2</span> Pick a subject &amp; component</li>
+        <li><span>3</span> Enter your roll number</li>
+      </ol>
+    </div>
+  );
+}
+
+/* ───────── Helpers ───────── */
+function getGrade(p: number) {
+  if (p >= 90) return { letter: 'A+', key: 'aplus', label: 'Outstanding' };
+  if (p >= 80) return { letter: 'A',  key: 'a',     label: 'Excellent' };
+  if (p >= 70) return { letter: 'B+', key: 'bplus', label: 'Very good' };
+  if (p >= 60) return { letter: 'B',  key: 'b',     label: 'Good' };
+  if (p >= 50) return { letter: 'C',  key: 'c',     label: 'Satisfactory' };
+  if (p >= 40) return { letter: 'D',  key: 'd',     label: 'Needs work' };
+  return            { letter: 'F',  key: 'f',     label: 'Failed' };
 }
