@@ -36,22 +36,27 @@ const AnalyticsDashboard = () => {
             color: "#f8f3c8"
         },
         header: {
-            background: "rgba(0, 0, 0, 0.65)",
-            borderBottom: "1px solid rgba(250, 204, 21, 0.25)",
+            background: "rgba(0, 0, 0, 0.5)",
+            borderBottom: "1px solid rgba(255, 204, 63, 0.18)",
             position: "relative",
-            overflow: "hidden"
+            overflow: "hidden",
+            backdropFilter: "blur(10px)",
+            padding: "16px 24px"
         },
         navTabs: {
             display: "flex",
             background: "none",
             border: "none",
-            position: "relative"
+            position: "relative",
+            gap: "12px",
+            flexWrap: "wrap",
+            alignItems: "center"
         },
         navTab: {
-            background: "none",
-            border: "none",
-            color: "rgba(255, 255, 255, 0.75)",
-            padding: "18px 28px",
+            background: "rgba(255, 255, 255, 0.04)",
+            border: "1px solid rgba(255, 204, 63, 0.15)",
+            color: "#ffffff",
+            padding: "14px 24px",
             fontWeight: "700",
             fontSize: "14px",
             textTransform: "uppercase",
@@ -59,12 +64,14 @@ const AnalyticsDashboard = () => {
             cursor: "pointer",
             transition: "all 0.25s ease",
             position: "relative",
-            overflow: "hidden"
+            overflow: "hidden",
+            borderRadius: "12px"
         },
         navTabActive: {
-            background: "rgba(250, 204, 21, 0.18)",
-            color: "#f8f3c8",
-            boxShadow: "0 8px 20px rgba(250, 204, 21, 0.12)",
+            background: "linear-gradient(135deg, rgba(255, 204, 63, 0.25) 0%, rgba(255, 204, 63, 0.15) 100%)",
+            color: "#ffcc3f",
+            boxShadow: "0 8px 20px rgba(250, 204, 21, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+            border: "1px solid rgba(255, 204, 63, 0.4)",
             position: "relative"
         },
         mainContent: {
@@ -75,14 +82,15 @@ const AnalyticsDashboard = () => {
         pageHeader: {
             textAlign: "center",
             marginBottom: "36px",
-            color: "#f8f3c8"
+            color: "#f8f3c8",
+            padding: "20px 0"
         },
         pageTitle: {
             fontSize: "44px",
             fontWeight: "800",
             marginBottom: "12px",
-            color: "#facc15",
-            textShadow: "0 3px 18px rgba(250, 204, 21, 0.2)"
+            color: "#ffcc3f",
+            textShadow: "0 3px 18px rgba(255, 204, 63, 0.2)"
         },
         pageSubtitle: {
             fontSize: "18px",
@@ -90,17 +98,18 @@ const AnalyticsDashboard = () => {
             fontWeight: "400"
         },
         filterSection: {
-            background: "rgba(18, 18, 18, 0.96)",
-            borderRadius: "24px",
+            background: "rgba(18, 18, 18, 0.88)",
+            borderRadius: "16px",
             padding: "30px",
             marginBottom: "30px",
-            boxShadow: "0 24px 50px rgba(0, 0, 0, 0.4)",
-            border: "1px solid rgba(250, 204, 21, 0.18)"
+            boxShadow: "0 24px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+            border: "1px solid rgba(255, 204, 63, 0.12)",
+            backdrop: "blur(10px)"
         },
         filterTitle: {
             fontSize: "20px",
             fontWeight: "700",
-            color: "#facc15",
+            color: "#ffcc3f",
             marginBottom: "25px",
             display: "flex",
             alignItems: "center"
@@ -125,57 +134,57 @@ const AnalyticsDashboard = () => {
         },
         filterSelect: {
             padding: "14px 16px",
-            border: "1px solid rgba(250, 204, 21, 0.25)",
-            borderRadius: "14px",
+            border: "1px solid rgba(255, 204, 63, 0.2)",
+            borderRadius: "12px",
             fontSize: "15px",
             transition: "all 0.25s ease",
-            background: "#0f0f0f",
+            background: "rgba(15, 15, 15, 0.8)",
             color: "#f8f3c8",
-            boxShadow: "inset 0 1px 3px rgba(255,255,255,0.04)"
+            boxShadow: "inset 0 1px 3px rgba(0,0,0,0.3), 0 0 0 0 rgba(255, 204, 63, 0)"
         },
         analyzeBtn: {
-            background: "linear-gradient(135deg, #facc15 0%, #f6b500 100%)",
+            background: "linear-gradient(135deg, #ffcc3f 0%, #ffa500 100%)",
             color: "#111",
             border: "none",
             padding: "14px 28px",
-            borderRadius: "14px",
+            borderRadius: "12px",
             fontWeight: "700",
             fontSize: "14px",
             textTransform: "uppercase",
             letterSpacing: "1px",
             cursor: "pointer",
             transition: "all 0.25s ease",
-            boxShadow: "0 14px 30px rgba(250, 204, 21, 0.25)",
+            boxShadow: "0 14px 30px rgba(255, 204, 63, 0.25)",
             width: "100%"
         },
         resultsSection: {
-            background: "rgba(16, 16, 16, 0.95)",
-            borderRadius: "24px",
+            background: "rgba(16, 16, 16, 0.88)",
+            borderRadius: "16px",
             padding: "30px",
             marginBottom: "20px",
-            boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
-            border: "1px solid rgba(250, 204, 21, 0.18)"
+            boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+            border: "1px solid rgba(255, 204, 63, 0.12)"
         },
         facultyName: {
             textAlign: "center",
             fontSize: "32px",
             fontWeight: "800",
-            color: "#facc15",
+            color: "#ffcc3f",
             marginBottom: "25px",
-            textShadow: "0 2px 12px rgba(250, 204, 21, 0.18)"
+            textShadow: "0 2px 12px rgba(255, 204, 63, 0.18)"
         },
         questionHighlight: {
-            background: "rgba(255, 255, 255, 0.05)",
-            borderRadius: "18px",
+            background: "rgba(15, 15, 15, 0.8)",
+            borderRadius: "12px",
             padding: "22px",
             marginBottom: "20px",
-            borderLeft: "5px solid #facc15",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)"
+            borderLeft: "5px solid #ffcc3f",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03)"
         },
         questionLabel: {
             fontSize: "14px",
             fontWeight: "700",
-            color: "#facc15",
+            color: "#ffcc3f",
             textTransform: "uppercase",
             letterSpacing: "1px",
             marginBottom: "10px"
@@ -191,14 +200,15 @@ const AnalyticsDashboard = () => {
             width: "100%",
             borderCollapse: "separate",
             borderSpacing: "0",
-            background: "#111",
-            borderRadius: "16px",
+            background: "#0a0a0a",
+            borderRadius: "14px",
             overflow: "hidden",
-            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5)"
+            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.03)"
         },
         tableHeader: {
-            background: "rgba(40, 40, 40, 0.98)",
-            color: "#facc15"
+            background: "rgba(30, 30, 30, 0.95)",
+            color: "#ffcc3f",
+            borderBottom: "2px solid rgba(255, 204, 63, 0.15)"
         },
         tableHeaderCell: {
             padding: "16px",
@@ -207,12 +217,12 @@ const AnalyticsDashboard = () => {
             textTransform: "uppercase",
             letterSpacing: "0.5px",
             textAlign: "left",
-            color: "#f8f3c8"
+            color: "#ffcc3f"
         },
         tableCell: {
             padding: "12px 16px",
-            borderBottom: "1px solid rgba(250, 204, 21, 0.12)",
-            color: "#f2efc7",
+            borderBottom: "1px solid rgba(255, 204, 63, 0.08)",
+            color: "#e8e4d0",
             transition: "background-color 0.2s ease"
         },
         tableRow: {
@@ -424,14 +434,14 @@ const AnalyticsDashboard = () => {
 
                 {/* Student Responses Tab */}
                 {tab === "student-responses" && (
-                    <div style={{ background: "rgba(15, 23, 42, 0.95)", borderRadius: "20px", padding: "20px", marginTop: "20px" }}>
+                    <div style={{ background: "rgba(10, 10, 10, 0.8)", borderRadius: "14px", padding: "20px", marginTop: "20px", boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 204, 63, 0.12)" }}>
                         <StudentFeedback />
                     </div>
                 )}
 
                 {/* Session Summary Tab */}
                 {tab === "summary" && (
-                    <div style={{ background: "#0f172a", borderRadius: "12px", overflow: "hidden", boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35)" }}>
+                    <div style={{ background: "rgba(8, 8, 8, 0.8)", borderRadius: "14px", overflow: "hidden", boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 204, 63, 0.12)" }}>
                         <table style={styles.modernTable}>
                             <thead style={styles.tableHeader}>
                                 <tr>
@@ -450,10 +460,10 @@ const AnalyticsDashboard = () => {
                                         key={a.session_id}
                                         style={{
                                             ...styles.tableRow,
-                                            backgroundColor: index % 2 === 0 ? "#111827" : "#0f172a"
+                                            backgroundColor: index % 2 === 0 ? "rgba(10, 10, 10, 0.6)" : "rgba(5, 5, 5, 0.6)"
                                         }}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#1f2937"}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = index % 2 === 0 ? "#111827" : "#0f172a"}
+                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(30, 30, 30, 0.8)"}
+                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = index % 2 === 0 ? "rgba(10, 10, 10, 0.6)" : "rgba(5, 5, 5, 0.6)"}
                                     >
                                         <td style={styles.tableCell}>{a.session_id}</td>
                                         <td style={styles.tableCell}>{a.faculty_name}</td>
@@ -473,7 +483,7 @@ const AnalyticsDashboard = () => {
 
                 {/* Quiz Tab */}
                 {tab === "quiz" && (
-                    <div style={{ background: "#0f172a", borderRadius: "12px", overflow: "hidden", boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35)" }}>
+                    <div style={{ background: "rgba(8, 8, 8, 0.8)", borderRadius: "14px", overflow: "hidden", boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 204, 63, 0.12)" }}>
                         <table style={styles.modernTable}>
                             <thead style={styles.tableHeader}>
                                 <tr>
@@ -496,10 +506,10 @@ const AnalyticsDashboard = () => {
                                             key={a.session_id}
                                             style={{
                                                 ...styles.tableRow,
-                                                backgroundColor: index % 2 === 0 ? "#111827" : "#0f172a"
+                                                backgroundColor: index % 2 === 0 ? "rgba(10, 10, 10, 0.6)" : "rgba(5, 5, 5, 0.6)"
                                             }}
-                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#1f2937"}
-                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = index % 2 === 0 ? "#111827" : "#0f172a"}
+                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(30, 30, 30, 0.8)"}
+                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = index % 2 === 0 ? "rgba(10, 10, 10, 0.6)" : "rgba(5, 5, 5, 0.6)"}
                                         >
                                             <td style={styles.tableCell}>{a.session_id}</td>
                                             <td style={styles.tableCell}>{a.faculty_name}</td>
@@ -654,10 +664,10 @@ const AnalyticsDashboard = () => {
 
                                 {/* Chart Container */}
                                 <div style={{
-                                    background: "#0f172a",
-                                    borderRadius: "12px",
-                                    boxShadow: "0 10px 25px rgba(0,0,0,0.35)",
-                                    border: "1px solid rgba(250, 204, 21, 0.18)",
+                                    background: "rgba(8, 8, 8, 0.8)",
+                                    borderRadius: "14px",
+                                    boxShadow: "0 10px 25px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03)",
+                                    border: "1px solid rgba(255, 204, 63, 0.12)",
                                     overflow: "hidden"
                                 }}>
                                     {(selectedQuestion === 5 || selectedQuestion === 7) && (
@@ -671,7 +681,7 @@ const AnalyticsDashboard = () => {
                                             }}>
                                                 Feedback Distribution
                                             </h3>
-                                            <div style={{ background: "#111827", borderRadius: "8px", padding: "1rem", border: "1px solid rgba(250, 204, 21, 0.18)" }}>
+                                            <div style={{ background: "#0a0a0a", borderRadius: "8px", padding: "1rem", border: "1px solid rgba(255, 204, 63, 0.12)" }}>
                                                 <ResponsiveContainer width="100%" height={350}>
                                                     <PieChart>
                                                         <Pie
@@ -707,7 +717,7 @@ const AnalyticsDashboard = () => {
                                             }}>
                                                 Rating Distribution
                                             </h3>
-                                            <div style={{ background: "#111827", borderRadius: "8px", padding: "1rem", border: "1px solid rgba(250, 204, 21, 0.18)" }}>
+                                            <div style={{ background: "#0a0a0a", borderRadius: "8px", padding: "1rem", border: "1px solid rgba(255, 204, 63, 0.12)" }}>
                                                 <ResponsiveContainer width="100%" height={350}>
                                                     <BarChart data={processBarData(faculty.feedbacks)} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -724,9 +734,9 @@ const AnalyticsDashboard = () => {
 
                                     {/* Sessions Details */}
                                     <div style={{
-                                        borderTop: "1px solid rgba(250, 204, 21, 0.18)",
+                                        borderTop: "1px solid rgba(255, 204, 63, 0.12)",
                                         padding: "1.5rem",
-                                        background: "#111827"
+                                        background: "#0a0a0a"
                                     }}>
                                         <h4 style={{
                                             fontSize: "1.125rem",
@@ -763,12 +773,12 @@ const AnalyticsDashboard = () => {
                         {/* No Data State */}
                         {feedbackData.length === 0 && !loading && (
                             <div style={{
-                                background: "#0f172a",
-                                borderRadius: "20px",
-                                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.35)",
+                                background: "rgba(8, 8, 8, 0.8)",
+                                borderRadius: "14px",
+                                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03)",
                                 padding: "3rem",
                                 textAlign: "center",
-                                border: "1px solid rgba(250, 204, 21, 0.18)"
+                                border: "1px solid rgba(255, 204, 63, 0.12)"
                             }}>
                                 <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>📊</div>
                                 <h3 style={{ fontSize: "1.25rem", fontWeight: "500", color: "#facc15", marginBottom: "0.5rem" }}>
@@ -787,9 +797,10 @@ const AnalyticsDashboard = () => {
                     <div style={{
                         marginTop: "2rem",
                         padding: "1.5rem",
-                        background: "rgba(15, 23, 42, 0.95)",
-                        borderRadius: "12px",
-                        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35)"
+                        background: "rgba(10, 10, 10, 0.8)",
+                        borderRadius: "14px",
+                        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03)",
+                        border: "1px solid rgba(255, 204, 63, 0.12)"
                     }}>
                         <h4 style={{ fontWeight: "600", marginBottom: "1rem", color: "#f8fafc" }}>Rating Color Guide:</h4>
                         <div style={{ display: "flex", gap: "1rem", fontSize: "0.875rem", flexWrap: "wrap" }}>

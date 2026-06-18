@@ -111,12 +111,11 @@ const AttendanceCSV = () => {
 
 const styles = {
   container: {
-    minHeight: "100vh",
+    minHeight: "77vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     background: "radial-gradient(circle at top left, #2b2b2b 0%, #0d0d0d 100%)",
-    fontFamily: "Arial, sans-serif",
     padding: "20px",
   },
   card: {

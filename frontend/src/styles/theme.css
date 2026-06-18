@@ -122,34 +122,38 @@
   
   /* Primary Button */
   --btn-primary-bg: var(--gradient-button-primary);
-  --btn-primary-color: white;
+  --btn-primary-color: #000000;
   --btn-primary-padding: 0.75rem 1.5rem;
   --btn-primary-shadow: var(--shadow-button-primary);
   --btn-primary-hover-shadow: var(--shadow-button-primary-hover);
+  --btn-primary-hover-bg: linear-gradient(135deg, rgba(255,204,63,0.95) 0%, rgba(235,180,35,0.95) 100%);
   --btn-primary-font-weight: 600;
   --btn-primary-border-radius: var(--radius-md);
   
   /* Secondary Button */
   --btn-secondary-bg: var(--gradient-button-secondary);
-  --btn-secondary-color: white;
+  --btn-secondary-color: #000000;
   --btn-secondary-padding: 0.75rem 1.5rem;
   --btn-secondary-shadow: var(--shadow-button-secondary);
+  --btn-secondary-hover-bg: linear-gradient(135deg, rgba(255,204,63,0.25) 0%, rgba(255,204,63,0.35) 100%);
   --btn-secondary-font-weight: 600;
   --btn-secondary-border-radius: var(--radius-md);
   
   /* Danger Button */
   --btn-danger-bg: var(--gradient-button-danger);
-  --btn-danger-color: white;
+  --btn-danger-color: #000000;
   --btn-danger-padding: 0.75rem 1.5rem;
   --btn-danger-shadow: var(--shadow-button-danger);
+  --btn-danger-hover-bg: linear-gradient(135deg, rgba(255,140,0,0.95) 0%, rgba(255,190,55,0.95) 100%);
   --btn-danger-font-weight: 600;
   --btn-danger-border-radius: var(--radius-md);
   
   /* Warning Button */
   --btn-warning-bg: var(--gradient-button-warning);
-  --btn-warning-color: white;
+  --btn-warning-color: #000000;
   --btn-warning-padding: 0.75rem 1.5rem;
   --btn-warning-shadow: var(--shadow-button-warning);
+  --btn-warning-hover-bg: linear-gradient(135deg, rgba(255,204,63,0.5) 0%, rgba(255,204,63,0.25) 100%);
   --btn-warning-font-weight: 600;
   --btn-warning-border-radius: var(--radius-md);
   
@@ -300,7 +304,7 @@ h2 {
 
 .nav-container .nav-link {
   color: #FFFFFF;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: var(--font-weight-regular);
   padding: 0.5rem 0.75rem;
   border-radius: 12px;
@@ -320,13 +324,13 @@ h2 {
 /* Logout button styling */
 .logout-btn {
   background: var(--color-accent);
-  color: #FFFFFF;
+  color: #000000;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 999px;
   font-family: var(--font-family);
   font-weight: var(--font-weight-semibold);
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(255,204,63,0.18);
 }

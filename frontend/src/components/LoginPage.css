@@ -1,12 +1,13 @@
 @import '../styles/theme.css';
 
 .login-page {
-  min-height: 100vh;
+  height: 84vh;
   background: #000000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1.5rem 0;
+  box-sizing: border-box;
   font-family: var(--font-family);
 }
 
@@ -15,7 +16,7 @@
   max-width: 450px;
   background: rgba(0, 0, 0, 0.94);
   border-radius: var(--radius-xl);
-  padding: 2rem;
+  padding: 2.25rem 2rem;
   border: 1px solid rgba(255, 204, 63, 0.18);
   box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
 }
@@ -24,6 +25,17 @@
 .login-card label,
 .login-card p {
   color: white;
+}
+
+.login-card h2 {
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .login-card input {
@@ -44,4 +56,16 @@
   color: var(--color-black);
   cursor: pointer;
   font-weight: var(--font-weight-semibold);
+}
+
+.password-links {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.5rem;
+}
+
+.forgot-password-link {
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.95rem;
 }

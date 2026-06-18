@@ -1,0 +1,120 @@
+/* Styles for Student Feedback (dark theme) */
+@import '../styles/theme.css';
+
+.feedback-container {
+  font-family: var(--font-family, Arial, sans-serif);
+  padding: 24px;
+  background: #070707;
+  color: #e6e6e6;
+  min-height: 100vh;
+}
+
+.feedback-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.feedback-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-accent, #ffd24f);
+}
+
+.feedback-header p {
+  color: rgba(230,230,230,0.75);
+  margin-top: 6px;
+}
+
+.filters {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,204,63,0.08);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.filters h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--color-accent, #ffd24f);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.filter-item label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: rgba(230,230,230,0.9);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px;
+  font-size: 14px;
+  background: rgba(255,255,255,0.02);
+  color: #e6e6e6;
+}
+
+.input::placeholder { color: rgba(230,230,230,0.45); }
+
+.loading {
+  text-align: center;
+  color: rgba(230,230,230,0.7);
+  margin-top: 20px;
+}
+
+.responses {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,204,63,0.06);
+  padding: 18px;
+  border-radius: 10px;
+}
+
+.responses h2 {
+  margin-bottom: 12px;
+  color: var(--color-accent, #ffd24f);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.response-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #e6e6e6;
+}
+
+.response-table th,
+.response-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  text-align: left;
+}
+
+.response-table thead {
+  background: rgba(255,255,255,0.02);
+}
+
+.response-table thead th { color: var(--color-accent, #ffd24f); font-weight: 700; }
+
+.student-col { background: rgba(34,197,94,0.06); }
+.response-col { background: rgba(245,158,11,0.04); }
+.student-cell { background: transparent; }
+.response-cell { background: transparent; }
+
+.student-name { font-weight: 600; color: #e6e6e6; }
+.student-email { font-size: 12px; color: rgba(230,230,230,0.65); }
+
+.empty { text-align: center; margin-top: 20px; color: rgba(230,230,230,0.6); }
+
+.response-table tbody tr:nth-child(odd) { background: rgba(255,255,255,0.01); }
+.response-table tbody tr:hover { background: rgba(255,255,255,0.02); }

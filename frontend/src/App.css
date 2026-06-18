@@ -10,28 +10,29 @@
 
 /* Navigation container */
 .nav-container {
-  padding-top: 2.75rem;
-  padding-right: 1.5rem;
-  padding-left: 4.5rem;
-  padding-bottom: 0rem;
-  backdrop-filter: none;
-  border-bottom: none;
-  box-shadow: none;
+  width: 100%;
+  padding: 20px 11rem;
+  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.3) 0%, rgba(10, 10, 10, 0.2) 48%, rgba(10, 10, 10, 0.06) 72%, rgba(10, 10, 10, 0) 100%);
+  border-bottom: 1px solid rgba(255, 250, 235, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  z-index: 40;
 }
 
 /* Navigation links */
 .nav-link {
-  padding: 0.5rem 0.75rem;
+  padding: 0.85rem 1.15rem;
   font-weight: var(--font-weight-semibold);
-  color: #FFFFFF;
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   transition: var(--transition-normal);
   position: relative;
   display: inline-block;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
   font-size: 12px;
   border: 1px solid transparent;
+  backdrop-filter: blur(5px);
 }
 
 .nav-link:hover {
@@ -121,6 +122,14 @@ tr:last-child td {
 }
 
 /* Button improvements */
+button,
+.button,
+.btn,
+input[type="submit"],
+input[type="button"] {
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
 button:not(.logout-btn) {
   background: var(--btn-primary-bg);
   border: none;
@@ -133,11 +142,23 @@ button:not(.logout-btn) {
   box-shadow: 0 12px 24px rgba(255,204,63,0.18);
 }
 
-button:not(.logout-btn):hover {
-  background: rgba(255,204,63,0.95);
-  color: #000000;
+button:not(.logout-btn):hover,
+.button:hover,
+.btn:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  background: var(--btn-primary-hover-bg) !important;
+  color: var(--btn-primary-color) !important;
   transform: translateY(-1px);
-  box-shadow: 0 18px 30px rgba(255,204,63,0.22);
+  box-shadow: var(--btn-primary-hover-shadow);
+}
+
+button:hover,
+.button:hover,
+.btn:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  color: #000000 !important;
 }
 
 /* Input improvements */
@@ -156,7 +177,6 @@ select:focus {
   outline: none;
   border-color: var(--color-info);
   box-shadow: var(--input-shadow-focus);
-  background: var(--input-bg-focus);
 }
 
 
@@ -182,12 +202,12 @@ h2 {
   }
 
   .nav-container {
-    padding: var(--space-md);
+    padding: 1rem 1rem 0.75rem;
   }
 
   .nav-link {
-    padding: var(--space-sm) var(--space-md);
-    font-size: var(--text-small-size);
+    padding: 0.75rem 0.95rem;
+    font-size: 0.85rem;
   }
 
   .main-content {

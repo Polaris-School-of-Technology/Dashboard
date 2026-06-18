@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
@@ -48,8 +48,16 @@ const LoginPage: React.FC = () => {
         navigate("/forgot-password");
     };
 
+    useEffect(() => {
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = originalOverflow;
+        };
+    }, []);
+
     return (
-        <div className="login-container">
+        <div className="login-page">
             <div className="login-card">
                 <h2 className="login-title">Login</h2>
 
