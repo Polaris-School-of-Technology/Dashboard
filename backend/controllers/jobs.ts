@@ -335,7 +335,7 @@ export const getJobApplications = async (req: Request, res: Response) => {
                 status,
                 created_at,
                 last_updated,
-                users!inner(id, email, full_name)
+                profiles!inner(id, email, name)
             `)
             .eq('job_id', jobId)
             .order('created_at', { ascending: false });
@@ -345,8 +345,8 @@ export const getJobApplications = async (req: Request, res: Response) => {
         const applications = data.map((app: any) => ({
             id: app.id,
             userId: app.user_id,
-            studentName: app.users?.full_name || 'N/A',
-            studentEmail: app.users?.email || 'N/A',
+            studentName: app.profiles?.name || 'N/A',
+            studentEmail: app.profiles?.email || 'N/A',
             resumeUrl: app.resume_url,
             coverLetter: app.cover_letter,
             status: app.status,
@@ -802,11 +802,16 @@ export const updateJob = async (req: Request, res: Response) => {
             form_link,
             aboutRole,
             additionalInformation,
-            requiredSkills = [],
-            minimumCGPA,
-            preferredQualifications = [],
             deletedDocumentIds = [] // Array of document IDs to delete
         } = req.body;
+
+        const rawRequiredSkills = req.body['requiredSkills[]'] || req.body.requiredSkills;
+        const rawPreferredQualifications = req.body['preferredQualifications[]'] || req.body.preferredQualifications;
+        const minimumCGPA = req.body.minimumCGPA || undefined;
+
+        // Ensure array format
+        const finalRequiredSkills = Array.isArray(rawRequiredSkills) ? rawRequiredSkills : (rawRequiredSkills ? [rawRequiredSkills] : []);
+        const finalPreferredQualifications = Array.isArray(rawPreferredQualifications) ? rawPreferredQualifications : (rawPreferredQualifications ? [rawPreferredQualifications] : []);
 
         console.log(`📝 Updating job ${jobId}`);
 
@@ -837,7 +842,7 @@ export const updateJob = async (req: Request, res: Response) => {
             .from("job_descriptions")
             .select("id")
             .eq("job_id", jobId)
-            .single();
+            .maybeSingle();
 
         if (existingDesc) {
             // Update existing description
@@ -871,12 +876,12 @@ export const updateJob = async (req: Request, res: Response) => {
             .eq("job_id", jobId);
 
         // Insert new skills (if any)
-        if (requiredSkills && requiredSkills.length > 0) {
+        if (finalRequiredSkills && finalRequiredSkills.length > 0) {
             const { error: skillsError } = await supabase
                 .from("job_required_skills")
                 .insert({
                     job_id: jobId,
-                    skill_name: requiredSkills
+                    skill_name: finalRequiredSkills
                 });
 
             if (skillsError) throw new Error(skillsError.message);
@@ -887,7 +892,7 @@ export const updateJob = async (req: Request, res: Response) => {
             .from("job_eligibility")
             .select("id")
             .eq("job_id", jobId)
-            .single();
+            .maybeSingle();
 
         if (existingEligibility) {
             // Update existing eligibility
@@ -895,7 +900,7 @@ export const updateJob = async (req: Request, res: Response) => {
                 .from("job_eligibility")
                 .update({
                     minimum_cgpa: minimumCGPA || null,
-                    preferred_qualifications: preferredQualifications
+                    preferred_qualifications: finalPreferredQualifications
                 })
                 .eq("job_id", jobId);
 
@@ -907,7 +912,7 @@ export const updateJob = async (req: Request, res: Response) => {
                 .insert({
                     job_id: jobId,
                     minimum_cgpa: minimumCGPA || null,
-                    preferred_qualifications: preferredQualifications
+                    preferred_qualifications: finalPreferredQualifications
                 });
 
             if (eligibilityInsertError) throw new Error(eligibilityInsertError.message);
