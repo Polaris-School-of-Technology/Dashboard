@@ -113,6 +113,39 @@ export const sendBatchNotification = async (req: Request, res: Response): Promis
 };
 
 /** ----------------------------
+ * 1a. Batch Parent Notification
+ * ---------------------------- */
+export const sendBatchParentNotification = async (req: Request, res: Response): Promise<Response | undefined> => {
+    try {
+        const batchId = parseInt(req.params.batchId, 10);
+        const { title, content, category = 'general', is_header = false } = req.body;
+
+        if (isNaN(batchId)) return res.status(400).json({ message: "Invalid 'batchId'" });
+        if (!title || !content) return res.status(400).json({ message: "Missing 'title' or 'content'" });
+
+        const valid: NotificationCategory[] = ['notice', 'fees', 'reminder', 'general', 'Hosteller'];
+        if (!valid.includes(category as NotificationCategory))
+            return res.status(400).json({ message: `Invalid category. Must be one of: ${valid.join(', ')}` });
+
+        // Handle optional image upload
+        let imageUrl: string | undefined;
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        if (files?.image?.[0]) {
+            imageUrl = await storageService.uploadImage(files.image[0], 'notifications');
+        }
+
+        const count = await notificationService.notifyBatchParents(batchId, title, content, category, is_header, imageUrl);
+        res.status(200).json({
+            message: `Notification sent to parents of batch ${batchId}`,
+            usersNotified: count,
+            image_url: imageUrl
+        });
+    } catch (err: any) {
+        res.status(500).json({ message: 'Internal error', error: err.message });
+    }
+};
+
+/** ----------------------------
  * 2. Global Notification
  * ---------------------------- */
 export const sendGlobalNotification = async (req: Request, res: Response): Promise<Response | undefined> => {

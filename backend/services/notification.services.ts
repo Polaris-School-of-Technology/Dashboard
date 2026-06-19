@@ -146,3 +146,73 @@ export const notifyAllParents = async (
   // Reuse existing function to send notifications
   return await sendNotificationToUsers(title, content, category, is_header, parentIds, image_url);
 };
+
+/**
+ * Sends a notification to all parents of students enrolled in a specific batch.
+ * Step 1: Get all student IDs in the batch
+ * Step 2: Get all parent IDs for those students
+ * Step 3: Send notification to those parents
+ * @param batchId The numeric ID of the batch.
+ * @param title The notification title.
+ * @param content The notification message.
+ * @param category The category of the notification (default: 'general').
+ * @param is_header Whether this should be a header notification (default: false).
+ * @param image_url Optional URL of an image to attach to the notification.
+ */
+export const notifyBatchParents = async (
+  batchId: number,
+  title: string,
+  content: string,
+  category: string = 'general',
+  is_header: boolean = false,
+  image_url?: string
+): Promise<number> => {
+
+  // Step 1: Get all student IDs enrolled in the batch
+  const { data: enrollments, error: enrollmentError } = await supabase
+    .from('student_batch_enrollments')
+    .select('user_id')
+    .eq('batch_id', batchId);
+
+  if (enrollmentError) {
+    console.error('Error fetching students for batch:', enrollmentError);
+    throw new Error(`Could not retrieve students for batch ID ${batchId}.`);
+  }
+
+  const studentIds = enrollments.map(e => e.user_id);
+  console.log(`Found ${studentIds.length} students in batch ${batchId}`);
+
+  if (!studentIds.length) {
+    console.log('No students found in this batch.');
+    return 0;
+  }
+
+  // Step 2: Get parent IDs for those students
+  const { data: mappings, error: mappingError } = await supabase
+    .from('student_parent_mapping')
+    .select('parent_id')
+    .in('student_id', studentIds);
+
+  if (mappingError) {
+    console.error('Error fetching parents for students:', mappingError);
+    throw new Error('Could not retrieve parents for the batch students.');
+  }
+
+  const parentIds = mappings.map(m => m.parent_id);
+  console.log(`Found ${parentIds.length} parents for batch ${batchId}`);
+
+  if (!parentIds.length) {
+    console.log('No parents found for students in this batch.');
+    return 0;
+  }
+
+  // Step 3: Send notification to all parent IDs
+  return sendNotificationToUsers(
+    title,
+    content,
+    category,
+    is_header,
+    parentIds,
+    image_url
+  );
+};

@@ -5,6 +5,7 @@ import {
     sendUserNotification,
     uploadCsvMiddleware,
     sendParentNotification,
+    sendBatchParentNotification,
     uploadNotificationFiles  // Add this import
 } from '../controllers/notification.controller'
 
@@ -27,6 +28,21 @@ router.post(
     authorizeAdmin,
     uploadNotificationFiles,  // Changed from no middleware to uploadNotificationFiles
     sendBatchNotification
+);
+
+/**
+ * @route   POST /api/v1/notifications/batch-parent/:batchId
+ * @desc    Sends a notification to all parents of students in a specific batch.
+ * @body    { title: string, content: string, category?: string, is_header?: boolean }
+ * @file    image (optional): Image file for the notification
+ * @access  Private (Admin)
+ */
+router.post(
+    '/batch-parent/:batchId',
+    authenticate,
+    authorizeAdmin,
+    uploadNotificationFiles,
+    sendBatchParentNotification
 );
 
 /**

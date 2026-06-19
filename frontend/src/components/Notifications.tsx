@@ -3,7 +3,7 @@ import axios from 'axios';
 import './Notification.css';
 
 type NotificationCategory = 'notice' | 'fees' | 'reminder' | 'general' | 'Hosteller';
-type NotificationType = 'batch' | 'global' | 'users' | 'parents';
+type NotificationType = 'batch' | 'global' | 'users' | 'parents' | 'batch-parent';
 
 interface ResponseState {
     message: string;
@@ -122,7 +122,7 @@ const AdminNotifications: React.FC = () => {
             setRecipientIds('');
             setCsvFile(null);
         }
-        if (newType !== 'batch') setBatchId('');
+        if (newType !== 'batch' && newType !== 'batch-parent') setBatchId('');
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -151,6 +151,9 @@ const AdminNotifications: React.FC = () => {
             if (type === 'batch') {
                 if (batchId === '') throw new Error('Please select a batch.');
                 url = `${API_BASE_URL}/api/notifications/batch/${batchId}`;
+            } else if (type === 'batch-parent') {
+                if (batchId === '') throw new Error('Please select a batch.');
+                url = `${API_BASE_URL}/api/notifications/batch-parent/${batchId}`;
             } else if (type === 'global') {
                 url = `${API_BASE_URL}/api/notifications/global`;
             } else if (type === 'parents') {
@@ -218,19 +221,19 @@ const AdminNotifications: React.FC = () => {
                     <form onSubmit={handleSubmit} className="notifications-form">
                         {/* Notification Type Selector */}
                         <div className="notification-type-selector">
-                            {['batch', 'global', 'parents', 'users'].map((t) => (
+                            {['batch', 'global', 'parents', 'users', 'batch-parent'].map((t) => (
                                 <label key={t} className={`type-option ${type === t ? 'active' : ''}`} onClick={() => handleTypeChange(t as NotificationType)}>
                                     <input type="radio" name="type" value={t} checked={type === t} onChange={() => handleTypeChange(t as NotificationType)} />
                                     <span className="type-icon">
-                                        {t === 'batch' ? '👥' : t === 'global' ? '🌍' : t === 'parents' ? '👨‍👩‍👧' : '🎯'}
+                                        {t === 'batch' ? '👥' : t === 'global' ? '🌍' : t === 'parents' ? '👨‍👩‍👧' : t === 'users' ? '🎯' : '👨‍👩‍👦'}
                                     </span>
-                                    <div>{t === 'batch' ? 'Batch' : t === 'global' ? 'Global' : t === 'parents' ? 'All Parents' : 'Specific Users'}</div>
+                                    <div>{t === 'batch' ? 'Batch' : t === 'global' ? 'Global' : t === 'parents' ? 'All Parents' : t === 'users' ? 'Specific Users' : 'Batch Parents'}</div>
                                 </label>
                             ))}
                         </div>
 
                         {/* Batch Dropdown */}
-                        {type === 'batch' && (
+                        {(type === 'batch' || type === 'batch-parent') && (
                             <div className="form-group full batch-id-group">
                                 <label className="form-label">Batch Name</label>
                                 <select className="form-select" value={batchId} onChange={(e) => setBatchId(Number(e.target.value))} required>
