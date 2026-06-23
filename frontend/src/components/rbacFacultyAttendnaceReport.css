@@ -34,6 +34,22 @@ h1 {
   color: white;
 }
 
+/* Calendar icon styling for native date inputs (unified with global styles) */
+.search-section input[type="date"]::-webkit-calendar-picker-indicator,
+.search-section input::-webkit-calendar-picker-indicator {
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  margin-right: 2px !important;
+  opacity: 1 !important;
+  filter: invert(1) brightness(1.2) !important;
+  transition: opacity 0.2s ease;
+}
+
+.search-section input[type="date"]::-webkit-calendar-picker-indicator:hover,
+.search-section input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1 !important;
+}
+
 .data-table th,
 .data-table td {
   padding: 1rem;

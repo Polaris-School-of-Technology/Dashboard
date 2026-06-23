@@ -20,7 +20,7 @@
   --mv-radius-sm: 10px;
 
   --mv-font: ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
-  --mv-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+  --mv-mono: "Montserrat", ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
 }
 
 /* ---------- Shell ---------- */

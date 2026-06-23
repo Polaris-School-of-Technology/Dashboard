@@ -204,7 +204,10 @@ const AdminJobs: React.FC = () => {
                         <span>/</span>
                         <strong>All Postings</strong>
                     </nav>
-                    <h1>Job Management</h1>
+                    <h1>
+                        <span className="dashboard-heading-white">Job</span>{" "}
+                        <span className="dashboard-heading-gradient">Management</span>
+                    </h1>
                     <p className="jobs-subtitle">{jobs.length} active postings · Updated 2 minutes ago</p>
                 </div>
                 <div className="top-actions">

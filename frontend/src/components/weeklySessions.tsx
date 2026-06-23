@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Papa from "papaparse";
 import "./WeeklySessions.css";
 
@@ -26,15 +24,15 @@ const WeeklySessions: React.FC = () => {
   const [csvDataMap, setCsvDataMap] = useState<{ [key: string]: any[] }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
 
   // Fetch sessions
-  const fetchSessions = async (date: Date) => {
+  const fetchSessions = async (date: string) => {
     setLoading(true);
     setError(null);
     try {
       const res = await axios.get(`${API_BASE_URL}/api/weekly/getAllWeeklySessions`, {
-        params: { date: date.toISOString().split("T")[0] },
+        params: { date },
       });
       setSessions(res.data);
     } catch (err: any) {
@@ -45,10 +43,10 @@ const WeeklySessions: React.FC = () => {
   };
 
   // Fetch CSV files
-  const fetchCSVForWeek = async (date: Date) => {
+  const fetchCSVForWeek = async (date: string) => {
     try {
       const res = await axios.get(`${API_BASE_URL}/api/weekly/csv/files/week`, {
-        params: { date: date.toISOString().split("T")[0] },
+        params: { date },
       });
       setWeeklyCSV(res.data.files);
       setCsvDataMap({}); // reset previous CSV data
@@ -99,21 +97,27 @@ const WeeklySessions: React.FC = () => {
     <div className="page-wrapper">
       <div className="table-container">
         <header className="page-header">
-          <h1>This Week's Sessions</h1>
+          <h1>
+            <span className="dashboard-heading-gradient">This</span>{" "}
+            <span className="dashboard-heading-white">Week's</span>{" "}
+            <span className="dashboard-heading-gradient">Sessions</span>
+          </h1>
           <p className="page-subtitle">
             Review scheduled sessions and weekly uploads at a glance.
           </p>
         </header>
 
         <div className="calendar-container">
-          <label htmlFor="session-date">Select a date</label>
-          <DatePicker
-            id="session-date"
-            selected={selectedDate}
-            onChange={(date: Date | null) => date && setSelectedDate(date)}
-            dateFormat="dd/MM/yyyy"
-            className="datepicker-input"
-          />
+          <div className="date-field">
+            <label htmlFor="session-date">Select a date</label>
+            <input
+              id="session-date"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="datepicker-input"
+            />
+          </div>
         </div>
 
         {loading && <p className="loading">Loading sessions...</p>}
@@ -155,7 +159,7 @@ const WeeklySessions: React.FC = () => {
             </section>
 
             <section className="section">
-              <h2>CSV for this week</h2>
+              <h2 className="dashboard-heading-white">CSV for this week</h2>
 
               {weeklyCSV.length === 0 && (
                 <div className="empty-state">

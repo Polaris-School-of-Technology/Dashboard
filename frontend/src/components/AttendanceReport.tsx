@@ -185,7 +185,10 @@ const AttendanceReport: React.FC = () => {
         <div className="ar__crumbs"><span>Academics</span><span className="ar__dot">/</span><span className="ar__crumbs-current">Attendance</span></div>
         <div className="ar__title-row">
           <div>
-            <h1 className="ar__title">Attendance Report</h1>
+            <h1 className="ar__title">
+              <span className="dashboard-heading-white">Attendance</span>{" "}
+              <span className="dashboard-heading-gradient">Report</span>
+            </h1>
             <p className="ar__subtitle">Daily session‑level attendance, search and export.</p>
           </div>
           <button className="ar__btn ar__btn--gold" onClick={exportAllToCSV} disabled={!data.length}>Export all CSV</button>
@@ -200,15 +203,21 @@ const AttendanceReport: React.FC = () => {
         <Kpi label="Absent" value={stats.absent} />
       </section>
 
+
       {/* TOOLBAR */}
       <section className="ar__toolbar">
         <Field label="Date" hint="filter">
-          <DatePicker
-            selected={date}
-            onChange={(d: Date | null) => { setDate(d); if (d) fetchReport(d, statusFilter, selectedBatch); }}
-            className="ar__input"
-            placeholderText="Choose date…"
-            dateFormat="dd-MM-yyyy"
+          <input
+            type="date"
+            className="datepicker-input ar__input"
+            value={date ? date.toISOString().slice(0, 10) : ""}
+            onChange={(e) => {
+              const v = e.target.value;
+              const d = v ? new Date(`${v}T00:00:00`) : null;
+              setDate(d);
+              if (d) fetchReport(d, statusFilter, selectedBatch);
+            }}
+            placeholder="Choose date…"
           />
         </Field>
         <Field label="Batch">

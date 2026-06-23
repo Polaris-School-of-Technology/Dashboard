@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import './facultyRatings.css';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer,
@@ -69,8 +67,8 @@ const Avatar = ({ name }: { name: string }) => {
 const AdminAnalytics = () => {
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
   const [selectedFaculty, setSelectedFaculty] = useState('all');
-  const [startDate, setStartDate] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [heatmapData, setHeatmapData] = useState<HeatmapDataPoint[]>([]);
   const [tableData, setTableData] = useState<FacultyRating[]>([]);
@@ -129,8 +127,8 @@ const AdminAnalytics = () => {
         : `${API_BASE_URL}/api/faculty-rating/analytics/daily-aggregates`;
       const res = await axios.get(endpoint, {
         params: {
-          start_date: startDate.toISOString().split('T')[0],
-          end_date: endDate.toISOString().split('T')[0],
+          start_date: startDate,
+          end_date: endDate,
           faculty_id: selectedFaculty !== 'all' ? selectedFaculty : undefined,
         },
       });
@@ -320,7 +318,10 @@ const AdminAnalytics = () => {
         </nav>
         <div className="fr__header-row">
           <div>
-            <h1 className="fr__title">Faculty Ratings</h1>
+            <h1 className="fr__title">
+              <span className="dashboard-heading-white">Faculty</span>{" "}
+              <span className="dashboard-heading-gradient">Ratings</span>
+            </h1>
             <p className="fr__subtitle">Track session-level feedback, spot trends, and surface top performers.</p>
           </div>
           <div className="fr__tab-group" role="tablist">
@@ -351,10 +352,23 @@ const AdminAnalytics = () => {
           </select>
         </Field>
         <Field label="Start Date">
-          <DatePicker selected={startDate} onChange={d => d && setStartDate(d)} dateFormat="yyyy-MM-dd" maxDate={new Date()} className="fr__input" />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            max={new Date().toISOString().split('T')[0]}
+            className="fr__input"
+          />
         </Field>
         <Field label="End Date">
-          <DatePicker selected={endDate} onChange={d => d && setEndDate(d)} dateFormat="yyyy-MM-dd" maxDate={new Date()} minDate={startDate} className="fr__input" />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            max={new Date().toISOString().split('T')[0]}
+            min={startDate}
+            className="fr__input"
+          />
         </Field>
         <div className="fr__toolbar-actions">
           <button className="fr__btn fr__btn--primary" onClick={fetchAnalytics} disabled={loading}>

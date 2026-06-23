@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "./facultySessions.css";
 
 
@@ -14,7 +12,7 @@ interface Session {
 const FacultySessions: React.FC = () => {
   const API_BASE_URL = process.env.REACT_APP_API_URL; // ✅ Use env variable
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedFaculty, setExpandedFaculty] = useState<string | null>(null);
@@ -24,7 +22,7 @@ const FacultySessions: React.FC = () => {
 
     const fetchSessions = async () => {
       setLoading(true);
-      const dateStr = selectedDate.toISOString().split("T")[0];
+      const dateStr = selectedDate;
       try {
         const res = await fetch(`${API_BASE_URL}/api/weekly/facultySessions/${dateStr}`, {
           headers: {
@@ -52,13 +50,17 @@ const FacultySessions: React.FC = () => {
 
   return (
     <div className="table-container">
-      <h1>Faculty Sessions</h1>
+      <h1>
+        <span className="dashboard-heading-white">Faculty</span>{" "}
+        <span className="dashboard-heading-gradient">Sessions</span>
+      </h1>
 
       <div className="datepicker-wrapper">
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
-          dateFormat="yyyy-MM-dd"
+        <input
+          id="faculty-date"
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
           className="datepicker"
         />
       </div>

@@ -146,7 +146,10 @@ const ClassSessions: React.FC = () => {
         </div>
         <div className="cs__headerRow">
           <div>
-            <h1 className="cs__title">Class Sessions</h1>
+            <h1 className="cs__title">
+              <span className="dashboard-heading-white">Class</span>{" "}
+              <span className="dashboard-heading-gradient">Sessions</span>
+            </h1>
             <p className="cs__subtitle">
               {sessions.length} session{sessions.length !== 1 ? 's' : ''} · Batch {batchName}
               {date && <> · {new Date(date).toLocaleDateString(undefined, { dateStyle: 'medium' })}</>}
@@ -201,8 +204,8 @@ const ClassSessions: React.FC = () => {
 
         <div className="cs__toolbarRight">
           <div className="cs__dateField">
-            <Calendar size={16} />
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          
+            <input className="datepicker-input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <button
             className="cs__btn cs__btn--primary"
@@ -337,7 +340,7 @@ const ClassSessions: React.FC = () => {
 
               <div className="cs__grid2">
                 <FormRow label="Date" icon={<Calendar size={14} />}>
-                  <input className="cs__input" type="date" value={dateVal} onChange={(e) => setDateVal(e.target.value)} />
+                  <input className="datepicker-input cs__input" type="date" value={dateVal} onChange={(e) => setDateVal(e.target.value)} />
                 </FormRow>
                 <FormRow label="Time" icon={<Clock size={14} />}>
                   <input className="cs__input" type="time" value={timeVal} onChange={(e) => setTimeVal(e.target.value)} />

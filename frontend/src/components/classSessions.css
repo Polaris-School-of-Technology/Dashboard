@@ -23,7 +23,7 @@
   --cs-radius-sm: 10px;
 
   --cs-font: ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
-  --cs-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+  --cs-mono: "Montserrat", ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
 }
 
 .cs {
@@ -167,7 +167,7 @@
 
 .cs__pill {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 8px 12px;
+  padding: 0px 12px;
   background: var(--cs-surface-2);
   border: 1px solid var(--cs-line-2);
   border-radius: var(--cs-radius-sm);
@@ -191,7 +191,7 @@
 
 .cs__dateField {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 14px;
+  padding: 0px 14px;
   background: var(--cs-surface-2);
   border: 1px solid var(--cs-line-2);
   border-radius: var(--cs-radius-sm);
@@ -243,14 +243,19 @@
 .cs__table {
   width: 100%; border-collapse: collapse;
   min-width: 920px;
+  background: var(--cs-surface);
+}
+.cs__table thead {
+  background: linear-gradient(180deg, var(--cs-surface-2) 0%, var(--cs-surface) 100%);
+  border-bottom: 1px solid var(--cs-line);
 }
 .cs__table thead th {
   text-align: left;
   padding: 14px 20px;
   font-size: 11px; font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--cs-muted);
-  border-bottom: 1px solid var(--cs-line-2);
+  color: var(--cs-gold);
+  border-bottom: none;
   position: sticky; top: 0; z-index: 1;
 }
 .cs__th-right { text-align: right; }
@@ -260,9 +265,13 @@
   font-size: 14px; color: var(--cs-text);
   border-bottom: 1px solid var(--cs-line-2);
   vertical-align: middle;
+  background: var(--cs-surface);
+}
+.cs__table tbody tr:nth-child(even) td {
+  background: rgba(255, 204, 63, 0.02);
 }
 .cs__table tbody tr:last-child td { border-bottom: 0; }
-.cs__table tbody tr:hover td { background: rgba(255, 204, 63, 0.04); }
+.cs__table tbody tr:hover td { background: rgba(255, 204, 63, 0.08); }
 
 .cs__cellPrimary { font-weight: 600; font-size: 14px; }
 .cs__cellSecondary { font-size: 12px; color: var(--cs-muted); margin-top: 2px; font-family: var(--cs-mono); }
@@ -397,6 +406,19 @@
   font-size: 12px; font-weight: 600;
   letter-spacing: 0.10em; text-transform: uppercase;
   color: var(--cs-muted);
+}
+
+/* Opt-out: restore native date input appearance for this component */
+.cs__dateField input[type="date"] {
+  -webkit-appearance: textfield !important;
+  appearance: textfield !important;
+}
+
+.cs__dateField input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none !important;
+  opacity: 0.95 !important;
+  margin-right: 0 !important;
+  border-radius: 0 !important;
 }
 .cs__rowLabel svg { color: var(--cs-gold); }
 

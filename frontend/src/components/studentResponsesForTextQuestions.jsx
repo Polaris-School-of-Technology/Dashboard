@@ -86,7 +86,10 @@ export default function StudentFeedback() {
       {/* Styles moved to studentResponsesForTextQuestions.css */}
 
       <header className="feedback-header">
-        <h1>Student Feedback Dashboard</h1>
+        <h1>
+          <span className="dashboard-heading-white">Student Feedback</span>{" "}
+          <span className="dashboard-heading-gradient">Dashboard</span>
+        </h1>
         <p>View and analyze student responses easily</p>
       </header>
 

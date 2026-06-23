@@ -408,7 +408,17 @@ const AnalyticsDashboard = () => {
                     <>
                         <div style={styles.pageHeader}>
                             <h1 style={styles.pageTitle}>
-                                {tab === "summary" ? "Session Summary" : "Quiz Data Analysis"}
+                                {tab === "summary" ? (
+                                    <>
+                                        <span className="dashboard-heading-white">Session</span>{" "}
+                                        <span className="dashboard-heading-gradient">Summary</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="dashboard-heading-white">Quiz Data</span>{" "}
+                                        <span className="dashboard-heading-gradient">Analysis</span>
+                                    </>
+                                )}
                             </h1>
                             <p style={styles.pageSubtitle}>
                                 {tab === "summary" ? "Comprehensive session analytics and performance metrics" : "Detailed quiz performance analysis"}
@@ -532,7 +542,10 @@ const AnalyticsDashboard = () => {
                     <>
                         {/* Header */}
                         <div style={styles.pageHeader}>
-                            <h1 style={styles.pageTitle}>Question Feedback Analysis</h1>
+                            <h1 style={styles.pageTitle}>
+                                <span className="dashboard-heading-white">Question Feedback</span>{" "}
+                                <span className="dashboard-heading-gradient">Analysis</span>
+                            </h1>
                             <p style={styles.pageSubtitle}>Comprehensive analysis of student feedback across sessions</p>
                         </div>
 

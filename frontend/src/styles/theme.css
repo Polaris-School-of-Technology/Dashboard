@@ -358,3 +358,74 @@ h2 {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
 }
+
+/* ---------- react-datepicker theme overrides (dark mode) ---------- */
+.react-datepicker {
+  background: linear-gradient(180deg, #0b0b0b 0%, #0f0f0f 100%) !important;
+  color: rgba(245,245,245,0.95) !important;
+  border: 1px solid rgba(244, 197, 66, 0.12) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(244,197,66,0.04) inset !important;
+  border-radius: 10px !important;
+}
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+.react-datepicker__header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+  padding-top: 0.6rem !important;
+}
+
+.react-datepicker__current-month {
+  color: var(--color-accent) !important;
+  font-weight: 600 !important;
+  font-family: var(--font-family) !important;
+}
+
+.react-datepicker__navigation--previous, .react-datepicker__navigation--next {
+  background: var(--color-accent) !important;
+  color: #1a1300 !important;
+  border-radius: 999px !important;
+  width: 34px !important;
+  height: 34px !important;
+  top: 8px !important;
+  box-shadow: 0 6px 18px rgba(244,197,66,0.18) !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #1a1300 !important;
+}
+
+.react-datepicker__day-name, .react-datepicker__day {
+  color: rgba(245,245,245,0.9) !important;
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+  background: var(--color-accent) !important;
+  color: #1a1300 !important;
+  border-radius: 8px !important;
+}
+
+.react-datepicker__day:hover {
+  background: rgba(244,197,66,0.12) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+}
+
+.react-datepicker__input-container input,
+.react-datepicker__input-container input:focus {
+  background: transparent !important;
+  color: rgba(245,245,245,0.95) !important;
+}
+
+/* compact spacing to match app */
+.react-datepicker__month-container, .react-datepicker__month {
+  padding: 0.5rem 0.6rem !important;
+}
+
+/* ensure z-index above overlays */
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}

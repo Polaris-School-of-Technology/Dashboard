@@ -212,7 +212,10 @@ const EditJob: React.FC = () => {
 
     return (
         <div className="create-job-container">
-            <h1>Edit Job</h1>
+            <h1>
+                <span className="dashboard-heading-white">Edit</span>{" "}
+                <span className="dashboard-heading-gradient">Job</span>
+            </h1>
 
             <form onSubmit={handleSubmit} className="job-form">
                 {/* Basic Information */}

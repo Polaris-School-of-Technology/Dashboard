@@ -34,6 +34,22 @@ h1 {
   color: white;
 }
 
+/* Calendar icon styling for native date inputs (unified with global styles) */
+.datepicker::-webkit-calendar-picker-indicator,
+.datepicker[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  margin-right: 2px !important;
+  opacity: 1 !important;
+  filter: invert(1) brightness(1.2) !important;
+  transition: opacity 0.2s ease;
+}
+
+.datepicker::-webkit-calendar-picker-indicator:hover,
+.datepicker[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1 !important;
+}
+
 .faculty-card {
   margin-bottom: 1rem;
   border-radius: var(--radius-lg);

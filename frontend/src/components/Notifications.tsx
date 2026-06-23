@@ -210,8 +210,10 @@ const AdminNotifications: React.FC = () => {
     <div className="notifications-container">
       <div className="notifications-card">
         <div className="notifications-header">
-          <h1>📢 Admin Notification Panel</h1>
-          <p>Send targeted notifications to your users efficiently</p>
+          <h1>
+            <span className="dashboard-heading-white">📢 Admin Notification</span>{" "}
+            <span className="dashboard-heading-gradient">Panel</span>
+          </h1>
         </div>
 
         <div className="notifications-form-container">

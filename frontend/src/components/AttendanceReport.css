@@ -11,7 +11,7 @@
   --ar-text: #ececee;
   --ar-mute: rgba(236, 236, 238, 0.6);
   --ar-mute-2: rgba(236, 236, 238, 0.42);
-  --ar-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  --ar-mono: "Montserrat", ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
   --ar-r: 14px;
   --ar-r-sm: 10px;
 }

@@ -142,7 +142,10 @@ const JobApplications: React.FC = () => {
                 <button onClick={() => navigate('/admin/jobs')} className="back-btn">
                     ← Back to Jobs
                 </button>
-                <h1>Job Applications</h1>
+                <h1>
+                    <span className="dashboard-heading-white">Job</span>{" "}
+                    <span className="dashboard-heading-gradient">Applications</span>
+                </h1>
                 <button
                     onClick={downloadCSV}
                     disabled={isDownloadingCSV || applications.length === 0}

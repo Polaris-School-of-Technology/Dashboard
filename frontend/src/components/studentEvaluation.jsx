@@ -584,16 +584,20 @@ gatikumawat@gmail.com,74,98,Met,77`;
             <div className="eval-icon-box">
               <FileText style={{ width: 40, height: 40, color: '#667eea' }} />
             </div>
-            <h1 className="eval-title">Student Evaluations</h1>
-            <p className="eval-subtitle">Upload and process evaluation records seamlessly</p>
-          </div>
-
-          <div className="eval-card">
-            <button onClick={downloadSampleCSV} className="download-btn">
+            <div>
+              <h1 className="eval-title">
+                <span className="dashboard-heading-white">Student</span>{" "}
+                <span className="dashboard-heading-gradient">Evaluations</span>
+              </h1>
+              <p className="eval-subtitle">Upload and process evaluation records seamlessly</p>
+            </div>
+            <button type="button" className="download-btn" onClick={downloadSampleCSV}>
               <Download style={{ width: 18, height: 18 }} />
               Download Sample CSV
             </button>
+          </div>
 
+          <div className="eval-body">
             <div className="form-grid">
               <div className="form-group">
                 <label className="form-label">

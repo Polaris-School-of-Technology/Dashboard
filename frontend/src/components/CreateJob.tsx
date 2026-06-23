@@ -180,7 +180,10 @@ const CreateJob: React.FC = () => {
 
     return (
         <div className="create-job-container">
-            <h1>Create New Job</h1>
+            <h1>
+                <span className="dashboard-heading-white">Create New</span>{" "}
+                <span className="dashboard-heading-gradient">Job</span>
+            </h1>
 
             <form onSubmit={handleSubmit} className="job-form">
                 {/* Basic Information */}

@@ -63,7 +63,10 @@ const AttendanceCSV = () => {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>Download Attendance Report</h1>
+        <h1 style={styles.title}>
+          <span className="dashboard-heading-white">Download Attendance</span>{" "}
+          <span className="dashboard-heading-gradient">Report</span>
+        </h1>
 
         <div style={styles.inputGroup}>
           <div style={styles.field}>
