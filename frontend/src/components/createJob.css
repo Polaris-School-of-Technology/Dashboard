@@ -1,14 +1,44 @@
 @import '../styles/theme.css';
 
-.form-card {
-  max-width: 900px;
+.create-job-container {
+  max-width: 1100px;
   margin: 2rem auto;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.94);
+  padding: 1rem;
+}
+
+.job-form {
+  display: grid;
+  gap: 1.75rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.92);
   border-radius: var(--radius-xl);
   border: 1px solid rgba(255, 204, 63, 0.18);
-  box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
-  color: white;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.form-section {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 204, 63, 0.12);
+}
+
+.form-section h2 {
+  margin-bottom: 1rem;
+  color: var(--color-accent);
+  font-size: 1.15rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 840px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .form-group {
@@ -26,20 +56,60 @@
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 0.95rem 1rem;
+  padding: 1rem 1.1rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 204, 63, 0.25);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 204, 63, 0.24);
+  background: rgba(255, 255, 255, 0.06);
   color: white;
+  outline: none;
+}
+
+.form-group textarea {
+  min-height: 120px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: rgba(255, 204, 63, 0.9);
+  box-shadow: 0 0 0 3px rgba(255, 204, 63, 0.12);
+}
+
+.file-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 204, 63, 0.24);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.file-list {
+  margin-top: 0.9rem;
+  color: white;
+}
+
+.file-list ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .submit-btn,
 .cancel-btn {
-  padding: 1rem 1.25rem;
+  padding: 1rem 1.4rem;
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-semibold);
   border: none;
   cursor: pointer;
+  min-width: 140px;
 }
 
 .submit-btn {
@@ -48,6 +118,12 @@
 }
 
 .cancel-btn {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.loading-container {
+  padding: 3rem;
+  text-align: center;
   color: white;
 }

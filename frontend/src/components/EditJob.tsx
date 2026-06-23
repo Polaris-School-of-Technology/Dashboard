@@ -31,6 +31,19 @@ const EditJob: React.FC = () => {
     const [existingDocuments, setExistingDocuments] = useState<ExistingDocument[]>([]);
     const [documentsToDelete, setDocumentsToDelete] = useState<string[]>([]);
 
+    const normalizeListResponse = <T,>(payload: any): T[] => {
+        if (!payload) return [];
+        if (Array.isArray(payload)) return payload;
+        if (Array.isArray(payload.data)) return payload.data;
+        if (Array.isArray(payload.batches)) return payload.batches;
+        if (Array.isArray(payload.categories)) return payload.categories;
+        if (Array.isArray(payload.cities)) return payload.cities;
+        if (Array.isArray(payload.jobTypes)) return payload.jobTypes;
+        if (Array.isArray(payload.workModes)) return payload.workModes;
+        if (Array.isArray(payload.jobStatuses)) return payload.jobStatuses;
+        return [];
+    };
+
     const [formData, setFormData] = useState({
         company: '',
         title: '',
@@ -68,12 +81,12 @@ const EditJob: React.FC = () => {
                 ]);
 
             setOptions({
-                categories: categoriesRes.data.data || [],
-                batches: batchesRes.data.batches || [],
-                cities: citiesRes.data.data || [],
-                jobTypes: jobTypesRes.data.data || [],
-                workModes: workModesRes.data.data || [],
-                jobStatuses: jobStatusesRes.data.data || []
+                categories: normalizeListResponse(categoriesRes.data),
+                batches: normalizeListResponse(batchesRes.data),
+                cities: normalizeListResponse(citiesRes.data),
+                jobTypes: normalizeListResponse(jobTypesRes.data),
+                workModes: normalizeListResponse(workModesRes.data),
+                jobStatuses: normalizeListResponse(jobStatusesRes.data)
             });
         } catch (err: any) {
             console.error('Error fetching dropdown options:', err);

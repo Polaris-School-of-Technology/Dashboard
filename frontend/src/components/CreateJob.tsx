@@ -19,11 +19,26 @@ interface DropdownOptions {
     jobStatuses: string[];
 }
 
+const DEFAULT_BATCH_ID = '1';
+
 const CreateJob: React.FC = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [options, setOptions] = useState<DropdownOptions | null>(null);
     const [documents, setDocuments] = useState<File[]>([]);
+
+    const normalizeListResponse = <T,>(payload: any): T[] => {
+        if (!payload) return [];
+        if (Array.isArray(payload)) return payload;
+        if (Array.isArray(payload.data)) return payload.data;
+        if (Array.isArray(payload.batches)) return payload.batches;
+        if (Array.isArray(payload.categories)) return payload.categories;
+        if (Array.isArray(payload.cities)) return payload.cities;
+        if (Array.isArray(payload.jobTypes)) return payload.jobTypes;
+        if (Array.isArray(payload.workModes)) return payload.workModes;
+        if (Array.isArray(payload.jobStatuses)) return payload.jobStatuses;
+        return [];
+    };
 
     // Form state
     const [formData, setFormData] = useState({
@@ -78,12 +93,12 @@ const CreateJob: React.FC = () => {
             console.log('Job Statuses:', jobStatusesRes.data);
 
             setOptions({
-                categories: categoriesRes.data.data || [],
-                batches: batchesRes.data.batches || [], // getAllBatches returns "batches" not "data"
-                cities: citiesRes.data.data || [],
-                jobTypes: jobTypesRes.data.data || [],
-                workModes: workModesRes.data.data || [],
-                jobStatuses: jobStatusesRes.data.data || []
+                categories: normalizeListResponse(categoriesRes.data),
+                batches: normalizeListResponse(batchesRes.data),
+                cities: normalizeListResponse(citiesRes.data),
+                jobTypes: normalizeListResponse(jobTypesRes.data),
+                workModes: normalizeListResponse(workModesRes.data),
+                jobStatuses: normalizeListResponse(jobStatusesRes.data)
             });
 
             console.log('✅ All dropdown options loaded successfully');
@@ -113,6 +128,10 @@ const CreateJob: React.FC = () => {
 
             // Add form fields
             Object.entries(formData).forEach(([key, value]) => {
+                if (key === 'batch_id' && !value) {
+                    submitData.append(key, DEFAULT_BATCH_ID);
+                    return;
+                }
 
                 // FIXED: requiredSkills & preferredQualifications → proper Postgres text[] handling
                 if (key === "requiredSkills" || key === "preferredQualifications") {
@@ -309,12 +328,11 @@ const CreateJob: React.FC = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Batch *</label>
+                            <label>Batch</label>
                             <select
                                 name="batch_id"
                                 value={formData.batch_id}
                                 onChange={handleChange}
-                                required
                             >
                                 <option value="">Select Batch</option>
                                 {options.batches.map((batch) => (

@@ -1,16 +1,29 @@
 @import './styles/theme.css';
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 /* Base layout */
 .App {
   font-family: var(--font-family);
   background: #000000;
   min-height: 100vh;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  padding-top: 110px;
 }
 
 /* Navigation container */
 .nav-container {
-  position: sticky;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   padding: 22px 34px 24px;
   backdrop-filter: blur(18px);
@@ -69,7 +82,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 0;
+  min-width: 4;
   padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 999px;
@@ -222,7 +235,8 @@
   padding: 2rem 1rem 2.5rem;
   border: 1px solid rgba(255,204,63,0.18);
   box-shadow: 0 25px 90px rgba(255,204,63,0.08);
-  min-height: calc(100vh - 140px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Error message styling */

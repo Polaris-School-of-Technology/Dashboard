@@ -56,6 +56,8 @@ const AdminJobs: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState('All');
     const [typeFilter, setTypeFilter] = useState('All');
     const [batchFilter, setBatchFilter] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
 
     // Form states
     const [newCategory, setNewCategory] = useState('');
@@ -159,6 +161,21 @@ const AdminJobs: React.FC = () => {
             return matchesSearch && matchesStatus && matchesType && matchesBatch;
         });
     }, [batchFilter, jobs, searchTerm, statusFilter, typeFilter]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, statusFilter, typeFilter, batchFilter]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredJobs.length / rowsPerPage));
+    const paginatedJobs = useMemo(() => {
+        const start = (currentPage - 1) * rowsPerPage;
+        return filteredJobs.slice(start, start + rowsPerPage);
+    }, [currentPage, filteredJobs]);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage < 1 || newPage > totalPages) return;
+        setCurrentPage(newPage);
+    };
 
     const getInitials = (company: string) => {
         const words = company.trim().split(/\s+/).filter(Boolean);
@@ -296,7 +313,7 @@ const AdminJobs: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredJobs.map((job, index) => (
+                            {paginatedJobs.map((job, index) => (
                                 <tr key={job.id || `${job.company}-${job.title}-${index}`}>
                                     <td>
                                         <div className="company-cell">
@@ -348,6 +365,26 @@ const AdminJobs: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                <div className="pagination-bar">
+                    <button
+                        className="pagination-btn"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </button>
+                    <span className="pagination-info">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                        className="pagination-btn"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </button>
                 </div>
             </section>
 

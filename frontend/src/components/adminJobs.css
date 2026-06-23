@@ -4,7 +4,7 @@
   min-height: 100vh;
   width: 100%;
   margin: 0;
-  padding: 48px 54px 0;
+  padding: 28px 34px 0;
   background: #070707;
   color: #f5f5f5;
   font-family: var(--font-family);
@@ -110,6 +110,39 @@
   color: #060606 !important;
 }
 
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 28px 18px;
+  border-top: 1px solid #202020;
+  background: #121212;
+}
+
+.pagination-btn {
+  min-width: 100px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #323232;
+  background: #181818;
+  color: #e3e3e3;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #9a9a9a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .jobs-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -163,14 +196,18 @@
   background: #121212;
   contain: paint;
   isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: calc(100vh - 180px);
 }
 
 .jobs-toolbar {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 112px;
-  padding: 24px 42px 20px;
+  min-height: 96px;
+  padding: 18px 28px 16px;
   border-bottom: 1px solid #252525;
 }
 
@@ -259,12 +296,15 @@
 
 .table-scroll {
   width: 100%;
+  max-height: calc(100vh - 390px);
+  min-height: 0;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 .jobs-table {
   width: 100%;
-  min-width: 1420px;
+  min-width: 1100px;
   border-collapse: collapse;
   border-spacing: 0;
   table-layout: fixed;
@@ -283,27 +323,28 @@
 }
 
 .jobs-table thead th {
-  height: 53px;
-  padding: 0 22px !important;
+  height: 38px;
+  padding: 0 12px !important;
   border-bottom: 1px solid #202020 !important;
   background: #101010 !important;
   color: #777777 !important;
-  font-size: 13px !important;
+  font-size: 11px !important;
   font-weight: 800 !important;
-  letter-spacing: 0.14em !important;
+  letter-spacing: 0.12em !important;
   line-height: 1 !important;
   text-transform: uppercase !important;
   box-shadow: none !important;
 }
 
 .jobs-table td {
-  height: 81px;
-  padding: 0 22px !important;
+  height: 60px;
+  padding: 0 12px !important;
   border-bottom: 1px solid #202020 !important;
   background: #121212 !important;
   color: #a5a5a5;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
+  line-height: 1.4;
 }
 
 .jobs-table tbody tr {
@@ -320,56 +361,59 @@
 
 .jobs-table th:nth-child(1),
 .jobs-table td:nth-child(1) {
-  width: 210px;
-  padding-left: 42px !important;
+  width: 150px;
+  padding-left: 24px !important;
 }
 
 .jobs-table th:nth-child(2),
 .jobs-table td:nth-child(2) {
-  width: 214px;
+  width: 150px;
   color: #d9d9d9;
 }
 
 .jobs-table th:nth-child(3),
 .jobs-table td:nth-child(3) {
-  width: 118px;
+  width: 90px;
 }
 
 .jobs-table th:nth-child(4),
 .jobs-table td:nth-child(4) {
-  width: 106px;
+  width: 80px;
 }
 
 .jobs-table th:nth-child(5),
 .jobs-table td:nth-child(5) {
-  width: 96px;
+  width: 80px;
 }
 
 .jobs-table th:nth-child(6),
 .jobs-table td:nth-child(6) {
-  width: 128px;
+  width: 100px;
 }
 
 .jobs-table th:nth-child(7),
 .jobs-table td:nth-child(7) {
-  width: 112px;
+  width: 110px;
+  min-width: 110px;
 }
 
 .jobs-table th:nth-child(8),
 .jobs-table td:nth-child(8) {
-  width: 168px;
+  width: 170px;
+  min-width: 140px;
 }
 
 .jobs-table th:nth-child(9),
 .jobs-table td:nth-child(9) {
-  width: 96px;
+  width: 90px;
+  min-width: 90px;
 }
 
 .jobs-table th:nth-child(10),
 .jobs-table td:nth-child(10) {
-  width: 176px;
-  padding-left: 22px !important;
-  padding-right: 42px !important;
+  width: 130px;
+  padding-left: 16px !important;
+  padding-right: 24px !important;
 }
 
 .company-cell {
@@ -409,8 +453,8 @@
 .company-cell strong {
   overflow: hidden;
   color: #eeeeee;
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -426,17 +470,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-width: 103px;
-  min-height: 27px;
-  padding: 4px 13px;
+  gap: 6px;
+  min-width: 90px;
+  max-width: 120px;
+  min-height: 26px;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
-  letter-spacing: 0.16em;
-  line-height: 1.25;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
   text-transform: uppercase;
-  white-space: pre-line;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .badge::before {

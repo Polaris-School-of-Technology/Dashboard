@@ -7,8 +7,8 @@ import "./LoginPage.css";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState("admin@polaris.io");
-    const [password, setPassword] = useState("polaris");
+    const [email, setEmail] = useState("bhaswati.kalita@polariscampus.com");
+    const [password, setPassword] = useState("#1polaris");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
