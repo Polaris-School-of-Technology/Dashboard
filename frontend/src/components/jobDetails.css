@@ -6,8 +6,8 @@
   padding: 2rem;
   background: rgba(0, 0, 0, 0.94);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(255, 204, 63, 0.18);
-  box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
+  border: 1px solid var(--color-accent-18);
+  box-shadow: 0 30px 90px var(--color-accent-08);
   color: white;
 }
 
@@ -49,14 +49,14 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: rgba(255, 204, 63, 0.08);
+  background: var(--color-accent-08);
   border-radius: var(--radius-xl);
 }
 
 .company-logo {
   width: 80px;
   height: 80px;
-  background: rgba(255, 204, 63, 0.16);
+  background: var(--color-accent-16);
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -88,7 +88,7 @@
   padding: 1.5rem;
   background: rgba(15, 15, 15, 0.9);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(255, 204, 63, 0.14);
+  border: 1px solid var(--color-accent-14);
 }
 
 .info-label,

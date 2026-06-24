@@ -1,9 +1,9 @@
 @import '../styles/theme.css';
 
 :root {
-  --gold: #f4c542;
-  --gold-soft: rgba(244, 197, 66, 0.14);
-  --gold-border: rgba(244, 197, 66, 0.22);
+  --gold: var(--color-accent);
+  --gold-soft: var(--color-accent-14);
+  --gold-border: var(--color-accent-22);
   --surface: rgba(255, 255, 255, 0.035);
   --surface-hover: rgba(255, 255, 255, 0.06);
 }

@@ -6,14 +6,14 @@
   --cs-surface:   #0d0d11;
   --cs-surface-2: #15151c;
   --cs-surface-3: #1c1c25;
-  --cs-line:      rgba(255, 204, 63, 0.12);
+  --cs-line:      var(--color-accent-12);
   --cs-line-2:    rgba(255, 255, 255, 0.07);
   --cs-text:      #f5f5f7;
   --cs-muted:     #9a9aa3;
   --cs-faint:     #5b5b64;
-  --cs-gold:      #ffcc3f;
-  --cs-gold-soft: #f4b740;
-  --cs-gold-glow: rgba(255, 204, 63, 0.20);
+  --cs-gold:      var(--color-accent);
+  --cs-gold-soft: var(--color-accent-16);
+  --cs-gold-glow: var(--color-accent-20);
   --cs-success:   #34d399;
   --cs-danger:    #ff6a6a;
   --cs-info:      #60a5fa;
@@ -35,8 +35,8 @@
   font-family: var(--cs-font);
   font-size: 16px;
   background:
-    radial-gradient(1100px 600px at 90% -10%, rgba(255,204,63,0.07), transparent 60%),
-    radial-gradient(800px 500px at -10% 100%, rgba(255,204,63,0.04), transparent 60%),
+    radial-gradient(1100px 600px at 90% -10%, var(--color-accent-07), transparent 60%),
+    radial-gradient(800px 500px at -10% 100%, var(--color-accent-04), transparent 60%),
     var(--cs-bg);
   -webkit-font-smoothing: antialiased;
 }
@@ -81,7 +81,7 @@
 .cs__btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
 .cs__btn--primary {
-  background: linear-gradient(180deg, #ffd968, var(--cs-gold));
+  background: linear-gradient(180deg, #ffd968, var(--color-accent));
   color: #1a1500;
   border-color: rgba(255,255,255,0.15);
   box-shadow:
@@ -161,8 +161,8 @@
   transition: border-color .15s, box-shadow .15s;
 }
 .cs__search:focus-within {
-  border-color: var(--cs-gold);
-  box-shadow: 0 0 0 3px var(--cs-gold-glow);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-20);
 }
 .cs__search svg { color: var(--cs-muted); }
 .cs__search input {
@@ -179,7 +179,7 @@
   border-radius: var(--cs-radius-sm);
   font-size: 13px;
 }
-.cs__pillIcon { color: var(--cs-gold); display: inline-flex; }
+.cs__pillIcon { color: var(--color-accent); display: inline-flex; }
 .cs__pillLabel { color: var(--cs-muted); font-weight: 500; }
 .cs__pillSelect {
   position: relative; display: inline-flex; align-items: center; gap: 4px;
@@ -204,10 +204,10 @@
   transition: border-color .15s, box-shadow .15s;
 }
 .cs__dateField:focus-within {
-  border-color: var(--cs-gold);
-  box-shadow: 0 0 0 3px var(--cs-gold-glow);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-20);
 }
-.cs__dateField svg { color: var(--cs-gold); }
+.cs__dateField svg { color: var(--color-accent); }
 .cs__dateField input {
   background: transparent; border: 0; outline: 0;
   color: var(--cs-text); font: inherit; font-size: 14px;

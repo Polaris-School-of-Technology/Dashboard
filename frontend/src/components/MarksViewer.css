@@ -5,14 +5,14 @@
   --mv-bg:        #07070a;
   --mv-surface:   #0d0d11;
   --mv-surface-2: #15151c;
-  --mv-line:      rgba(255, 204, 63, 0.12);
+  --mv-line:      var(--color-accent-12);
   --mv-line-2:    rgba(255, 255, 255, 0.07);
   --mv-text:      #f5f5f7;
   --mv-muted:     #9a9aa3;
   --mv-faint:     #5b5b64;
-  --mv-gold:      #ffcc3f;
-  --mv-gold-soft: #f4b740;
-  --mv-gold-glow: rgba(255, 204, 63, 0.20);
+  --mv-gold:      var(--color-accent);
+  --mv-gold-soft: var(--color-accent-16);
+  --mv-gold-glow: var(--color-accent-20);
   --mv-success:   #34d399;
   --mv-danger:    #ff6a6a;
 
@@ -27,8 +27,8 @@
 .mv {
   min-height: 100vh;
   background:
-    radial-gradient(1100px 600px at 85% -10%, rgba(255,204,63,0.07), transparent 60%),
-    radial-gradient(800px 500px at 0% 100%, rgba(255,204,63,0.04), transparent 60%),
+    radial-gradient(1100px 600px at 85% -10%, var(--color-accent-07), transparent 60%),
+    radial-gradient(800px 500px at 0% 100%, var(--color-accent-04), transparent 60%),
     var(--mv-bg);
   color: var(--mv-text);
   font-family: var(--mv-font);
@@ -165,8 +165,8 @@
 }
 .mv__select:hover, .mv__input:hover { border-color: rgba(255,255,255,0.14); }
 .mv__select:focus-within, .mv__input:focus {
-  border-color: var(--mv-gold);
-  box-shadow: 0 0 0 4px var(--mv-gold-glow);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-accent-20);
 }
 .mv__select.is-disabled { opacity: 0.55; pointer-events: none; }
 
@@ -176,7 +176,7 @@
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   padding: 16px 20px;
   border-radius: var(--mv-radius-sm);
-  background: linear-gradient(180deg, #ffd968, var(--mv-gold));
+  background: linear-gradient(180deg, #ffd968, var(--color-accent));
   color: #1a1500;
   font-weight: 700;
   font-size: 15px;

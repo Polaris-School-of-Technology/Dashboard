@@ -49,6 +49,17 @@
   --color-nav-text: var(--color-text-secondary);
   --color-nav-active: var(--color-black);
   --color-nav-hover: var(--color-accent);
+  /* Accent alpha variants (reused across components) */
+  --color-accent-04: rgba(255,204,63,0.04);
+  --color-accent-07: rgba(255,204,63,0.07);
+  --color-accent-08: rgba(255,204,63,0.08);
+  --color-accent-12: rgba(255,204,63,0.12);
+  --color-accent-14: rgba(255,204,63,0.14);
+  --color-accent-16: rgba(255,204,63,0.16);
+  --color-accent-18: rgba(255,204,63,0.18);
+  --color-accent-20: rgba(255,204,63,0.20);
+  --color-accent-22: rgba(255,204,63,0.22);
+  --color-accent-25: rgba(255,204,63,0.25);
   
   /* ========== GRADIENTS ========== */
   
@@ -56,7 +67,7 @@
   --gradient-primary-alt: linear-gradient(135deg, #111111 0%, #222222 100%);
   --gradient-table-header: linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(30,30,30,0.98) 100%);
   --gradient-button-primary: linear-gradient(135deg, rgba(255,204,63,1) 0%, rgba(235,180,35,1) 100%);
-  --gradient-button-secondary: linear-gradient(135deg, rgba(255,204,63,0.18) 0%, rgba(255,204,63,0.28) 100%);
+  --gradient-button-secondary: linear-gradient(135deg, var(--color-accent-18) 0%, rgba(255,204,63,0.28) 100%);
   --gradient-button-danger: linear-gradient(135deg, rgba(255,140,0,1) 0%, rgba(255,190,55,1) 100%);
   --gradient-button-warning: linear-gradient(135deg, rgba(255,204,63,0.35) 0%, rgba(255,204,63,0.18) 100%);
   --gradient-text-primary: linear-gradient(135deg, #FFCC3F 0%, #f0b530 100%);

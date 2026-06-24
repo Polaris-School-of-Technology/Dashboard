@@ -6,8 +6,8 @@
   padding: 2rem;
   background: rgba(0, 0, 0, 0.94);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(255, 204, 63, 0.18);
-  box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
+  border: 1px solid var(--color-accent-18);
+  box-shadow: 0 30px 90px var(--color-accent-08);
   color: white;
   font-family: var(--font-family);
 }
@@ -29,7 +29,7 @@ h1 {
   width: 220px;
   padding: 0.95rem 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 204, 63, 0.25);
+  border: 1px solid var(--color-accent-25);
   background: rgba(255, 255, 255, 0.05);
   color: white;
 }
@@ -54,7 +54,7 @@ h1 {
   margin-bottom: 1rem;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid rgba(255, 204, 63, 0.16);
+  border: 1px solid var(--color-accent-16);
   background: rgba(255, 255, 255, 0.03);
 }
 
@@ -65,7 +65,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 204, 63, 0.1);
+  background: var(--color-accent-08);
   color: var(--color-black);
   font-weight: var(--font-weight-semibold);
   border: none;
@@ -73,7 +73,7 @@ h1 {
 }
 
 .faculty-button:hover {
-  background: rgba(255, 204, 63, 0.16);
+  background: var(--color-accent-16);
 }
 
 .toggle {
@@ -96,10 +96,10 @@ thead {
 th,
 td {
   padding: 1rem 1.2rem;
-  border-bottom: 1px solid rgba(255, 204, 63, 0.12);
+  border-bottom: 1px solid var(--color-accent-12);
   color: white;
 }
 
 tr:hover td {
-  background: rgba(255, 204, 63, 0.08);
+  background: var(--color-accent-08);
 }

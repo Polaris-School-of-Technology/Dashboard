@@ -6,8 +6,8 @@
   padding: 2rem;
   background: rgba(0, 0, 0, 0.94);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(255, 204, 63, 0.18);
-  box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
+  border: 1px solid var(--color-accent-18);
+  box-shadow: 0 30px 90px var(--color-accent-08);
 }
 
 .title {
@@ -34,7 +34,7 @@
 .form-group > select {
   padding: 0.95rem 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 204, 63, 0.25);
+  border: 1px solid var(--color-accent-25);
   background: rgba(255, 255, 255, 0.05);
   color: white;
 }

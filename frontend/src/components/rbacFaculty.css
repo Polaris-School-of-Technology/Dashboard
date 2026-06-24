@@ -13,8 +13,8 @@ body {
   padding: 2rem;
   background: rgba(0, 0, 0, 0.94);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(255, 204, 63, 0.18);
-  box-shadow: 0 30px 90px rgba(255, 204, 63, 0.08);
+  border: 1px solid var(--color-accent-18);
+  box-shadow: 0 30px 90px var(--color-accent-08);
 }
 
 .header,
@@ -36,7 +36,7 @@ body {
 .form-panel,
 .details-panel {
   background: rgba(15, 15, 15, 0.92);
-  border: 1px solid rgba(255, 204, 63, 0.16);
+  border: 1px solid var(--color-accent-16);
   border-radius: var(--radius-xl);
 }
 
@@ -59,7 +59,7 @@ body {
 .button.secondary {
   background: rgba(255, 255, 255, 0.06);
   color: white;
-  border: 1px solid rgba(255, 204, 63, 0.18);
+  border: 1px solid var(--color-accent-18);
 }
 
 .button:hover,
@@ -71,8 +71,8 @@ body {
 .card-header,
 .info-section,
 .panel-header {
-  background: rgba(255, 204, 63, 0.08);
-  border-bottom: 1px solid rgba(255, 204, 63, 0.14);
+  background: var(--color-accent-08);
+  border-bottom: 1px solid var(--color-accent-14);
 }
 
 .card-body,
@@ -90,7 +90,7 @@ body {
   width: 100%;
   padding: 0.95rem 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 204, 63, 0.22);
+  border: 1px solid var(--color-accent-22);
   background: rgba(255, 255, 255, 0.05);
   color: white;
 }
@@ -100,7 +100,7 @@ body {
 .textarea:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(255, 204, 63, 0.18);
+  box-shadow: 0 0 0 4px var(--color-accent-18);
 }
 
 .table thead {
@@ -111,11 +111,11 @@ body {
 .table th,
 .table td {
   padding: 1rem;
-  border-bottom: 1px solid rgba(255, 204, 63, 0.12);
+  border-bottom: 1px solid var(--color-accent-12);
 }
 
 .table tbody tr:hover {
-  background: rgba(255, 204, 63, 0.08);
+  background: var(--color-accent-08);
 }
 
 .badge {
@@ -125,7 +125,7 @@ body {
 }
 
 .badge-positive {
-  background: rgba(255, 204, 63, 0.16);
+  background: var(--color-accent-16);
   color: var(--color-accent);
 }
 
@@ -149,5 +149,5 @@ body {
   background: rgba(10, 10, 10, 0.98);
   border-radius: var(--radius-xl);
   padding: 2rem;
-  border: 1px solid rgba(255, 204, 63, 0.18);
+  border: 1px solid var(--color-accent-18);
 }

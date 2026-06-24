@@ -4,10 +4,10 @@
   --ar-bg: #0a0a0b;
   --ar-surface: #111113;
   --ar-surface-2: #16161a;
-  --ar-line: rgba(255, 204, 63, 0.14);
+  --ar-line: var(--color-accent-14);
   --ar-line-soft: rgba(255, 255, 255, 0.07);
-  --ar-gold: #ffcc3f;
-  --ar-gold-soft: rgba(255, 204, 63, 0.16);
+  --ar-gold: var(--color-accent);
+  --ar-gold-soft: var(--color-accent-16);
   --ar-text: #ececee;
   --ar-mute: rgba(236, 236, 238, 0.6);
   --ar-mute-2: rgba(236, 236, 238, 0.42);
@@ -25,7 +25,7 @@
   font-size: 16px;
   color: var(--ar-text);
   background:
-    radial-gradient(800px 320px at 80% -10%, rgba(255, 204, 63, 0.08), transparent 60%),
+    radial-gradient(800px 320px at 80% -10%, var(--color-accent-08), transparent 60%),
     var(--ar-bg);
   border-radius: 20px;
   border: 1px solid var(--ar-line);
@@ -76,7 +76,7 @@
 }
 .ar__btn:hover { border-color: rgba(255, 204, 63, 0.45); }
 .ar__btn--gold {
-  background: var(--ar-gold); color: #14110a; border-color: var(--ar-gold);
+  background: var(--color-accent); color: #14110a; border-color: var(--color-accent);
   box-shadow: 0 8px 24px -10px rgba(255, 204, 63, 0.55);
 }
 .ar__btn--gold:hover { background: #ffd75c; }
@@ -99,7 +99,7 @@
 .ar__kpi--accent { border-color: rgba(255, 204, 63, 0.35); }
 .ar__kpi--accent::after {
   content: ""; position: absolute; inset: 0;
-  background: radial-gradient(140px 80px at 100% 0%, rgba(255, 204, 63, 0.18), transparent 60%);
+  background: radial-gradient(140px 80px at 100% 0%, var(--color-accent-18), transparent 60%);
   pointer-events: none;
 }
 .ar__kpi-label {
@@ -133,7 +133,7 @@
 }
 .ar__field-label em {
   font-style: normal; font-size: 10px; padding: 2px 6px;
-  background: var(--ar-gold-soft); color: var(--ar-gold);
+  background: var(--ar-gold-soft); color: var(--color-accent);
   border-radius: 4px; letter-spacing: .08em;
 }
 
@@ -150,8 +150,8 @@
 .ar__input::placeholder { color: var(--ar-mute-2); }
 .ar__input:focus {
   outline: none;
-  border-color: var(--ar-gold);
-  box-shadow: 0 0 0 4px rgba(255, 204, 63, 0.15);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-accent-16);
 }
 
 .ar__select-wrap { position: relative; }
@@ -200,7 +200,7 @@
 }
 .ar__empty--inset { padding: 36px 24px; margin-top: 8px; }
 .ar__empty-icon {
-  font-size: 44px; color: var(--ar-gold);
+  font-size: 44px; color: var(--color-accent);
   width: 72px; height: 72px; border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--ar-gold-soft); margin-bottom: 14px;

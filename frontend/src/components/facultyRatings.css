@@ -1,8 +1,8 @@
 @import '../styles/theme.css';
 
 .fr {
-  --fr-gold: #ffcc3f;
-  --fr-gold-soft: rgba(255, 204, 63, 0.14);
+  --fr-gold: var(--color-accent);
+  --fr-gold-soft: var(--color-accent-14);
   --fr-bg: #060606;
   --fr-surface: #0c0c0c;
   --fr-surface-2: #131313;
@@ -15,8 +15,8 @@
   min-height: 100vh;
   padding: 28px clamp(20px, 4vw, 56px) 64px;
   background:
-    radial-gradient(900px 500px at 85% -10%, rgba(255, 204, 63, 0.07), transparent 60%),
-    radial-gradient(700px 400px at -10% 20%, rgba(255, 204, 63, 0.04), transparent 60%),
+    radial-gradient(900px 500px at 85% -10%, var(--color-accent-07), transparent 60%),
+    radial-gradient(700px 400px at -10% 20%, var(--color-accent-04), transparent 60%),
     var(--fr-bg);
   color: var(--fr-text);
   font-family: var(--font-family, 'Inter', system-ui, sans-serif);
@@ -59,7 +59,7 @@
 }
 .fr__tab-group button:hover { color: var(--fr-text); }
 .fr__tab-group .is-active {
-  background: var(--fr-gold); color: #0a0a0a;
+  background: var(--color-accent); color: #0a0a0a;
   box-shadow: 0 4px 16px -6px rgba(255, 204, 63, 0.55);
 }
 
@@ -84,7 +84,7 @@
 .fr__kpi--accent { border-color: rgba(255, 204, 63, 0.35); }
 .fr__kpi--accent::before {
   content: ''; position: absolute; left: 0; top: 14%; bottom: 14%; width: 3px;
-  background: var(--fr-gold); border-radius: 0 3px 3px 0;
+  background: var(--color-accent); border-radius: 0 3px 3px 0;
 }
 .fr__kpi-label {
   font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em;
@@ -137,8 +137,8 @@
   padding-right: 34px;
 }
 .fr__select:focus, .fr__input:focus, .fr .react-datepicker__input-container input:focus {
-  outline: none; border-color: var(--fr-gold);
-  box-shadow: 0 0 0 3px rgba(255, 204, 63, 0.18);
+  outline: none; border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-18);
 }
 
 /* Calendar icon styling for native date inputs */
@@ -165,7 +165,7 @@
   transition: 0.18s ease;
 }
 .fr__btn--primary {
-  background: var(--fr-gold); color: #0a0a0a;
+  background: var(--color-accent); color: #0a0a0a;
   box-shadow: 0 6px 22px -8px rgba(255, 204, 63, 0.6);
 }
 .fr__btn--primary:hover { background: #ffd766; transform: translateY(-1px); }
@@ -193,7 +193,7 @@
 /* tooltip */
 .fr__tooltip {
   background: rgba(10,10,10,0.96);
-  border: 1px solid rgba(255,204,63,0.25);
+  border: 1px solid var(--color-accent-25);
   border-radius: 10px; padding: 10px 12px;
   box-shadow: 0 12px 30px rgba(0,0,0,0.45);
   font-size: 12.5px; min-width: 180px;
