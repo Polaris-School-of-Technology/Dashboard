@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Upload, AlertCircle, CheckCircle, FileText, XCircle, Info, Download } from 'lucide-react';
+import './studentEvaluation.css';
 
 export default function UploadStudentEvaluations() {
   const API_BASE_URL = process.env.REACT_APP_API_URL || '';
