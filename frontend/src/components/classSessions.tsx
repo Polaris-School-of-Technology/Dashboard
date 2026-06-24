@@ -139,21 +139,13 @@ const ClassSessions: React.FC = () => {
     <div className="cs">
       {/* ───── Header ───── */}
       <header className="cs__header">
-        <div className="cs__breadcrumb">
-          <span>Admin</span><span className="sep">/</span>
-          <span>Schedule</span><span className="sep">/</span>
-          <span>Class Sessions</span>
-        </div>
+        
         <div className="cs__headerRow">
           <div>
             <h1 className="cs__title">
               <span className="dashboard-heading-white">Class</span>{" "}
               <span className="dashboard-heading-gradient">Sessions</span>
             </h1>
-            <p className="cs__subtitle">
-              {sessions.length} session{sessions.length !== 1 ? 's' : ''} · Batch {batchName}
-              {date && <> · {new Date(date).toLocaleDateString(undefined, { dateStyle: 'medium' })}</>}
-            </p>
           </div>
           <div className="cs__headerActions">
             <button className="cs__btn cs__btn--ghost" onClick={fetchSessions} disabled={loading}>

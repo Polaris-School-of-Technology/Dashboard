@@ -106,21 +106,19 @@ function MainApp() {
         <nav className="nav-container sticky top-0 z-40">
           <div className="nav-shell">
             <div className="nav-brand">
-              <div className="nav-brand-icon">
-                <BriefcaseBusiness size={26} strokeWidth={2.1} />
-              </div>
-              <div>
-                <div className="nav-brand-title">Polaris Admin</div>
-                <div className="nav-brand-subtitle">Campus Operations</div>
+              <div >
+                <img src="/assets/polaris_logo.jpeg" alt="Polaris logo" className="nav-brand-logo" />
               </div>
             </div>
 
             <div className="nav-menu">
               {role === "admin" && (
                 <>
-                  <NavLink to="/weekly-sessions" className={navClass}>
-                    Weekly Sessions
+
+                  <NavLink to="/admin/jobs" className={navClass}>
+                    Job Portal
                   </NavLink>
+                
                   <NavLink to="/faculty-sessions" className={navClass}>
                     Faculty Sessions
                   </NavLink>
@@ -153,10 +151,10 @@ function MainApp() {
                       ))}
                     </div>
                   </div>
-
-                  <NavLink to="/admin/jobs" className={navClass}>
-                    Job Portal
+                    <NavLink to="/weekly-sessions" className={navClass}>
+                    Weekly Sessions
                   </NavLink>
+
                 </>
               )}
 

@@ -56,16 +56,16 @@ const LoginPage: React.FC = () => {
     return (
         <div className="login-page">
             <aside className="login-brand-panel">
-                <div className="login-ambient login-ambient-left" />
-                <div className="login-ambient login-ambient-bottom" />
 
                 <div className="login-logo">
-                    <div className="login-logo-mark">P</div>
-                    <span>Polaris</span>
+                    <img
+                        src="https://storage.googleapis.com/cp-prod-whitelabel-assets-as-sth1-gcs-dgte34/Polaris/Polaris_logo.png"
+                        alt="Polaris logo"
+                        className="login-logo-image"
+                    />
                 </div>
 
                 <div className="login-hero-copy">
-                    <p className="login-kicker">Welcome back</p>
                     <h1>
                         <span className="login-gold-text login-display">Sign in </span>
                         <span>to your</span>
@@ -79,11 +79,6 @@ const LoginPage: React.FC = () => {
                         Sessions, attendance, recruitment, and faculty insights - all
                         orchestrated from a single, beautifully restrained workspace.
                     </p>
-                </div>
-
-                <div className="login-version">
-                    <Sparkles size={20} strokeWidth={2} />
-                    <span>v1.0 · Polaris Portal · {new Date().getFullYear()}</span>
                 </div>
             </aside>
 
@@ -100,7 +95,6 @@ const LoginPage: React.FC = () => {
                         <label className="login-field">
                             <span>Email</span>
                             <div className="login-input-wrap">
-                                <Mail size={22} strokeWidth={2.2} />
                                 <input
                                     type="email"
                                     placeholder="you@polaris.io"
@@ -115,7 +109,6 @@ const LoginPage: React.FC = () => {
                         <label className="login-field">
                             <span>Password</span>
                             <div className="login-input-wrap">
-                                <Lock size={22} strokeWidth={2.2} />
                                 <input
                                     type="password"
                                     placeholder="••••••"
@@ -133,11 +126,6 @@ const LoginPage: React.FC = () => {
                     <button type="submit" className="login-button">
                         Enter Portal
                     </button>
-
-                    <p className="login-demo-note">
-                        Demo credentials are pre-filled. Any non-empty email &
-                        password works.
-                    </p>
                 </form>
             </section>
         </div>

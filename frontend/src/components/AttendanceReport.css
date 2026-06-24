@@ -32,7 +32,7 @@
 }
 
 /* ---------- HEADER ---------- */
-.ar__header { margin-bottom: 22px; }
+.ar__header { margin-bottom: 48px; position: relative; }
 .ar__crumbs {
   display: flex; gap: 8px; align-items: center;
   font-size: 13px; color: var(--ar-mute-2);
@@ -42,14 +42,26 @@
 .ar__dot { color: var(--ar-mute-2); }
 
 .ar__title-row {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  gap: 16px; margin-top: 10px;
+  display: flex; justify-content: center; align-items: center;
+  gap: 16px; margin-top: 10px; position: relative; padding: 18px 0 8px;
 }
 .ar__title {
   margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -0.02em;
-  color: #fff;
+  color: #fff; text-align: center;
 }
-.ar__subtitle { margin: 6px 0 0; color: var(--ar-mute); font-size: 15px; }
+.ar__subtitle { margin: 6px 0 0; color: var(--ar-mute); font-size: 15px; text-align: center; }
+
+.ar__title-row > .ar__btn {
+  position: absolute;
+  right: 40px;
+  top: 56px;
+}
+
+@media (max-width: 900px) {
+  .ar__title-row { justify-content: flex-start; padding: 8px 0; }
+  .ar__title-row > .ar__btn { position: static; margin-left: auto; margin-top: 8px; }
+  .ar__title { font-size: 30px; }
+}
 
 /* ---------- BUTTONS ---------- */
 .ar__btn {
@@ -96,7 +108,7 @@
 }
 .ar__kpi-value {
   margin-top: 8px; font-family: var(--ar-mono);
-  font-size: 30px; font-weight: 700; color: #fff; letter-spacing: -0.01em;
+  font-size: 30px; font-weight: 500; color: #fff; letter-spacing: -0.01em;
 }
 .ar__kpi--accent .ar__kpi-value { color: var(--ar-gold); }
 .ar__kpi-sub { margin-top: 4px; font-size: 13px; color: var(--ar-mute); }

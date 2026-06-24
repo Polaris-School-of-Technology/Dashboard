@@ -182,14 +182,12 @@ const AttendanceReport: React.FC = () => {
     <div className="ar">
       {/* HEADER */}
       <header className="ar__header">
-        <div className="ar__crumbs"><span>Academics</span><span className="ar__dot">/</span><span className="ar__crumbs-current">Attendance</span></div>
         <div className="ar__title-row">
           <div>
             <h1 className="ar__title">
               <span className="dashboard-heading-white">Attendance</span>{" "}
               <span className="dashboard-heading-gradient">Report</span>
             </h1>
-            <p className="ar__subtitle">Daily session‑level attendance, search and export.</p>
           </div>
           <button className="ar__btn ar__btn--gold" onClick={exportAllToCSV} disabled={!data.length}>Export all CSV</button>
         </div>

@@ -42,7 +42,7 @@
 }
 
 /* ───── Header ───── */
-.cs__header { margin-bottom: 28px; }
+.cs__header { margin-bottom: 48px; position: relative; }
 .cs__breadcrumb {
   display: flex; align-items: center; gap: 8px;
   font-size: 14px; color: var(--cs-muted); margin-bottom: 14px;
@@ -51,18 +51,24 @@
 .cs__breadcrumb span:last-child { color: var(--cs-text); }
 
 .cs__headerRow {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 24px; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: center;
+  gap: 24px; flex-wrap: wrap; position: relative; padding: 18px 0 8px;
 }
 .cs__title {
   margin: 0;
   font-size: 36px; font-weight: 800;
-  letter-spacing: -0.02em; line-height: 1.1;
+  letter-spacing: -0.02em; line-height: 1.1; text-align: center;
 }
 .cs__subtitle {
-  margin: 6px 0 0; color: var(--cs-muted); font-size: 15px;
+  margin: 6px 0 0; color: var(--cs-muted); font-size: 15px; text-align: center;
 }
-.cs__headerActions { display: flex; gap: 12px; }
+.cs__headerActions { display: flex; gap: 12px; position: absolute; right: 40px; top: 56px; }
+
+@media (max-width: 900px) {
+  .cs__headerRow { align-items: flex-start; justify-content: flex-start; padding: 8px 0; }
+  .cs__headerActions { position: static; margin-top: 8px; }
+  .cs__title { font-size: 30px; }
+}
 
 /* ───── Buttons ───── */
 .cs__btn {
@@ -125,7 +131,7 @@
   color: var(--cs-muted);
 }
 .cs__kpiValue {
-  font-size: 32px; font-weight: 700;
+  font-size: 32px; font-weight: 500;
   letter-spacing: -0.02em; color: var(--cs-text);
   font-family: var(--cs-mono);
 }

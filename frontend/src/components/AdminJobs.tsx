@@ -195,39 +195,30 @@ const AdminJobs: React.FC = () => {
 
     return (
         <div className="jobs-container">
-            <div className="jobs-header">
-                <div>
-                    <nav className="jobs-breadcrumb" aria-label="Breadcrumb">
-                        <span>Admin</span>
-                        <span>/</span>
-                        <span>Job Portal</span>
-                        <span>/</span>
-                        <strong>All Postings</strong>
-                    </nav>
+                <div className="page-header">
                     <h1>
                         <span className="dashboard-heading-white">Job</span>{" "}
                         <span className="dashboard-heading-gradient">Management</span>
                     </h1>
-                    <p className="jobs-subtitle">{jobs.length} active postings · Updated 2 minutes ago</p>
-                </div>
-                <div className="top-actions">
-                    <button
-                        onClick={() => setShowSettingsModal(true)}
-                        className="settings-btn"
-                    >
-                        <Settings size={18} aria-hidden="true" />
-                        <span>Admin Settings</span>
-                    </button>
 
-                    <button
-                        onClick={() => navigate('/admin/jobs/create')}
-                        className="create-job-btn"
-                    >
-                        <Plus size={19} aria-hidden="true" />
-                        <span>Create New Job</span>
-                    </button>
+                    <div className="top-actions">
+                        <button
+                            onClick={() => setShowSettingsModal(true)}
+                            className="settings-btn"
+                        >
+                            <Settings size={18} aria-hidden="true" />
+                            <span>Admin Settings</span>
+                        </button>
+
+                        <button
+                            onClick={() => navigate('/admin/jobs/create')}
+                            className="create-job-btn"
+                        >
+                            <Plus size={19} aria-hidden="true" />
+                            <span>Create New Job</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
             <section className="jobs-stats" aria-label="Job statistics">
                 <article className="stat-card">
