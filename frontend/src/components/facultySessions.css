@@ -2,20 +2,20 @@
 
 .table-container {
   max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: var(--space-xl) auto;
+  padding: var(--space-xl);
   background: rgba(0, 0, 0, 0.94);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-accent-18);
   box-shadow: 0 30px 90px var(--color-accent-08);
-  color: white;
+  color: var(--color-text-white);
   font-family: var(--font-family);
 }
 
 h1 {
   text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
+  font-size: var(--text-h1-size);
+  margin-bottom: var(--space-lg);
   color: var(--color-accent);
   font-weight: var(--font-weight-extrabold);
 }
@@ -31,7 +31,7 @@ h1 {
   border-radius: var(--radius-md);
   border: 1px solid var(--color-accent-25);
   background: rgba(255, 255, 255, 0.05);
-  color: white;
+  color: var(--color-text-white);
 }
 
 /* Calendar icon styling for native date inputs (unified with global styles) */
@@ -42,7 +42,7 @@ h1 {
   margin-right: 2px !important;
   opacity: 1 !important;
   filter: invert(1) brightness(1.2) !important;
-  transition: opacity 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .datepicker::-webkit-calendar-picker-indicator:hover,
@@ -51,7 +51,7 @@ h1 {
 }
 
 .faculty-card {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--color-accent-16);
@@ -78,26 +78,26 @@ h1 {
 
 .toggle {
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
 }
 
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  margin-top: var(--space-md);
   background: rgba(255, 255, 255, 0.03);
 }
 
 thead {
   background: var(--gradient-table-header);
-  color: white;
+  color: var(--color-text-white);
 }
 
 th,
 td {
   padding: 1rem 1.2rem;
   border-bottom: 1px solid var(--color-accent-12);
-  color: white;
+  color: var(--color-text-white);
 }
 
 tr:hover td {
