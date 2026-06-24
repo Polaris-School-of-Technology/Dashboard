@@ -7,628 +7,365 @@ import "./AttendanceReport.css";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 interface Student {
-    id: number;
-    student_name: string;
-    registration_id: string | null;
-    email?: string | null;
-    present: boolean;
+  id: number;
+  student_name: string;
+  registration_id: string | null;
+  email?: string | null;
+  present: boolean;
 }
-
 interface AttendanceGroup {
-    session_id: number;
-    datetime: string;
-    course_name: string;
-    faculty_name: string;
-    students: Student[];
-    open?: boolean;
-    searchQuery?: string;
+  session_id: number;
+  datetime: string;
+  course_name: string;
+  faculty_name: string;
+  students: Student[];
+  open?: boolean;
+  searchQuery?: string;
 }
+interface Batch { id: number; batch_name: string; }
 
-interface Batch {
-    id: number;
-    batch_name: string;
-}
-
-// Enhanced search utility functions
+/* ---------- search utils (unchanged logic) ---------- */
 const searchUtils = {
-    // Remove diacritics and normalize text
-    normalize: (text: string): string => {
-        return text
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-            .replace(/[^\w\s@.-]/g, ' ') // Replace special chars with space except email chars
-            .replace(/\s+/g, ' ')
-            .trim();
-    },
-
-    // Extract initials from name
-    getInitials: (name: string): string => {
-        return name
-            .split(/\s+/)
-            .map(part => part.charAt(0))
-            .join('')
-            .toLowerCase();
-    },
-
-    // Get name variations (first name, last name, full name)
-    getNameVariations: (name: string): string[] => {
-        const normalized = searchUtils.normalize(name);
-        const parts = normalized.split(/\s+/).filter(part => part.length > 0);
-
-        const variations = [normalized]; // Full name
-
-        // Add individual parts (first name, middle name, last name)
-        parts.forEach(part => {
-            if (part.length > 1) variations.push(part);
-        });
-
-        // Add initials
-        variations.push(searchUtils.getInitials(name));
-
-        // Add partial combinations
-        if (parts.length >= 2) {
-            variations.push(`${parts[0]} ${parts[parts.length - 1]}`); // First + Last
-            variations.push(`${parts[parts.length - 1]} ${parts[0]}`); // Last + First
-        }
-
-        // Remove duplicates manually to avoid TypeScript downlevel iteration issues
-        const uniqueVariations: string[] = [];
-        variations.forEach(variation => {
-            if (!uniqueVariations.includes(variation)) {
-                uniqueVariations.push(variation);
-            }
-        });
-        return uniqueVariations;
-    },
-
-    // Simple fuzzy matching using Levenshtein distance
-    levenshteinDistance: (str1: string, str2: string): number => {
-        const matrix = [];
-
-        if (str1.length === 0) return str2.length;
-        if (str2.length === 0) return str1.length;
-
-        for (let i = 0; i <= str2.length; i++) {
-            matrix[i] = [i];
-        }
-
-        for (let j = 0; j <= str1.length; j++) {
-            matrix[0][j] = j;
-        }
-
-        for (let i = 1; i <= str2.length; i++) {
-            for (let j = 1; j <= str1.length; j++) {
-                if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-                    matrix[i][j] = matrix[i - 1][j - 1];
-                } else {
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j - 1] + 1, // substitution
-                        matrix[i][j - 1] + 1,     // insertion
-                        matrix[i - 1][j] + 1      // deletion
-                    );
-                }
-            }
-        }
-
-        return matrix[str2.length][str1.length];
-    },
-
-    // Calculate similarity score (0-1, where 1 is perfect match)
-    getSimilarityScore: (str1: string, str2: string): number => {
-        const maxLength = Math.max(str1.length, str2.length);
-        if (maxLength === 0) return 1;
-
-        const distance = searchUtils.levenshteinDistance(str1, str2);
-        return 1 - (distance / maxLength);
-    },
-
-    // Check if query matches any variation with fuzzy matching
-    fuzzyMatch: (query: string, variations: string[], threshold: number = 0.85): boolean => {
-        const normalizedQuery = searchUtils.normalize(query);
-
-        for (const variation of variations) {
-            // Exact match or substring match
-            if (variation.includes(normalizedQuery) || normalizedQuery.includes(variation)) {
-                return true;
-            }
-
-            // Only allow fuzzy on short queries (avoid false positives on full names)
-            if (normalizedQuery.length <= 4 && variation.length > 2) {
-                const similarity = searchUtils.getSimilarityScore(normalizedQuery, variation);
-                if (similarity >= threshold) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+  normalize: (t: string) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s@.-]/g, " ").replace(/\s+/g, " ").trim(),
+  getInitials: (n: string) => n.split(/\s+/).map(p => p.charAt(0)).join("").toLowerCase(),
+  getNameVariations: (name: string) => {
+    const normalized = searchUtils.normalize(name);
+    const parts = normalized.split(/\s+/).filter(Boolean);
+    const v = [normalized];
+    parts.forEach(p => p.length > 1 && v.push(p));
+    v.push(searchUtils.getInitials(name));
+    if (parts.length >= 2) {
+      v.push(`${parts[0]} ${parts[parts.length - 1]}`);
+      v.push(`${parts[parts.length - 1]} ${parts[0]}`);
     }
-
+    return Array.from(new Set(v));
+  },
+  levenshteinDistance: (s1: string, s2: string) => {
+    const m: number[][] = [];
+    if (!s1.length) return s2.length;
+    if (!s2.length) return s1.length;
+    for (let i = 0; i <= s2.length; i++) m[i] = [i];
+    for (let j = 0; j <= s1.length; j++) m[0][j] = j;
+    for (let i = 1; i <= s2.length; i++)
+      for (let j = 1; j <= s1.length; j++)
+        m[i][j] = s2[i - 1] === s1[j - 1] ? m[i - 1][j - 1] : Math.min(m[i - 1][j - 1] + 1, m[i][j - 1] + 1, m[i - 1][j] + 1);
+    return m[s2.length][s1.length];
+  },
+  getSimilarityScore: (a: string, b: string) => {
+    const max = Math.max(a.length, b.length);
+    return max === 0 ? 1 : 1 - searchUtils.levenshteinDistance(a, b) / max;
+  },
+  fuzzyMatch: (q: string, vars: string[], th = 0.85) => {
+    const nq = searchUtils.normalize(q);
+    return vars.some(v => v.includes(nq) || nq.includes(v) || (nq.length <= 4 && v.length > 2 && searchUtils.getSimilarityScore(nq, v) >= th));
+  },
 };
 
+/* ---------- tiny UI atoms ---------- */
+const Kpi: React.FC<{ label: string; value: React.ReactNode; sub?: string; accent?: boolean }> = ({ label, value, sub, accent }) => (
+  <div className={`ar__kpi ${accent ? "ar__kpi--accent" : ""}`}>
+    <div className="ar__kpi-label">{label}</div>
+    <div className="ar__kpi-value">{value}</div>
+    {sub && <div className="ar__kpi-sub">{sub}</div>}
+  </div>
+);
+
+const Field: React.FC<{ label: string; children: React.ReactNode; hint?: string }> = ({ label, children, hint }) => (
+  <label className="ar__field">
+    <span className="ar__field-label">{label}{hint && <em>{hint}</em>}</span>
+    {children}
+  </label>
+);
+
 const AttendanceReport: React.FC = () => {
-    const [date, setDate] = useState<Date | null>(null);
-    const [data, setData] = useState<AttendanceGroup[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [statusFilter, setStatusFilter] = useState<"all" | "present" | "absent">("all");
-    const [batches, setBatches] = useState<Batch[]>([]);
-    const [selectedBatch, setSelectedBatch] = useState<number | "all">("all");
+  const [date, setDate] = useState<Date | null>(null);
+  const [data, setData] = useState<AttendanceGroup[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | "present" | "absent">("all");
+  const [batches, setBatches] = useState<Batch[]>([]);
+  const [selectedBatch, setSelectedBatch] = useState<number | "all">("all");
 
-    // Fetch batches on mount
-    useEffect(() => {
-        const fetchBatches = async () => {
-            try {
-                const res = await axios.get(`${API_BASE_URL}/api/attendance/batches`);
-                setBatches(res.data || []);
-            } catch (err) {
-                console.error("Error fetching batches:", err);
-            }
-        };
-        fetchBatches();
-    }, []);
+  useEffect(() => {
+    axios.get(`${API_BASE_URL}/api/attendance/batches`).then(r => setBatches(r.data || [])).catch(() => {});
+  }, []);
 
-    // Fetch attendance report
-    const fetchReport = async (d: Date, status: "all" | "present" | "absent", batchId?: number | "all") => {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, "0");
-        const day = String(d.getDate()).padStart(2, "0");
-        const formatted = `${year}-${month}-${day}`;
+  const fetchReport = async (d: Date, status: "all" | "present" | "absent", batchId?: number | "all") => {
+    const formatted = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    setLoading(true); setError(null);
+    try {
+      let url = `${API_BASE_URL}/api/attendance/attendanceReport/${formatted}`;
+      const params: string[] = [];
+      if (status !== "all") params.push(`status=${status}`);
+      if (batchId && batchId !== "all") params.push(`batch_id=${batchId}`);
+      if (params.length) url += `?${params.join("&")}`;
+      const res = await axios.get(url);
+      setData(res.data.map((s: any) => ({ ...s, open: false, searchQuery: "" })));
+    } catch (e: any) { setError(e.message || "Error fetching report"); }
+    finally { setLoading(false); }
+  };
 
-        setLoading(true);
-        setError(null);
-
-        try {
-            let url = `${API_BASE_URL}/api/attendance/attendanceReport/${formatted}`;
-            const params: string[] = [];
-
-            if (status !== "all") params.push(`status=${status}`);
-            if (batchId && batchId !== "all") params.push(`batch_id=${batchId}`);
-
-            if (params.length) url += `?${params.join("&")}`;
-
-            const res = await axios.get(url);
-            setData(res.data.map((s: any) => ({ ...s, open: false, searchQuery: "" })));
-        } catch (err: any) {
-            setError(err.message || "Error fetching report");
-        } finally {
-            setLoading(false);
+  const filterStudents = useMemo(() => (students: Student[], q?: string) => {
+    let f = students.filter(s => statusFilter === "present" ? s.present : statusFilter === "absent" ? !s.present : true);
+    if (q?.trim()) {
+      const query = q.trim();
+      f = f.filter(student => {
+        const fields = [student.student_name, student.registration_id || "", student.email || ""].filter(Boolean);
+        for (const field of fields) {
+          const n = searchUtils.normalize(field);
+          const nq = searchUtils.normalize(query);
+          if (n.includes(nq)) return true;
+          if (field === student.student_name && searchUtils.fuzzyMatch(query, searchUtils.getNameVariations(field), 0.7)) return true;
+          if ((field === student.registration_id || field === student.email) &&
+            searchUtils.normalize(field.replace(/[@._-]/g, "")).includes(searchUtils.normalize(query.replace(/[@._-]/g, "")))) return true;
         }
-    };
+        return false;
+      });
+    }
+    return f;
+  }, [statusFilter]);
 
-    // Enhanced filter function with robust search
-    const filterStudents = useMemo(() => {
-        return (students: Student[], searchQuery?: string) => {
-            let filtered = students.filter((s) => {
-                if (statusFilter === "present") return s.present;
-                if (statusFilter === "absent") return !s.present;
-                return true;
-            });
+  const toggleAttendance = async (id: number, cur: boolean) => {
+    try {
+      await axios.patch(`${API_BASE_URL}/api/attendance/${id}`, { is_present: !cur }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setData(prev => prev.map(s => ({ ...s, students: s.students.map(st => st.id === id ? { ...st, present: !cur } : st) })));
+    } catch { alert("Failed to update attendance"); }
+  };
 
-            if (searchQuery?.trim()) {
-                const query = searchQuery.trim();
+  const exportToCSV = (session: AttendanceGroup) => {
+    const rows = filterStudents(session.students, session.searchQuery);
+    const fmtDate = (s: string) => { const d = new Date(s); return isNaN(d.getTime()) ? "Invalid Date" : d.toLocaleDateString("en-GB"); };
+    const safe = (s: string) => { const d = new Date(s); return isNaN(d.getTime()) ? new Date().toISOString().split("T")[0] : d.toISOString().split("T")[0]; };
+    const headers = ["Registration ID", "Student Name", "Email", "Status", "Course", "Faculty", "Date", "PresentFlag"];
+    const csv = [headers.join(","), ...rows.map(s => [
+      `"${s.registration_id || "N/A"}"`, `"${s.student_name}"`, `"${s.email || "N/A"}"`,
+      s.present ? "Present" : "Absent", `"${session.course_name}"`, `"${session.faculty_name || "N/A"}"`,
+      `"${fmtDate(session.datetime)}"`, s.present ? "1" : "0",
+    ].join(","))].join("\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+    link.download = `attendance_${session.course_name.replace(/[^a-zA-Z0-9]/g, "_")}_${safe(session.datetime)}.csv`;
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+  };
 
-                filtered = filtered.filter(student => {
-                    // Get all searchable text fields
-                    const searchFields = [
-                        student.student_name,
-                        student.registration_id || "",
-                        student.email || ""
-                    ].filter(field => field.length > 0);
+  const exportAllToCSV = () => {
+    if (!data.length) return;
+    const fmtDate = (s: string) => { const d = new Date(s); return isNaN(d.getTime()) ? "Invalid Date" : d.toLocaleDateString("en-GB"); };
+    const fmtTime = (s: string) => { const d = new Date(s); return isNaN(d.getTime()) ? "Invalid Time" : d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }); };
+    const headers = ["Registration ID", "Student Name", "Email", "Status", "Course", "Faculty", "Date", "Time", "PresentFlag"];
+    const lines = [headers.join(",")];
+    data.forEach(s => filterStudents(s.students, s.searchQuery).forEach(st => lines.push([
+      `"${st.registration_id || "N/A"}"`, `"${st.student_name}"`, `"${st.email || "N/A"}"`,
+      st.present ? "Present" : "Absent", `"${s.course_name}"`, `"${s.faculty_name || "N/A"}"`,
+      `"${fmtDate(s.datetime)}"`, `"${fmtTime(s.datetime)}"`, st.present ? "1" : "0",
+    ].join(","))));
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" }));
+    const safe = date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}` : new Date().toISOString().split("T")[0];
+    link.download = `all_attendance_${safe}.csv`;
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+  };
 
-                    // Check each field
-                    for (const field of searchFields) {
-                        const normalized = searchUtils.normalize(field);
-                        const normalizedQuery = searchUtils.normalize(query);
+  useEffect(() => { if (date) fetchReport(date, statusFilter, selectedBatch); /* eslint-disable-next-line */ }, [statusFilter, selectedBatch]);
 
-                        // Direct substring match (fastest)
-                        if (normalized.includes(normalizedQuery)) {
-                            return true;
-                        }
+  /* ---------- KPIs ---------- */
+  const stats = useMemo(() => {
+    let total = 0, present = 0;
+    data.forEach(s => filterStudents(s.students, s.searchQuery).forEach(st => { total++; if (st.present) present++; }));
+    const pct = total ? Math.round((present / total) * 100) : 0;
+    return { total, present, absent: total - present, pct, sessions: data.length };
+  }, [data, filterStudents]);
 
-                        // For names, check variations and fuzzy matching
-                        if (field === student.student_name) {
-                            const nameVariations = searchUtils.getNameVariations(field);
-                            if (searchUtils.fuzzyMatch(query, nameVariations, 0.7)) {
-                                return true;
-                            }
-                        }
-
-                        // For registration IDs and emails, more lenient matching
-                        if (field === student.registration_id || field === student.email) {
-                            // Remove common separators and check
-                            const cleanField = field.replace(/[@._-]/g, '');
-                            const cleanQuery = query.replace(/[@._-]/g, '');
-
-                            if (searchUtils.normalize(cleanField).includes(searchUtils.normalize(cleanQuery))) {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                });
-            }
-
-            return filtered;
-        };
-    }, [statusFilter]);
-
-    // Toggle attendance
-    const toggleAttendance = async (attendanceId: number, currentStatus: boolean) => {
-        try {
-            await axios.patch(`${API_BASE_URL}/api/attendance/${attendanceId}`, {
-                is_present: !currentStatus,
-            }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-            });
-
-            setData(prev =>
-                prev.map(session => ({
-                    ...session,
-                    students: session.students.map(student =>
-                        student.id === attendanceId ? { ...student, present: !currentStatus } : student
-                    ),
-                }))
-            );
-        } catch (err) {
-            console.error("Error updating attendance:", err);
-            alert("Failed to update attendance");
-        }
-    };
-
-    // Export single session to CSV
-    const exportToCSV = (session: AttendanceGroup) => {
-        const filteredStudents = filterStudents(session.students, session.searchQuery);
-
-        const getFormattedDate = (dateStr: string) => {
-            const da = new Date(dateStr);
-            return isNaN(da.getTime()) ? "Invalid Date" : da.toLocaleDateString("en-GB");
-        };
-
-        const getSafeFileName = (dateStr: string) => {
-            const da = new Date(dateStr);
-            return isNaN(da.getTime())
-                ? new Date().toISOString().split("T")[0]
-                : da.toISOString().split("T")[0];
-        };
-
-        const headers = ["Registration ID", "Student Name", "Email", "Status", "Course", "Faculty", "Date", "PresentFlag"];
-        const csvContent = [
-            headers.join(","),
-            ...filteredStudents.map(student => [
-                `"${student.registration_id || "N/A"}"`,
-                `"${student.student_name}"`,
-                `"${student.email || "N/A"}"`,
-                student.present ? "Present" : "Absent",
-                `"${session.course_name}"`,
-                `"${session.faculty_name || "N/A"}"`,
-                `"${getFormattedDate(session.datetime)}"`,
-                student.present ? "1" : "0",
-            ].join(",")),
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-
-        link.setAttribute("href", url);
-        link.setAttribute(
-            "download",
-            `attendance_${session.course_name.replace(/[^a-zA-Z0-9]/g, "_")}_${getSafeFileName(session.datetime)}.csv`
-        );
-        link.style.visibility = "hidden";
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    // Export all sessions to CSV
-    const exportAllToCSV = () => {
-        if (!data.length) return;
-
-        const getFormattedDate = (dateStr: string) => {
-            const da = new Date(dateStr);
-            return isNaN(da.getTime()) ? "Invalid Date" : da.toLocaleDateString("en-GB");
-        };
-
-        const getFormattedTime = (dateStr: string) => {
-            const da = new Date(dateStr);
-            return isNaN(da.getTime())
-                ? "Invalid Time"
-                : da.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-        };
-
-        const allStudentsData: any[] = [];
-
-        data.forEach(session => {
-            const filteredStudents = filterStudents(session.students, session.searchQuery);
-
-            filteredStudents.forEach(student => {
-                allStudentsData.push({
-                    registrationId: student.registration_id || "N/A",
-                    studentName: student.student_name,
-                    email: student.email || "N/A",
-                    status: student.present ? "Present" : "Absent",
-                    course: session.course_name,
-                    faculty: session.faculty_name || "N/A",
-                    date: getFormattedDate(session.datetime),
-                    time: getFormattedTime(session.datetime),
-                    presentFlag: student.present ? "1" : "0",
-                });
-            });
-        });
-
-        const headers = ["Registration ID", "Student Name", "Email", "Status", "Course", "Faculty", "Date", "Time", "PresentFlag"];
-        const csvContent = [
-            headers.join(","),
-            ...allStudentsData.map(r => [
-                `"${r.registrationId}"`,
-                `"${r.studentName}"`,
-                `"${r.email}"`,
-                r.status,
-                `"${r.course}"`,
-                `"${r.faculty}"`,
-                `"${r.date}"`,
-                `"${r.time}"`,
-                r.presentFlag,
-            ].join(",")),
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-
-        const safeDate = date
-            ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-            : new Date().toISOString().split("T")[0];
-        link.setAttribute("href", url);
-        link.setAttribute("download", `all_attendance_${safeDate}.csv`);
-        link.style.visibility = "hidden";
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    // Fetch on filter change
-    useEffect(() => {
-        if (date) fetchReport(date, statusFilter, selectedBatch);
-    }, [statusFilter, selectedBatch]);
-
-    // Get total filtered students count
-    const getTotalFilteredStudents = () => {
-        return data.reduce((total, session) => total + filterStudents(session.students, session.searchQuery).length, 0);
-    };
-
-    return (
-        <div className="attendance-container">
-            <h1 className="page-title">Attendance Report</h1>
-
-            {/* Filters */}
-            <div className="filters-section">
-                <div className="primary-filters">
-                    <div className="filter-group">
-                        <label className="filter-label">Select Date</label>
-                        <DatePicker
-                            selected={date}
-                            onChange={(d: Date | null) => {
-                                setDate(d);
-                                if (d) fetchReport(d, statusFilter, selectedBatch);
-                            }}
-                            className="date-picker"
-                            placeholderText="Choose date..."
-                            dateFormat="dd-MM-yyyy"
-                        />
-                    </div>
-
-                    <div className="filter-group">
-                        <label className="filter-label">Select Batch</label>
-                        <select
-                            className="batch-dropdown"
-                            value={selectedBatch}
-                            onChange={(e) => setSelectedBatch(e.target.value === "all" ? "all" : Number(e.target.value))}
-                        >
-                            <option value="all">All Batches</option>
-                            {batches.map(batch => (
-                                <option key={batch.id} value={batch.id}>{batch.batch_name}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                {/* Status Filter Buttons */}
-                <div className="filter-buttons">
-                    <button
-                        className={statusFilter === "all" ? "active" : ""}
-                        onClick={() => setStatusFilter("all")}
-                    >
-                        All {data.length > 0 && `(${getTotalFilteredStudents()})`}
-                    </button>
-                    <button
-                        className={statusFilter === "present" ? "active" : ""}
-                        onClick={() => setStatusFilter("present")}
-                    >
-                        Present
-                    </button>
-                    <button
-                        className={statusFilter === "absent" ? "active" : ""}
-                        onClick={() => setStatusFilter("absent")}
-                    >
-                        Absent
-                    </button>
-                </div>
-            </div>
-
-            {/* Export Button */}
-            {!loading && !error && data.length > 0 && (
-                <div className="export-container">
-                    <button className="export-all-btn" onClick={exportAllToCSV}>
-                        📊 Export All Sessions to CSV
-                    </button>
-                </div>
-            )}
-
-            {loading && <p className="loading-text">Loading attendance data...</p>}
-            {error && <p className="error-text">{error}</p>}
-
-            {!loading && !error && data.length > 0 && (
-                <div className="cards-container">
-                    {data.map((session) => {
-                        const filteredStudents = filterStudents(session.students, session.searchQuery);
-
-                        return (
-                            <div key={session.session_id} className="session-card">
-                                <div
-                                    onClick={() =>
-                                        setData(prev =>
-                                            prev.map(s =>
-                                                s.session_id === session.session_id ? { ...s, open: !s.open } : s
-                                            )
-                                        )
-                                    }
-                                    className="session-header"
-                                >
-                                    <div className="session-info">
-                                        <h2 className="session-title">{session.course_name}</h2>
-                                        <p className="session-meta">
-                                            {new Date(session.datetime).toLocaleString("en-GB", {
-                                                day: "2-digit",
-                                                month: "short",
-                                                year: "numeric",
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                            })}{" "}
-                                            • <span className="faculty-tag">Faculty: {session.faculty_name || "N/A"}</span>
-                                        </p>
-                                    </div>
-                                    <div className="header-actions">
-                                        <span className="student-count-badge">
-                                            {filteredStudents.length} students
-                                        </span>
-                                        <button
-                                            className="export-btn"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                exportToCSV(session);
-                                            }}
-                                        >
-                                            📄 CSV
-                                        </button>
-                                        <span className="toggle-icon">{session.open ? "−" : "+"}</span>
-                                    </div>
-                                </div>
-
-                                {session.open && (
-                                    <div className="student-list">
-                                        {/* Enhanced Per-session search bar */}
-                                        <div className="search-section">
-                                            <div className="search-container">
-                                                <div className="search-input-wrapper">
-                                                    <input
-                                                        type="text"
-                                                        className="search-input"
-                                                        placeholder="Smart search: names, IDs, emails, initials, partial matches..."
-                                                        value={session.searchQuery || ""}
-                                                        onChange={(e) =>
-                                                            setData(prev =>
-                                                                prev.map(s =>
-                                                                    s.session_id === session.session_id
-                                                                        ? { ...s, searchQuery: e.target.value }
-                                                                        : s
-                                                                )
-                                                            )
-                                                        }
-                                                    />
-                                                    <div className="search-icon"></div>
-                                                    {session.searchQuery && (
-                                                        <button
-                                                            className="clear-search-btn"
-                                                            onClick={() =>
-                                                                setData(prev =>
-                                                                    prev.map(s =>
-                                                                        s.session_id === session.session_id
-                                                                            ? { ...s, searchQuery: "" }
-                                                                            : s
-                                                                    )
-                                                                )
-                                                            }
-                                                        >
-                                                            ×
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            {/* Search feedback */}
-                                            {session.searchQuery && (
-                                                <div className="search-feedback">
-                                                    Found {filteredStudents.length} student{filteredStudents.length !== 1 ? 's' : ''}
-                                                    matching "{session.searchQuery}"
-                                                    {filteredStudents.length === 0 && " - Try partial names, initials, or check for typos"}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {filteredStudents.length > 0 ? (
-                                            <div className="table-container">
-                                                <table className="attendance-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Registration ID</th>
-                                                            <th>Student Name</th>
-                                                            <th>Email</th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {filteredStudents.map((s, idx) => (
-                                                            <tr key={idx}>
-                                                                <td>{s.registration_id || "N/A"}</td>
-                                                                <td className="student-name">{s.student_name}</td>
-                                                                <td className="student-email">{s.email || "N/A"}</td>
-                                                                <td>
-                                                                    {s.present ? (
-                                                                        <span className="status-present">Present</span>
-                                                                    ) : (
-                                                                        <span className="status-absent">Absent</span>
-                                                                    )}
-                                                                </td>
-                                                                <td>
-                                                                    <button
-                                                                        onClick={() => toggleAttendance(s.id, s.present)}
-                                                                        className="edit-btn"
-                                                                    >
-                                                                        {s.present ? "Mark Absent" : "Mark Present"}
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        ) : (
-                                            <div className="no-results">
-                                                {session.searchQuery
-                                                    ? `No students found matching "${session.searchQuery}". Try different search terms, initials, or partial names.`
-                                                    : "No students to display"}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
-
-            {!loading && !error && data.length === 0 && date && (
-                <p className="empty-text">No attendance data available for this date.</p>
-            )}
+  return (
+    <div className="ar">
+      {/* HEADER */}
+      <header className="ar__header">
+        <div className="ar__title-row">
+          <div>
+            <h1 className="ar__title">
+              <span className="dashboard-heading-white">Attendance</span>{" "}
+              <span className="dashboard-heading-gradient">Report</span>
+            </h1>
+          </div>
+          <button className="ar__btn ar__btn--gold" onClick={exportAllToCSV} disabled={!data.length}>Export all CSV</button>
         </div>
-    );
+      </header>
+
+      {/* KPI strip */}
+      <section className="ar__kpis">
+        <Kpi label="Sessions" value={stats.sessions} sub={date ? date.toLocaleDateString("en-GB") : "Pick a date"} />
+        <Kpi label="Total Students" value={stats.total} />
+        <Kpi label="Present" value={stats.present} sub={`${stats.pct}% attendance`} accent />
+        <Kpi label="Absent" value={stats.absent} />
+      </section>
+
+
+      {/* TOOLBAR */}
+      <section className="ar__toolbar">
+        <Field label="Date" hint="filter">
+          <input
+            type="date"
+            className="datepicker-input ar__input"
+            value={date ? date.toISOString().slice(0, 10) : ""}
+            onChange={(e) => {
+              const v = e.target.value;
+              const d = v ? new Date(`${v}T00:00:00`) : null;
+              setDate(d);
+              if (d) fetchReport(d, statusFilter, selectedBatch);
+            }}
+            placeholder="Choose date…"
+          />
+        </Field>
+        <Field label="Batch">
+          <div className="ar__select-wrap">
+            <select className="ar__input" value={selectedBatch} onChange={e => setSelectedBatch(e.target.value === "all" ? "all" : Number(e.target.value))}>
+              <option value="all">All Batches</option>
+              {batches.map(b => <option key={b.id} value={b.id}>{b.batch_name}</option>)}
+            </select>
+            <span className="ar__chev">▾</span>
+          </div>
+        </Field>
+        <Field label="Status">
+          <div className="ar__seg" role="tablist">
+            {(["all", "present", "absent"] as const).map(s => (
+              <button key={s} className={`ar__seg-btn ${statusFilter === s ? "is-on" : ""}`} onClick={() => setStatusFilter(s)}>
+                {s === "all" ? `All${data.length ? ` · ${stats.total}` : ""}` : s[0].toUpperCase() + s.slice(1)}
+              </button>
+            ))}
+          </div>
+        </Field>
+      </section>
+
+      {/* STATES */}
+      {loading && <div className="ar__state">Loading attendance…</div>}
+      {error && <div className="ar__state ar__state--err">{error}</div>}
+      {!loading && !error && date && data.length === 0 && (
+        <div className="ar__empty">
+          <div className="ar__empty-icon">∅</div>
+          <h3>No data for this date</h3>
+          <p>Try a different date or batch — sessions appear here once attendance is recorded.</p>
+        </div>
+      )}
+      {!loading && !error && !date && (
+        <div className="ar__empty">
+          <div className="ar__empty-icon">📅</div>
+          <h3>Pick a date to begin</h3>
+          <p>Choose a date above to load all sessions and student attendance.</p>
+        </div>
+      )}
+
+      {/* SESSIONS */}
+      {!loading && !error && data.length > 0 && (
+        <section className="ar__sessions">
+          {data.map(session => {
+            const rows = filterStudents(session.students, session.searchQuery);
+            const present = rows.filter(r => r.present).length;
+            const pct = rows.length ? Math.round((present / rows.length) * 100) : 0;
+            return (
+              <article key={session.session_id} className={`ar__card ${session.open ? "is-open" : ""}`}>
+                <header
+                  className="ar__card-head"
+                  onClick={() => setData(prev => prev.map(s => s.session_id === session.session_id ? { ...s, open: !s.open } : s))}
+                >
+                  <div className="ar__card-left">
+                    <div className="ar__avatar">{session.course_name?.charAt(0).toUpperCase()}</div>
+                    <div>
+                      <h3 className="ar__card-title">{session.course_name}</h3>
+                      <p className="ar__card-meta">
+                        <span>{new Date(session.datetime).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                        <span className="ar__dot">·</span>
+                        <span>Faculty: <strong>{session.faculty_name || "N/A"}</strong></span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="ar__card-right">
+                    <div className="ar__attend">
+                      <span className="ar__attend-num">{present}<em>/{rows.length}</em></span>
+                      <span className="ar__attend-pct">{pct}%</span>
+                    </div>
+                    <button className="ar__btn ar__btn--ghost" onClick={(e) => { e.stopPropagation(); exportToCSV(session); }}>CSV</button>
+                    <span className="ar__chev-toggle">{session.open ? "▴" : "▾"}</span>
+                  </div>
+                </header>
+
+                {session.open && (
+                  <div className="ar__card-body">
+                    <div className="ar__search-row">
+                      <div className="ar__search">
+                        <span className="ar__search-icon">⌕</span>
+                        <input
+                          className="ar__search-input"
+                          placeholder="Search by name, registration, email, or initials…"
+                          value={session.searchQuery || ""}
+                          onChange={e => setData(prev => prev.map(s => s.session_id === session.session_id ? { ...s, searchQuery: e.target.value } : s))}
+                        />
+                        {session.searchQuery && (
+                          <button className="ar__search-clear" onClick={() => setData(prev => prev.map(s => s.session_id === session.session_id ? { ...s, searchQuery: "" } : s))}>×</button>
+                        )}
+                      </div>
+                      {session.searchQuery && (
+                        <span className="ar__search-meta">
+                          {rows.length} match{rows.length !== 1 ? "es" : ""} for “{session.searchQuery}”
+                        </span>
+                      )}
+                    </div>
+
+                    {rows.length > 0 ? (
+                      <div className="ar__table-wrap">
+                        <table className="ar__table">
+                          <thead>
+                            <tr>
+                              <th>Reg ID</th>
+                              <th>Student</th>
+                              <th>Email</th>
+                              <th>Status</th>
+                              <th className="ar__th-end">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rows.map(s => (
+                              <tr key={s.id}>
+                                <td className="ar__mono">{s.registration_id || "—"}</td>
+                                <td>
+                                  <div className="ar__cell-name">
+                                    <span className="ar__chip-avatar">{s.student_name.charAt(0).toUpperCase()}</span>
+                                    <span>{s.student_name}</span>
+                                  </div>
+                                </td>
+                                <td className="ar__muted">{s.email || "—"}</td>
+                                <td>
+                                  <span className={`ar__badge ar__badge--${s.present ? "present" : "absent"}`}>
+                                    <em /> {s.present ? "Present" : "Absent"}
+                                  </span>
+                                </td>
+                                <td className="ar__th-end">
+                                  <button className="ar__btn ar__btn--mini" onClick={() => toggleAttendance(s.id, s.present)}>
+                                    Mark {s.present ? "Absent" : "Present"}
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="ar__empty ar__empty--inset">
+                        <div className="ar__empty-icon">⌕</div>
+                        <h3>No matches</h3>
+                        <p>{session.searchQuery ? `Nothing for “${session.searchQuery}”. Try initials or partial names.` : "No students to display."}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </section>
+      )}
+    </div>
+  );
 };
 
 export default AttendanceReport;

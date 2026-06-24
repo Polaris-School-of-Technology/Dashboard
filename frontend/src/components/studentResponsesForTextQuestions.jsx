@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "./studentResponsesForTextQuestions.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -82,121 +83,13 @@ export default function StudentFeedback() {
 
   return (
     <div className="feedback-container">
-      {/* Inline CSS */}
-      <style>{`
-        .feedback-container {
-          font-family: Arial, sans-serif;
-          padding: 20px;
-          background: #f9fafb;
-        }
-        .feedback-header {
-          text-align: center;
-          margin-bottom: 30px;
-        }
-        .feedback-header h1 {
-          font-size: 28px;
-          font-weight: bold;
-          color: #333;
-        }
-        .feedback-header p {
-          color: #666;
-          margin-top: 5px;
-        }
-        .filters {
-          background: #fff;
-          border: 1px solid #ddd;
-          padding: 20px;
-          border-radius: 10px;
-          margin-bottom: 30px;
-        }
-        .filters h2 {
-          font-size: 18px;
-          margin-bottom: 15px;
-          color: #444;
-        }
-        .filter-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 20px;
-        }
-        .filter-item label {
-          display: block;
-          font-weight: bold;
-          margin-bottom: 8px;
-          color: #333;
-        }
-        .input {
-          width: 100%;
-          padding: 8px 10px;
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          font-size: 14px;
-        }
-        .loading {
-          text-align: center;
-          color: #666;
-          margin-top: 20px;
-        }
-        .responses {
-          background: #fffbe6;
-          border: 1px solid #ffe58f;
-          padding: 20px;
-          border-radius: 10px;
-        }
-        .responses h2 {
-          margin-bottom: 15px;
-          color: #333;
-        }
-        .table-wrapper {
-          overflow-x: auto;
-        }
-        .response-table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 14px;
-        }
-        .response-table th,
-        .response-table td {
-          padding: 12px;
-          border: 1px solid #ddd;
-          text-align: left;
-        }
-        .response-table thead {
-          background: #eee;
-        }
-        .student-col {
-          background: #dcfce7;
-        }
-        .response-col {
-          background: #fef3c7;
-        }
-        .student-cell {
-          background: #dcfce7;
-        }
-        .response-cell {
-          background: #fef3c7;
-        }
-        .student-name {
-          font-weight: bold;
-          color: #222;
-        }
-        .student-email {
-          font-size: 12px;
-          color: #666;
-        }
-        .empty {
-          text-align: center;
-          margin-top: 20px;
-          color: #888;
-        }
-        /* Zebra striping */
-        .response-table tbody tr:nth-child(odd) {
-          background: #fafafa;
-        }
-      `}</style>
+      {/* Styles moved to studentResponsesForTextQuestions.css */}
 
       <header className="feedback-header">
-        <h1>Student Feedback Dashboard</h1>
+        <h1>
+          <span className="dashboard-heading-white">Student Feedback</span>{" "}
+          <span className="dashboard-heading-gradient">Dashboard</span>
+        </h1>
         <p>View and analyze student responses easily</p>
       </header>
 

@@ -1,0 +1,120 @@
+/* Styles for Student Feedback (dark theme) */
+@import '../styles/theme.css';
+
+.feedback-container {
+  font-family: var(--font-family, Arial, sans-serif);
+  padding: var(--space-lg);
+  background: #070707;
+  color: #e6e6e6;
+  min-height: 100vh;
+}
+
+.feedback-header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.feedback-header h1 {
+  font-size: var(--text-h3-size);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent, #ffd24f);
+}
+
+.feedback-header p {
+  color: rgba(230,230,230,0.75);
+  margin-top: 6px;
+}
+
+.filters {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,204,63,0.08);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.filters h2 {
+  font-size: 18px;
+  margin-bottom: var(--space-sm);
+  color: var(--color-accent, #ffd24f);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-md);
+}
+
+.filter-item label {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 8px;
+  color: rgba(230,230,230,0.9);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px;
+  font-size: var(--text-label-size);
+  background: rgba(255,255,255,0.02);
+  color: #e6e6e6;
+}
+
+.input::placeholder { color: rgba(230,230,230,0.45); }
+
+.loading {
+  text-align: center;
+  color: rgba(230,230,230,0.7);
+  margin-top: 20px;
+}
+
+.responses {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,204,63,0.06);
+  padding: 18px;
+  border-radius: 10px;
+}
+
+.responses h2 {
+  margin-bottom: var(--space-sm);
+  color: var(--color-accent, #ffd24f);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.response-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-label-size);
+  color: #e6e6e6;
+}
+
+.response-table th,
+.response-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  text-align: left;
+}
+
+.response-table thead {
+  background: rgba(255,255,255,0.02);
+}
+
+.response-table thead th { color: var(--color-accent, #ffd24f); font-weight: var(--font-weight-bold); }
+
+.student-col { background: rgba(34,197,94,0.06); }
+.response-col { background: rgba(245,158,11,0.04); }
+.student-cell { background: transparent; }
+.response-cell { background: transparent; }
+
+.student-name { font-weight: var(--font-weight-semibold); color: #e6e6e6; }
+.student-email { font-size: 12px; color: rgba(230,230,230,0.65); }
+
+.empty { text-align: center; margin-top: 20px; color: rgba(230,230,230,0.6); }
+
+.response-table tbody tr:nth-child(odd) { background: rgba(255,255,255,0.01); }
+.response-table tbody tr:hover { background: rgba(255,255,255,0.02); }

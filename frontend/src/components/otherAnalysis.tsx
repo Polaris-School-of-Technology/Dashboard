@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
@@ -37,8 +35,8 @@ const QuestionAnalysis: React.FC = () => {
     const [questionList, setQuestionList] = useState<Question[]>([]);
     const [selectedFaculty, setSelectedFaculty] = useState("all");
     const [selectedQuestion, setSelectedQuestion] = useState<number | null>(null);
-    const [startDate, setStartDate] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]);
+    const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
     const [feedbackData, setFeedbackData] = useState<FacultyData[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -91,8 +89,8 @@ const QuestionAnalysis: React.FC = () => {
             const res = await axios.post(url, {
                 questionId: selectedQuestion,
                 facultyId: selectedFaculty !== "all" ? selectedFaculty : undefined,
-                start_date: startDate.toISOString().split("T")[0],
-                end_date: endDate.toISOString().split("T")[0],
+                start_date: startDate,
+                end_date: endDate,
             });
 
             const validData = res.data.data.filter(
@@ -146,7 +144,8 @@ const QuestionAnalysis: React.FC = () => {
     return (
         <div style={{ padding: "2rem", background: "#f0f4ff", minHeight: "100vh" }}>
             <h1 style={{ textAlign: "center", marginBottom: "1.5rem", fontSize: "2rem", fontWeight: "bold" }}>
-                Question Feedback Analysis
+                <span className="dashboard-heading-white">Question Feedback</span>{" "}
+                <span className="dashboard-heading-gradient">Analysis</span>
             </h1>
 
             {/* Controls */}
@@ -180,22 +179,22 @@ const QuestionAnalysis: React.FC = () => {
 
                 <div>
                     <label>Start Date</label>
-                    <DatePicker
-                        selected={startDate}
-                        onChange={date => date && setStartDate(date)}
-                        dateFormat="yyyy-MM-dd"
-                        maxDate={new Date()}
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        max={new Date().toISOString().split("T")[0]}
                     />
                 </div>
 
                 <div>
                     <label>End Date</label>
-                    <DatePicker
-                        selected={endDate}
-                        onChange={date => date && setEndDate(date)}
-                        dateFormat="yyyy-MM-dd"
-                        maxDate={new Date()}
-                        minDate={startDate}
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        max={new Date().toISOString().split("T")[0]}
+                        min={startDate}
                     />
                 </div>
 

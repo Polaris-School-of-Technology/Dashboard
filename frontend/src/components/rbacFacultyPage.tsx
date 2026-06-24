@@ -428,7 +428,10 @@ const RbacFacultyPage: React.FC = () => {
 
     return (
         <div className="sessions-container">
-            <h1>My Sessions</h1>
+            <h1>
+                <span className="dashboard-heading-white">My</span>{" "}
+                <span className="dashboard-heading-gradient">Sessions</span>
+            </h1>
 
             <div className="date-picker">
                 <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />

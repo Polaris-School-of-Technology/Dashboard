@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { ChevronDown, FileText, Pencil, Plus, Search, Settings, UsersRound } from 'lucide-react';
+import './adminJobs.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -18,6 +20,31 @@ interface Job {
     createdAt: string;
 }
 
+const normalizeOption = (value?: string | number | null) => String(value ?? '').trim().toLowerCase();
+
+const normalizeJob = (job: any): Job => ({
+    id: String(job.id ?? job._id ?? ''),
+    company: String(job.company ?? ''),
+    title: String(job.title ?? ''),
+    location: String(job.location ?? ''),
+    type: String(job.type ?? ''),
+    mode: String(job.mode ?? ''),
+    package: String(job.package ?? job.package_lpa ?? ''),
+    status: String(job.status ?? ''),
+    category: String(job.category ?? job.job_categories?.name ?? ''),
+    batch: String(
+        job.batch ??
+        job.batch_name ??
+        job.graduation_year ??
+        job.year ??
+        job.batches?.batch_name ??
+        job.batches?.graduation_year ??
+        job.batches?.year ??
+        ''
+    ),
+    createdAt: String(job.createdAt ?? job.created_at ?? '')
+});
+
 const AdminJobs: React.FC = () => {
     const navigate = useNavigate();
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -25,6 +52,12 @@ const AdminJobs: React.FC = () => {
     const [error, setError] = useState('');
     const [showSettingsModal, setShowSettingsModal] = useState(false);
     const [activeSettingsTab, setActiveSettingsTab] = useState<'category' | 'city'>('category');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('All');
+    const [typeFilter, setTypeFilter] = useState('All');
+    const [batchFilter, setBatchFilter] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
 
     // Form states
     const [newCategory, setNewCategory] = useState('');
@@ -40,7 +73,8 @@ const AdminJobs: React.FC = () => {
         try {
             setLoading(true);
             const { data } = await axios.get(`${API_BASE_URL}/api/jobs/admin/jobs`);
-            setJobs(data.data);
+            const rawJobs = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+            setJobs(rawJobs.map(normalizeJob));
             setError('');
         } catch (err) {
             setError('Failed to load jobs');
@@ -109,111 +143,261 @@ const AdminJobs: React.FC = () => {
         navigate(`/admin/jobs/${jobId}/edit`);
     };
 
+    const uniqueStatuses = useMemo(() => Array.from(new Set(jobs.map((job) => job.status).filter(Boolean))), [jobs]);
+    const uniqueTypes = useMemo(() => Array.from(new Set(jobs.map((job) => job.type).filter(Boolean))), [jobs]);
+    const uniqueBatches = useMemo(() => Array.from(new Set(jobs.map((job) => job.batch).filter(Boolean))).sort().reverse(), [jobs]);
+
+    const filteredJobs = useMemo(() => {
+        const query = searchTerm.trim().toLowerCase();
+
+        return jobs.filter((job) => {
+            const matchesSearch = !query || [job.company, job.title, job.batch, job.category].some((value) =>
+                value?.toLowerCase().includes(query)
+            );
+            const matchesStatus = statusFilter === 'All' || normalizeOption(job.status) === normalizeOption(statusFilter);
+            const matchesType = typeFilter === 'All' || normalizeOption(job.type) === normalizeOption(typeFilter);
+            const matchesBatch = batchFilter === 'All' || normalizeOption(job.batch) === normalizeOption(batchFilter);
+
+            return matchesSearch && matchesStatus && matchesType && matchesBatch;
+        });
+    }, [batchFilter, jobs, searchTerm, statusFilter, typeFilter]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, statusFilter, typeFilter, batchFilter]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredJobs.length / rowsPerPage));
+    const paginatedJobs = useMemo(() => {
+        const start = (currentPage - 1) * rowsPerPage;
+        return filteredJobs.slice(start, start + rowsPerPage);
+    }, [currentPage, filteredJobs]);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage < 1 || newPage > totalPages) return;
+        setCurrentPage(newPage);
+    };
+
+    const getInitials = (company: string) => {
+        const words = company.trim().split(/\s+/).filter(Boolean);
+        if (!words.length) {
+            return '--';
+        }
+
+        if (words.length === 1) {
+            return words[0].slice(0, 2).toUpperCase();
+        }
+
+        return words.slice(0, 2).map((word) => word[0]).join('').toUpperCase();
+    };
+
+    const formatStatus = (status: string) => status.replace(/-/g, '-\n').toUpperCase();
+    const openCampusCount = jobs.filter((job) => normalizeOption(job.status).includes('campus')).length;
+
     return (
-        <div style={styles.container}>
-            <h1 style={styles.title}>Job Management Dashboard</h1>
+        <div className="jobs-container">
+                <div className="page-header">
+                    <h1>
+                        <span className="dashboard-heading-white">Job</span>{" "}
+                        <span className="dashboard-heading-gradient">Management</span>
+                    </h1>
 
-            <div style={styles.topActions}>
-                <button
-                    onClick={() => navigate('/admin/jobs/create')}
-                    style={styles.createButton}
-                >
-                    + Create New Job
-                </button>
+                    <div className="top-actions">
+                        <button
+                            onClick={() => setShowSettingsModal(true)}
+                            className="settings-btn"
+                        >
+                            <Settings size={18} aria-hidden="true" />
+                            <span>Admin Settings</span>
+                        </button>
 
-                <button
-                    onClick={() => setShowSettingsModal(true)}
-                    style={styles.settingsButton}
-                >
-                    ⚙️ Admin Settings
-                </button>
-            </div>
+                        <button
+                            onClick={() => navigate('/admin/jobs/create')}
+                            className="create-job-btn"
+                        >
+                            <Plus size={19} aria-hidden="true" />
+                            <span>Create New Job</span>
+                        </button>
+                    </div>
+                </div>
 
-            {loading && <p style={styles.loading}>Loading jobs...</p>}
-            {error && <p style={styles.error}>{error}</p>}
+            <section className="jobs-stats" aria-label="Job statistics">
+                <article className="stat-card">
+                    <span>Total Postings</span>
+                    <strong>{jobs.length}</strong>
+                    <small>+2 this week</small>
+                </article>
+                <article className="stat-card">
+                    <span>Open Campus</span>
+                    <strong>{openCampusCount}</strong>
+                    <small>3 closing soon</small>
+                </article>
+                <article className="stat-card">
+                    <span>Applications</span>
+                    <strong>1,284</strong>
+                    <small className="stat-positive">+18% MoM</small>
+                </article>
+                <article className="stat-card">
+                    <span>Hired</span>
+                    <strong>32</strong>
+                    <small className="stat-positive">+5 this month</small>
+                </article>
+            </section>
 
-            <table style={styles.table}>
-                <thead>
-                    <tr>
-                        <th style={styles.th}>Company</th>
-                        <th style={styles.th}>Title</th>
-                        <th style={styles.th}>Location</th>
-                        <th style={styles.th}>Type</th>
-                        <th style={styles.th}>Mode</th>
-                        <th style={styles.th}>Package</th>
-                        <th style={styles.th}>Status</th>
-                        <th style={styles.th}>Category</th>
-                        <th style={styles.th}>Batch</th>
-                        <th style={styles.th}>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {jobs.map((job) => (
-                        <tr key={job.id} style={styles.tr}>
-                            <td style={styles.td}>{job.company}</td>
-                            <td style={styles.td}>{job.title}</td>
-                            <td style={styles.td}>{job.location}</td>
-                            <td style={styles.td}>{job.type}</td>
-                            <td style={styles.td}>{job.mode}</td>
-                            <td style={styles.td}>{job.package}</td>
-                            <td style={styles.td}>
-                                <span style={{
-                                    ...styles.badge,
-                                    background: job.status === 'Campus' ? '#48bb78' : '#ed8936'
-                                }}>
-                                    {job.status}
-                                </span>
-                            </td>
-                            <td style={styles.td}>{job.category}</td>
-                            <td style={styles.td}>{job.batch}</td>
-                            <td style={styles.td}>
-                                {/* 🆕 UPDATED - Added Edit Button */}
-                                <div style={styles.actionButtons}>
-                                    <button
-                                        onClick={() => handleViewDetails(job.id)}
-                                        style={{ ...styles.button, ...styles.viewButton }}
-                                    >
-                                        📄 View
-                                    </button>
-                                    <button
-                                        onClick={() => handleEditJob(job.id)}
-                                        style={{ ...styles.button, ...styles.editButton }}
-                                    >
-                                        ✏️ Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleViewApplications(job.id)}
-                                        style={{ ...styles.button, ...styles.applicationsButton }}
-                                    >
-                                        👥 Applications
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {loading && <p className="loading-text">Loading jobs...</p>}
+            {error && <p className="error">{error}</p>}
 
-            {/* Settings Modal */}
+            <section className="jobs-panel">
+                <div className="jobs-toolbar">
+                    <label className="jobs-search">
+                        <Search size={19} aria-hidden="true" />
+                        <input
+                            value={searchTerm}
+                            onChange={(event) => setSearchTerm(event.target.value)}
+                            placeholder="Search company, title, batch..."
+                        />
+                    </label>
+
+                    <div className="filter-group">
+                        <label className="filter-select">
+                            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                                <option value="All">Status: All</option>
+                                {(uniqueStatuses.length ? uniqueStatuses : ['Campus', 'Off-Campus']).map((status) => (
+                                    <option key={status} value={status}>Status: {status}</option>
+                                ))}
+                            </select>
+                            <ChevronDown size={15} aria-hidden="true" />
+                        </label>
+                        <label className="filter-select">
+                            <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+                                <option value="All">Type: All</option>
+                                {uniqueTypes.map((type) => (
+                                    <option key={type} value={type}>Type: {type}</option>
+                                ))}
+                            </select>
+                            <ChevronDown size={15} aria-hidden="true" />
+                        </label>
+                        <label className="filter-select">
+                            <select value={batchFilter} onChange={(event) => setBatchFilter(event.target.value)}>
+                                <option value="All">Batch: All</option>
+                                {(uniqueBatches.length ? uniqueBatches : ['2026', '2025']).map((batch) => (
+                                    <option key={batch} value={batch}>Batch: {batch}</option>
+                                ))}
+                            </select>
+                            <ChevronDown size={15} aria-hidden="true" />
+                        </label>
+                    </div>
+
+                    <span className="jobs-showing">Showing {filteredJobs.length} of {jobs.length}</span>
+                </div>
+
+                <div className="table-scroll">
+                    <table className="jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Title</th>
+                                <th>Location</th>
+                                <th>Type</th>
+                                <th>Mode</th>
+                                <th>Package</th>
+                                <th>Status</th>
+                                <th>Category</th>
+                                <th>Batch</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paginatedJobs.map((job, index) => (
+                                <tr key={job.id || `${job.company}-${job.title}-${index}`}>
+                                    <td>
+                                        <div className="company-cell">
+                                            <span className="company-logo">{getInitials(job.company)}</span>
+                                            <strong>{job.company}</strong>
+                                        </div>
+                                    </td>
+                                    <td>{job.title}</td>
+                                    <td>{job.location}</td>
+                                    <td>{job.type}</td>
+                                    <td>{job.mode}</td>
+                                    <td className="package-cell">{job.package}</td>
+                                    <td>
+                                        <span className={`badge ${normalizeOption(job.status).includes('campus') && !normalizeOption(job.status).includes('off') ? 'badge-campus' : 'badge-external'}`}>
+                                            {formatStatus(job.status)}
+                                        </span>
+                                    </td>
+                                    <td>{job.category}</td>
+                                    <td>{job.batch}</td>
+                                    <td>
+                                        <div className="action-buttons">
+                                            <button
+                                                onClick={() => handleViewDetails(job.id)}
+                                                className="icon-btn"
+                                                data-tooltip="View"
+                                                aria-label="View"
+                                            >
+                                                <FileText size={18} aria-hidden="true" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleEditJob(job.id)}
+                                                className="icon-btn"
+                                                data-tooltip="Edit"
+                                                aria-label="Edit"
+                                            >
+                                                <Pencil size={18} aria-hidden="true" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleViewApplications(job.id)}
+                                                className="icon-btn"
+                                                data-tooltip="Applications"
+                                                aria-label="Applications"
+                                            >
+                                                <UsersRound size={18} aria-hidden="true" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="pagination-bar">
+                    <button
+                        className="pagination-btn"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </button>
+                    <span className="pagination-info">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                        className="pagination-btn"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
+            </section>
+
             {showSettingsModal && (
-                <div style={styles.modalOverlay} onClick={() => setShowSettingsModal(false)}>
-                    <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                        <div style={styles.modalHeader}>
-                            <h2 style={styles.modalTitle}>Admin Settings</h2>
+                <div className="modal" onClick={() => setShowSettingsModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2 className="modal-title">Admin Settings</h2>
                             <button
-                                style={styles.closeButton}
+                                className="close-btn"
                                 onClick={() => setShowSettingsModal(false)}
                             >
                                 ✕
                             </button>
                         </div>
 
-                        <div style={styles.tabContainer}>
+                        <div className="tab-container">
                             <button
-                                style={{
-                                    ...styles.tab,
-                                    ...(activeSettingsTab === 'category' ? styles.activeTab : {})
-                                }}
+                                className={`tab ${activeSettingsTab === 'category' ? 'active-tab' : ''}`}
                                 onClick={() => {
                                     setActiveSettingsTab('category');
                                     setSubmitMessage('');
@@ -222,10 +406,7 @@ const AdminJobs: React.FC = () => {
                                 📂 Categories
                             </button>
                             <button
-                                style={{
-                                    ...styles.tab,
-                                    ...(activeSettingsTab === 'city' ? styles.activeTab : {})
-                                }}
+                                className={`tab ${activeSettingsTab === 'city' ? 'active-tab' : ''}`}
                                 onClick={() => {
                                     setActiveSettingsTab('city');
                                     setSubmitMessage('');
@@ -235,20 +416,20 @@ const AdminJobs: React.FC = () => {
                             </button>
                         </div>
 
-                        <div style={styles.modalBody}>
+                        <div className="modal-body">
                             {activeSettingsTab === 'category' && (
-                                <form onSubmit={handleCreateCategory} style={styles.form}>
-                                    <h3 style={styles.formTitle}>Add New Category</h3>
+                                <form onSubmit={handleCreateCategory} className="form">
+                                    <h3 className="form-title">Add New Category</h3>
                                     <input
                                         type="text"
                                         placeholder="Enter category name (e.g., Technology & IT)"
                                         value={newCategory}
                                         onChange={(e) => setNewCategory(e.target.value)}
-                                        style={styles.input}
+                                        className="input"
                                     />
                                     <button
                                         type="submit"
-                                        style={styles.submitButton}
+                                        className="submit-btn"
                                         disabled={submitLoading}
                                     >
                                         {submitLoading ? 'Adding...' : 'Add Category'}
@@ -257,18 +438,18 @@ const AdminJobs: React.FC = () => {
                             )}
 
                             {activeSettingsTab === 'city' && (
-                                <form onSubmit={handleCreateCity} style={styles.form}>
-                                    <h3 style={styles.formTitle}>Add New City</h3>
+                                <form onSubmit={handleCreateCity} className="form">
+                                    <h3 className="form-title">Add New City</h3>
                                     <input
                                         type="text"
                                         placeholder="Enter city name (e.g., Bengaluru)"
                                         value={newCity}
                                         onChange={(e) => setNewCity(e.target.value)}
-                                        style={styles.input}
+                                        className="input"
                                     />
                                     <button
                                         type="submit"
-                                        style={styles.submitButton}
+                                        className="submit-btn"
                                         disabled={submitLoading}
                                     >
                                         {submitLoading ? 'Adding...' : 'Add City'}
@@ -277,10 +458,7 @@ const AdminJobs: React.FC = () => {
                             )}
 
                             {submitMessage && (
-                                <p style={{
-                                    ...styles.message,
-                                    color: submitMessage.includes('✅') ? '#48bb78' : '#f56565'
-                                }}>
+                                <p className={`message ${submitMessage.includes('✅') ? 'success' : 'error-message'}`}>
                                     {submitMessage}
                                 </p>
                             )}
@@ -290,255 +468,6 @@ const AdminJobs: React.FC = () => {
             )}
         </div>
     );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-    container: {
-        maxWidth: '1400px',
-        margin: '20px auto',
-        padding: '32px',
-        backgroundColor: '#ffffff',
-        borderRadius: '20px',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-    },
-    title: {
-        textAlign: 'center',
-        fontSize: '2.5rem',
-        fontWeight: '800',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        marginBottom: '32px',
-        letterSpacing: '-0.025em',
-    },
-    topActions: {
-        display: 'flex',
-        gap: '16px',
-        marginBottom: '24px',
-        flexWrap: 'wrap',
-    },
-    createButton: {
-        padding: '12px 24px',
-        borderRadius: '12px',
-        border: 'none',
-        fontWeight: '600',
-        cursor: 'pointer',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '0.875rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-    },
-    settingsButton: {
-        padding: '12px 24px',
-        borderRadius: '12px',
-        border: '2px solid #667eea',
-        fontWeight: '600',
-        cursor: 'pointer',
-        background: 'white',
-        color: '#667eea',
-        fontSize: '0.875rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-    },
-    loading: {
-        textAlign: 'center',
-        fontSize: '1.125rem',
-        color: '#667eea',
-        fontWeight: '600',
-        padding: '32px',
-    },
-    error: {
-        textAlign: 'center',
-        color: '#f56565',
-        fontWeight: '600',
-        padding: '16px',
-        backgroundColor: 'rgba(245, 101, 101, 0.1)',
-        borderRadius: '12px',
-        border: '1px solid rgba(245, 101, 101, 0.2)',
-        margin: '16px 0',
-    },
-    table: {
-        width: '100%',
-        borderCollapse: 'separate',
-        borderSpacing: '0',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-        marginTop: '24px',
-    },
-    th: {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        padding: '20px 16px',
-        textAlign: 'left',
-        fontWeight: '700',
-        textTransform: 'uppercase',
-        fontSize: '0.75rem',
-        letterSpacing: '0.1em',
-        border: 'none',
-    },
-    tr: {
-        transition: 'all 0.2s ease',
-    },
-    td: {
-        padding: '20px 16px',
-        borderBottom: '1px solid #e2e8f0',
-        backgroundColor: 'white',
-        verticalAlign: 'middle',
-    },
-    badge: {
-        padding: '4px 12px',
-        borderRadius: '12px',
-        color: 'white',
-        fontSize: '0.75rem',
-        fontWeight: '600',
-        textTransform: 'uppercase',
-    },
-    actionButtons: {
-        display: 'flex',
-        gap: '8px',
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-    },
-    button: {
-        padding: '8px 12px',
-        fontSize: '0.75rem',
-        fontWeight: '600',
-        borderRadius: '8px',
-        border: 'none',
-        cursor: 'pointer',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        minWidth: '90px',
-    },
-    viewButton: {
-        background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)',
-        color: 'white',
-    },
-    // 🆕 NEW STYLE - Orange Edit Button
-    editButton: {
-        background: 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)',
-        color: 'white',
-    },
-    applicationsButton: {
-        background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)',
-        color: 'white',
-    },
-    modalOverlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-    },
-    modalContent: {
-        backgroundColor: 'white',
-        borderRadius: '20px',
-        padding: '0',
-        width: '90%',
-        maxWidth: '600px',
-        maxHeight: '80vh',
-        overflow: 'hidden',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    },
-    modalHeader: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '24px 32px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-    },
-    modalTitle: {
-        fontSize: '1.5rem',
-        fontWeight: '700',
-        margin: 0,
-    },
-    closeButton: {
-        background: 'rgba(255, 255, 255, 0.2)',
-        border: 'none',
-        color: 'white',
-        fontSize: '1.5rem',
-        cursor: 'pointer',
-        width: '36px',
-        height: '36px',
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tabContainer: {
-        display: 'flex',
-        borderBottom: '2px solid #e2e8f0',
-        backgroundColor: '#f7fafc',
-    },
-    tab: {
-        flex: 1,
-        padding: '16px',
-        border: 'none',
-        background: 'transparent',
-        cursor: 'pointer',
-        fontSize: '1rem',
-        fontWeight: '600',
-        color: '#718096',
-        transition: 'all 0.2s ease',
-    },
-    activeTab: {
-        color: '#667eea',
-        borderBottom: '3px solid #667eea',
-        backgroundColor: 'white',
-    },
-    modalBody: {
-        padding: '32px',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-    },
-    formTitle: {
-        fontSize: '1.25rem',
-        fontWeight: '700',
-        color: '#2d3748',
-        marginBottom: '8px',
-    },
-    input: {
-        padding: '14px 16px',
-        fontSize: '1rem',
-        border: '2px solid #e2e8f0',
-        borderRadius: '12px',
-        outline: 'none',
-        transition: 'all 0.2s ease',
-    },
-    submitButton: {
-        padding: '14px 24px',
-        borderRadius: '12px',
-        border: 'none',
-        fontWeight: '600',
-        cursor: 'pointer',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '1rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-    },
-    message: {
-        padding: '12px 16px',
-        borderRadius: '12px',
-        fontWeight: '600',
-        textAlign: 'center',
-        marginTop: '16px',
-    },
 };
 
 export default AdminJobs;

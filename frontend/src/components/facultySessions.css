@@ -1,63 +1,105 @@
-/* container similar to sessions-container */
+@import '../styles/theme.css';
+
 .table-container {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: var(--space-xl) auto;
+  padding: var(--space-xl);
+  background: rgba(0, 0, 0, 0.94);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-accent-18);
+  box-shadow: 0 30px 90px var(--color-accent-08);
+  color: var(--color-text-white);
+  font-family: var(--font-family);
 }
 
 h1 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 1rem;
-    color: #333;
+  text-align: center;
+  font-size: var(--text-h1-size);
+  margin-bottom: var(--space-lg);
+  color: var(--color-accent);
+  font-weight: var(--font-weight-extrabold);
 }
 
 .datepicker-wrapper {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 1.75rem;
 }
 
 .datepicker {
-    padding: 8px 12px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+  width: 220px;
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-accent-25);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-white);
 }
 
-/* Faculty card styled like clickable buttons in your second design */
+/* Calendar icon styling for native date inputs (unified with global styles) */
+.datepicker::-webkit-calendar-picker-indicator,
+.datepicker[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  margin-right: 2px !important;
+  opacity: 1 !important;
+  filter: invert(1) brightness(1.2) !important;
+  transition: var(--transition-fast);
+}
+
+.datepicker::-webkit-calendar-picker-indicator:hover,
+.datepicker[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1 !important;
+}
+
 .faculty-card {
-    margin-bottom: 12px;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid #ddd;
+  margin-bottom: var(--space-md);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-accent-16);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .faculty-button {
-    width: 100%;
-    text-align: left;
-    padding: 14px 16px;
-    background: #ede9fe;
-    /* subtle lavender background */
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: none;
-    color: #4f46e5;
-    /* purple text */
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-accent-08);
+  color: var(--color-black);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  cursor: pointer;
 }
 
 .faculty-button:hover {
-    background: #ddd6fe;
-    /* darker lavender on hover */
+  background: var(--color-accent-16);
 }
 
 .toggle {
-    font-size: 18px;
-    font-weight: bold;
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-md);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+thead {
+  background: var(--gradient-table-header);
+  color: var(--color-text-white);
+}
+
+th,
+td {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--color-accent-12);
+  color: var(--color-text-white);
+}
+
+tr:hover td {
+  background: var(--color-accent-08);
 }

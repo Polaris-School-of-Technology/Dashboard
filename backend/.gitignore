@@ -1,4 +1,5 @@
 /node_modules
+dist/
 .env
 gcp-key.json
 service-account.json

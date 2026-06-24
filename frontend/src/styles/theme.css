@@ -1,0 +1,533 @@
+/* =====================================================
+  POLARIS DASHBOARD - CENTRALIZED THEME SYSTEM
+  Single source of truth for all design tokens
+  -> Adjusted for Black & Yellow theme (Montserrat)
+  ===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+:root {
+  /* ========== COLOR PALETTE ========== */
+  
+  /* Primary Colors (Black & Yellow theme) */
+  --color-accent: #FFCC3F; /* yellow */
+  --color-accent-dark: #e6b233;
+  --color-black: #000000;
+  
+  /* Secondary Colors */
+  --color-secondary: #48bb78;
+  --color-secondary-dark: #38a169;
+  
+  /* Accent Colors */
+  --color-danger: #f56565;
+  --color-danger-dark: #e53e3e;
+  --color-warning: #ed8936;
+  --color-warning-dark: #d69e2e;
+  --color-info: #3b82f6;
+  --color-info-dark: #2563eb;
+  
+  /* Neutral / Text Colors */
+  --color-text-primary: var(--color-accent);
+  --color-text-secondary: rgba(255,204,63,0.85);
+  --color-text-light: rgba(255,204,63,0.6);
+  --color-text-white: #ffffff;
+
+  
+  /* Background Colors */
+  --color-bg-dark: var(--color-black);
+  --color-bg-white: #ffffff;
+  --color-bg-hover: rgba(255,204,63,0.06);
+  
+  /* Border Colors */
+  --color-border: rgba(255,204,63,0.24);
+  --color-border-light: rgba(255,204,63,0.14);
+  
+  /* Overlay */
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* Navigation */
+  --color-nav-text: var(--color-text-secondary);
+  --color-nav-active: var(--color-black);
+  --color-nav-hover: var(--color-accent);
+  /* Accent alpha variants (reused across components) */
+  --color-accent-04: rgba(255,204,63,0.04);
+  --color-accent-07: rgba(255,204,63,0.07);
+  --color-accent-08: rgba(255,204,63,0.08);
+  --color-accent-12: rgba(255,204,63,0.12);
+  --color-accent-14: rgba(255,204,63,0.14);
+  --color-accent-16: rgba(255,204,63,0.16);
+  --color-accent-18: rgba(255,204,63,0.18);
+  --color-accent-20: rgba(255,204,63,0.20);
+  --color-accent-22: rgba(255,204,63,0.22);
+  --color-accent-25: rgba(255,204,63,0.25);
+  
+  /* ========== GRADIENTS ========== */
+  
+  --gradient-primary: linear-gradient(135deg, #000000 0%, #101010 100%);
+  --gradient-primary-alt: linear-gradient(135deg, #111111 0%, #222222 100%);
+  --gradient-table-header: linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(30,30,30,0.98) 100%);
+  --gradient-button-primary: linear-gradient(135deg, rgba(255,204,63,1) 0%, rgba(235,180,35,1) 100%);
+  --gradient-button-secondary: linear-gradient(135deg, var(--color-accent-18) 0%, rgba(255,204,63,0.28) 100%);
+  --gradient-button-danger: linear-gradient(135deg, rgba(255,140,0,1) 0%, rgba(255,190,55,1) 100%);
+  --gradient-button-warning: linear-gradient(135deg, rgba(255,204,63,0.35) 0%, rgba(255,204,63,0.18) 100%);
+  --gradient-text-primary: linear-gradient(135deg, #FFCC3F 0%, #f0b530 100%);
+  --gradient-filter-section: linear-gradient(135deg, rgba(255,204,63,0.06) 0%, rgba(255,204,63,0.08) 100%);
+  
+  /* ========== SHADOWS ========== */
+  
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 15px rgba(59, 130, 246, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg-primary: 0 8px 25px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Button Shadows */
+  --shadow-button-primary: 0 4px 15px rgba(59, 130, 246, 0.3);
+  --shadow-button-primary-hover: 0 8px 25px rgba(59, 130, 246, 0.4);
+  --shadow-button-danger: 0 4px 12px rgba(245, 101, 101, 0.4);
+  --shadow-button-warning: 0 4px 12px rgba(237, 137, 54, 0.4);
+  --shadow-button-secondary: 0 8px 25px -8px rgba(72, 187, 120, 0.5);
+  
+  /* Nav Shadows */
+  --shadow-nav: 0 6px 20px rgba(59, 130, 246, 0.2);
+  --shadow-nav-active: 0 6px 20px rgba(59, 130, 246, 0.4);
+  --shadow-nav-hover: 0 8px 25px rgba(59, 130, 246, 0.5);
+  
+  /* ========== SPACING ========== */
+  
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* ========== BORDER RADIUS ========== */
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 50px;
+  
+  /* ========== TYPOGRAPHY ========== */
+  
+  --font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* ========== TRANSITIONS ========== */
+  
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s ease-out;
+  
+  /* ========== BACKDROP ========== */
+  
+  --backdrop-blur: blur(10px);
+  --backdrop-light: rgba(255, 255, 255, 0.95);
+  
+  /* ========== BUTTON STYLES ========== */
+  
+  /* Primary Button */
+  --btn-primary-bg: var(--gradient-button-primary);
+  --btn-primary-color: #000000;
+  --btn-primary-padding: 0.75rem 1.5rem;
+  --btn-primary-shadow: var(--shadow-button-primary);
+  --btn-primary-hover-shadow: var(--shadow-button-primary-hover);
+  --btn-primary-hover-bg: linear-gradient(135deg, rgba(255,204,63,0.95) 0%, rgba(235,180,35,0.95) 100%);
+  --btn-primary-font-weight: 600;
+  --btn-primary-border-radius: var(--radius-md);
+  
+  /* Secondary Button */
+  --btn-secondary-bg: var(--gradient-button-secondary);
+  --btn-secondary-color: #000000;
+  --btn-secondary-padding: 0.75rem 1.5rem;
+  --btn-secondary-shadow: var(--shadow-button-secondary);
+  --btn-secondary-hover-bg: linear-gradient(135deg, rgba(255,204,63,0.25) 0%, rgba(255,204,63,0.35) 100%);
+  --btn-secondary-font-weight: 600;
+  --btn-secondary-border-radius: var(--radius-md);
+  
+  /* Danger Button */
+  --btn-danger-bg: var(--gradient-button-danger);
+  --btn-danger-color: #000000;
+  --btn-danger-padding: 0.75rem 1.5rem;
+  --btn-danger-shadow: var(--shadow-button-danger);
+  --btn-danger-hover-bg: linear-gradient(135deg, rgba(255,140,0,0.95) 0%, rgba(255,190,55,0.95) 100%);
+  --btn-danger-font-weight: 600;
+  --btn-danger-border-radius: var(--radius-md);
+  
+  /* Warning Button */
+  --btn-warning-bg: var(--gradient-button-warning);
+  --btn-warning-color: #000000;
+  --btn-warning-padding: 0.75rem 1.5rem;
+  --btn-warning-shadow: var(--shadow-button-warning);
+  --btn-warning-hover-bg: linear-gradient(135deg, rgba(255,204,63,0.5) 0%, rgba(255,204,63,0.25) 100%);
+  --btn-warning-font-weight: 600;
+  --btn-warning-border-radius: var(--radius-md);
+  
+  /* Small Table Button */
+  --btn-table-padding: 0.5rem 0.75rem;
+  --btn-table-font-size: 0.75rem;
+  --btn-table-border-radius: var(--radius-sm);
+  --btn-table-min-width: 70px;
+  
+  /* ========== TEXT STYLES ========== */
+  
+  /* Heading 1 */
+  --text-h1-size: 2.5rem;
+  --text-h1-weight: 800;
+  --text-h1-gradient: var(--gradient-text-primary);
+  --text-h1-letter-spacing: -0.025em;
+  
+  /* Heading 3 */
+  --text-h3-size: 1.75rem;
+  --text-h3-weight: 700;
+  --text-h3-color: var(--color-primary);
+  
+  /* Label */
+  --text-label-weight: 600;
+  --text-label-size: 0.875rem;
+  --text-label-color: var(--color-text-primary);
+  --text-label-transform: uppercase;
+  --text-label-letter-spacing: 0.05em;
+  
+  /* Body Text (global defaults per request) */
+  --text-body-size: 1rem; /* 16px */
+  --text-body-color: var(--color-text-primary);
+  --text-body-weight: 600;
+  
+  /* Small Text */
+  --text-small-size: 0.875rem;
+  --text-small-color: var(--color-text-secondary);
+  
+  /* Error Text */
+  --text-error-color: var(--color-danger);
+  --text-error-weight: 600;
+  
+  /* ========== INPUT STYLES ========== */
+  
+  --input-padding: 0.75rem 1rem;
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --input-border: 1px solid rgba(59, 130, 246, 0.2);
+  --input-border-radius: var(--radius-md);
+  --input-shadow: var(--shadow-sm);
+  --input-border-focus: 1px solid var(--color-info);
+  --input-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  --input-bg-focus: rgba(255, 255, 255, 1);
+  
+  /* Date/Select Input */
+  --input-date-padding: 0.75rem 1rem;
+  --input-date-border: 2px solid var(--color-border);
+  --input-date-border-radius: var(--radius-md);
+  --input-date-font-size: 1rem;
+  --input-date-bg: white;
+  
+  /* ========== FILTER SECTION STYLES ========== */
+  
+  --filter-bg: var(--gradient-filter-section);
+  --filter-border: 1px solid rgba(102, 126, 234, 0.1);
+  --filter-border-radius: var(--radius-lg);
+  --filter-padding: 1.5rem;
+  --filter-gap: 1.5rem;
+  
+  /* ========== TABLE STYLES ========== */
+  
+  --table-bg: rgba(255, 255, 255, 0.95);
+  --table-header-bg: var(--gradient-table-header);
+  --table-header-color: white;
+  --table-header-padding: 1.25rem 1rem;
+  --table-row-hover-bg: var(--color-bg-hover);
+  --table-row-padding: 1.25rem 1rem;
+  --table-border: 1px solid var(--color-border);
+  --table-border-radius: var(--radius-lg);
+  --table-shadow: var(--shadow-lg);
+  
+  /* ========== MODAL STYLES ========== */
+  
+  --modal-bg: rgba(0, 0, 0, 0.7);
+  --modal-content-bg: white;
+  --modal-content-padding: 2.5rem;
+  --modal-content-border-radius: var(--radius-xl);
+  --modal-content-shadow: var(--shadow-xl);
+  --modal-content-max-width: 500px;
+  --modal-content-width: 90%;
+  
+  /* ========== CARD STYLES ========== */
+  
+  --card-bg: var(--color-bg-white);
+  --card-padding: 2rem;
+  --card-border-radius: var(--radius-xl);
+  --card-shadow: var(--shadow-xl);
+  --card-border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* ========== ERROR MESSAGE STYLES ========== */
+  
+  --error-bg: rgba(254, 242, 242, 0.95);
+  --error-border: 1px solid rgba(248, 113, 113, 0.3);
+  --error-border-radius: var(--radius-lg);
+  --error-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
+  --error-color: var(--color-danger);
+  --error-padding: 1rem;
+
+  /* ========== CLASS SESSIONS THEME VARIABLES ========== */
+  --cs-bg:        #07070a;
+  --cs-surface:   #0d0d11;
+  --cs-surface-2: #15151c;
+  --cs-surface-3: #1c1c25;
+  --cs-line:      var(--color-accent-12);
+  --cs-line-2:    rgba(255, 255, 255, 0.07);
+  --cs-text:      #f5f5f7;
+  --cs-muted:     #9a9aa3;
+  --cs-faint:     #5b5b64;
+  --cs-gold:      var(--color-accent);
+  --cs-gold-soft: var(--color-accent-16);
+  --cs-gold-glow: var(--color-accent-20);
+  --cs-success:   #34d399;
+  --cs-danger:    #ff6a6a;
+  --cs-info:      #60a5fa;
+  --cs-violet:    #a78bfa;
+
+  --cs-radius:    16px;
+  --cs-radius-sm: 10px;
+
+  --cs-font: ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
+  --cs-mono: "Montserrat", ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
+  /* ========== ADMIN JOBS THEME VARIABLES ========== */
+  --color-surface-0: #070707;
+  --color-surface-1: #090909;
+  --color-surface-2: #101010;
+  --color-surface-3: #111111;
+  --color-surface-4: #121212;
+  --color-surface-5: #171717;
+  --color-surface-6: #181818;
+  --color-surface-7: #191919;
+  --color-border-strong: #202020;
+  --color-border-xdark: #242424;
+  --color-border-muted: #252525;
+  --color-border-soft: #282828;
+  --color-border-subtle: #2c2c2c;
+  --color-border-muted-2: #2d2d2d;
+  --color-border-muted-3: #2f2f2f;
+  --color-tooltip-bg: #2f2f31;
+  --color-border-tooltip: #303030;
+  --color-border-button: #323232;
+  --color-border-input: #333333;
+  --color-border-input-2: #343434;
+  --color-border-hover: #3a3a3a;
+  --color-border-hover-2: #3d3d3d;
+  --color-border-hover-3: #444444;
+  --color-border-tooltip-2: #4a4a4a;
+  --color-focus: #555555;
+  --color-info-bright: #74d5ff;
+  --color-text-muted-1: #777777;
+  --color-text-muted-2: #787878;
+  --color-text-muted-3: #7d7d7d;
+  --color-text-muted-4: #858585;
+  --color-text-muted-5: #9a9a9a;
+  --color-text-muted-6: #a5a5a5;
+  --color-text-muted-7: #a6a6a6;
+  --color-text-muted-8: #cfcfcf;
+  --color-text-muted-9: #d4d4d4;
+  --color-text-muted-10: #d7d7d7;
+  --color-text-muted-11: #d8d8d8;
+  --color-text-muted-12: #d9d9d9;
+  --color-text-muted-13: #e3e3e3;
+  --color-text-muted-14: #eeeeee;
+  --color-text-muted-15: #f4f4f4;
+  --color-text-muted-16: #f5f5f5;
+  --color-success-bright: #00d99d;
+  --color-danger-soft: #fee2e2;
+  --color-accent-bright: #ffca18;
+  --color-accent-bright-2: #ffcf19;
+  --color-accent-bright-3: #ffd119;
+  --color-accent-bright-4: #ffd31e;
+  --color-accent-bright-5: #ffd83b;
+  --color-overlay-45: rgba(0, 0, 0, 0.45);
+  --color-overlay-72: rgba(0, 0, 0, 0.72);
+  --color-success-overlay: rgba(0, 217, 157, 0.12);
+  --color-success-border: rgba(0, 217, 157, 0.3);
+  --color-info-overlay: rgba(22, 111, 145, 0.35);
+  --color-danger-overlay: rgba(245, 101, 101, 0.12);
+  --color-danger-border: rgba(245, 101, 101, 0.25);
+  --color-danger-border-2: rgba(245, 101, 101, 0.28);
+  --color-accent-overlay: rgba(255, 202, 24, 0.18);
+  --color-accent-overlay-2: rgba(255, 205, 25, 0.14);
+  --color-accent-overlay-3: rgba(255, 205, 25, 0.2);
+  --color-accent-border: rgba(255, 205, 25, 0.42);
+  --color-accent-border-2: rgba(255, 207, 25, 0.12);
+  --color-accent-overlay-4: rgba(255, 207, 25, 0.5);
+  --color-info-overlay-2: rgba(54, 177, 222, 0.55);
+  --color-text-heavy: #060606;
+
+}
+
+/* ========== BASE STYLES ========== */
+
+* {
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg-dark);
+  color: var(--text-body-color);
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-family);
+  font-weight: var(--text-body-weight);
+  font-size: var(--text-body-size);
+  line-height: 1; /* 100% */
+  letter-spacing: 0%;
+}
+
+/* ========== GLOBAL H2 RULES (generalized heading styling) ========== */
+h2 {
+  color: var(--color-accent);
+  padding: 0.25rem 0;
+  margin: 0.5rem 0;
+  font-size: 1.125rem; /* 18px */
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ========== NAVIGATION SPECIFICS ========== */
+.nav-container {
+  background: var(--color-black);
+  color: var(--color-accent);
+  box-shadow: none;
+  border-bottom: 1px solid rgba(255,204,63,0.08);
+}
+
+.nav-container .nav-link {
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: var(--font-weight-regular);
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-container .nav-link:hover {
+  color: var(--color-accent);
+}
+
+.nav-container .nav-link.active-link {
+  background: var(--color-accent);
+  color: var(--color-black);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+/* Logout button styling */
+.logout-btn {
+  background: var(--color-accent);
+  color: #000000;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-semibold);
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255,204,63,0.18);
+}
+
+.logout-btn:hover {
+  filter: brightness(0.98);
+}
+
+/* ========== CUSTOM SCROLLBAR ========== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary-alt);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+}
+
+/* ---------- react-datepicker theme overrides (dark mode) ---------- */
+.react-datepicker {
+  background: linear-gradient(180deg, #0b0b0b 0%, #0f0f0f 100%) !important;
+  color: rgba(245,245,245,0.95) !important;
+  border: 1px solid rgba(244, 197, 66, 0.12) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(244,197,66,0.04) inset !important;
+  border-radius: 10px !important;
+}
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+.react-datepicker__header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+  padding-top: 0.6rem !important;
+}
+
+.react-datepicker__current-month {
+  color: var(--color-accent) !important;
+  font-weight: 600 !important;
+  font-family: var(--font-family) !important;
+}
+
+.react-datepicker__navigation--previous, .react-datepicker__navigation--next {
+  background: var(--color-accent) !important;
+  color: #1a1300 !important;
+  border-radius: 999px !important;
+  width: 34px !important;
+  height: 34px !important;
+  top: 8px !important;
+  box-shadow: 0 6px 18px rgba(244,197,66,0.18) !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #1a1300 !important;
+}
+
+.react-datepicker__day-name, .react-datepicker__day {
+  color: rgba(245,245,245,0.9) !important;
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+  background: var(--color-accent) !important;
+  color: #1a1300 !important;
+  border-radius: 8px !important;
+}
+
+.react-datepicker__day:hover {
+  background: rgba(244,197,66,0.12) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+}
+
+.react-datepicker__input-container input,
+.react-datepicker__input-container input:focus {
+  background: transparent !important;
+  color: rgba(245,245,245,0.95) !important;
+}
+
+/* compact spacing to match app */
+.react-datepicker__month-container, .react-datepicker__month {
+  padding: 0.5rem 0.6rem !important;
+}
+
+/* ensure z-index above overlays */
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}

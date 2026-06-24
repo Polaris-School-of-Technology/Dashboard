@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Lock, Mail, Sparkles } from "lucide-react";
 import "./LoginPage.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("xx@polariscampus.com");
+    const [password, setPassword] = useState("polaris@123");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
@@ -44,51 +45,89 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    const handleForgotPasswordClick = () => {
-        navigate("/forgot-password");
-    };
+    useEffect(() => {
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = originalOverflow;
+        };
+    }, []);
 
     return (
-        <div className="login-container">
-            <div className="login-card">
-                <h2 className="login-title">Login</h2>
+        <div className="login-page">
+            <aside className="login-brand-panel">
 
-                <form onSubmit={handleSubmit} className="login-form">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="login-input"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                <div className="login-logo">
+                    <img
+                        src="https://storage.googleapis.com/cp-prod-whitelabel-assets-as-sth1-gcs-dgte34/Polaris/Polaris_logo.png"
+                        alt="Polaris logo"
+                        className="login-logo-image"
                     />
+                </div>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="login-input"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
+                <div className="login-hero-copy">
+                    <h1>
+                        <span className="login-gold-text login-display">Sign in </span>
+                        <span>to your</span>
+                        <br />
+                        <span>academic </span>
+                        <span className="login-gold-text login-display">command</span>
+                        <br />
+                        <span>center.</span>
+                    </h1>
+                    <p className="login-subcopy">
+                        Sessions, attendance, recruitment, and faculty insights - all
+                        orchestrated from a single, beautifully restrained workspace.
+                    </p>
+                </div>
+            </aside>
+
+            <section className="login-form-panel">
+                <div className="login-form-glow" />
+                <form onSubmit={handleSubmit} className="login-card">
+                    <p className="login-kicker login-auth-kicker">Authentication</p>
+                    <h2 className="login-title">
+                        <span className="login-gold-text login-display">Log </span>
+                        <span>in</span>
+                    </h2>
+
+                    <div className="login-form-fields">
+                        <label className="login-field">
+                            <span>Email</span>
+                            <div className="login-input-wrap">
+                                <input
+                                    type="email"
+                                    placeholder="you@polaris.io"
+                                    className="login-input"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </label>
+
+                        <label className="login-field">
+                            <span>Password</span>
+                            <div className="login-input-wrap">
+                                <input
+                                    type="password"
+                                    placeholder="••••••"
+                                    className="login-input"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </label>
+                    </div>
+
+                    {message && <p className="login-message">{message}</p>}
 
                     <button type="submit" className="login-button">
-                        LOGIN
+                        Enter Portal
                     </button>
-
-                    <div className="password-links">
-                        <p
-                            className="forgot-password-link"
-                            onClick={handleForgotPasswordClick}
-                        >
-                            Forgot Password?
-                        </p>
-
-                    </div>
                 </form>
-
-                {message && <p className="login-message">{message}</p>}
-            </div>
+            </section>
         </div>
     );
 };

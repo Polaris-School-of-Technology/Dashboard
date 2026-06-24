@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "./rbacFacultyAttendnaceReport.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -93,21 +91,19 @@ const searchUtils = {
 };
 
 const FacultyAttendanceReport: React.FC = () => {
-    const [date, setDate] = useState<Date | null>(null);
+    const [date, setDate] = useState<string>("");
     const [data, setData] = useState<AttendanceGroup[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<"all" | "present" | "absent">("all");
 
     // Fetch faculty-specific attendance
-    const fetchFacultyReport = async (d: Date) => {
-        if (!d) return;
+    const fetchFacultyReport = async (dateStr: string) => {
+        if (!dateStr) return;
         setLoading(true);
         setError(null);
 
-        const formatted = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-            d.getDate()
-        ).padStart(2, "0")}`;
+        const formatted = dateStr;
 
         try {
             const res = await axios.get(`${API_BASE_URL}/api/rbacFaculty/getAttendnaceForFaculty/${formatted}`, {
@@ -238,12 +234,20 @@ const FacultyAttendanceReport: React.FC = () => {
 
     return (
         <div className="attendance-container">
-            <h1 className="page-title">Faculty Attendance Report</h1>
+            <h1 className="page-title">
+                <span className="dashboard-heading-white">Faculty Attendance</span>{" "}
+                <span className="dashboard-heading-gradient">Report</span>
+            </h1>
 
             <div className="filters-section">
                 <div className="filter-group">
                     <label>Select Date</label>
-                    <DatePicker selected={date} onChange={(d) => setDate(d)} className="date-picker" placeholderText="Choose date" />
+                    <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="date-picker"
+                    />
                 </div>
 
                 <div className="filter-buttons">
