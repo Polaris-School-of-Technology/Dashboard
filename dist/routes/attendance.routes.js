@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const attendanceReport_1 = require("../controllers/attendanceReport");
+const admin_1 = require("../middlewares/admin");
+const router = (0, express_1.Router)();
+router.get("/attendanceReport/:date", attendanceReport_1.attendanceReport);
+router.patch("/:id", admin_1.authenticate, attendanceReport_1.updateAttendance);
+router.get("/attendanceReportBatchWise/:date", attendanceReport_1.attendanceReportold);
+router.get('/batches', attendanceReport_1.getBatches);
+exports.default = router;

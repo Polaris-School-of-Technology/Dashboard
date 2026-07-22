@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const schedule_1 = require("../controllers/schedule");
+const feedbackQuestions_1 = require("../controllers/feedbackQuestions");
+const router = express_1.default.Router();
+router.get("/classSessions/getSessions/:date", schedule_1.getSessionsByDate);
+router.patch("/classSessions/:id", schedule_1.updateSession);
+router.get("/classSessions/getFaculty", schedule_1.getFaculties);
+router.get("/classCourses", schedule_1.getSections);
+router.post("/addSession", schedule_1.createSingleClassSessionHandler);
+router.delete("/classSessionsdelete/:id", schedule_1.deleteClassSession);
+router.get("/feedbackQuestions", feedbackQuestions_1.getAllFeedbackQuestions);
+router.post("/classSessions/:session_id/quiz", feedbackQuestions_1.createQuiz);
+router.get("/getAllFeedbackQuestions/:session_id", feedbackQuestions_1.getSessionQuestionsBySessionId);
+router.get("/getAllBatches", schedule_1.getAllBatches);
+exports.default = router;
