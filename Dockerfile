@@ -1,20 +1,30 @@
-# Use official Node.js image
-FROM node:20-alpine
+# ---- Build stage ----
+# Installs ALL dependencies (including devDependencies like typescript)
+# so that `tsc` is available to compile the TypeScript sources.
+FROM node:20-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy manifests and install all deps (dev included)
 COPY package*.json ./
+RUN npm install
 
-# Install dependencies
-RUN npm install --production
-
-# Copy the rest of the code
+# Copy the rest of the source and build
 COPY . .
-
-# Build TypeScript
 RUN npm run build
+
+# ---- Runtime stage ----
+# Ships only production dependencies + compiled output for a lean image.
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install only production dependencies
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# Copy compiled JavaScript from the build stage
+COPY --from=builder /app/dist ./dist
 
 # Expose the port
 EXPOSE 8080
