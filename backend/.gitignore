@@ -1,6 +1,0 @@
-/node_modules
-.env
-gcp-key.json
-service-account.json
-notification-key.json
-.env.yaml
